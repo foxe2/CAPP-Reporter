@@ -7,9 +7,9 @@ Input from TJ to Ethan
 Concentration input from TJ:
 	Name the file: ConcentrationCSCI (or whatever)
 	File will contain:
-		CSCI-A,CSCII-B,CSCI-C				\
-											  > These are two concentrations, seperated by newlines (Note, comma seperated, no spaces!)
-		CSCI-D,CSCI-E						/
+		CSCI-A,CSCII-B,CSCI-C
+		CSCI-D,CSCI-E
+	These two lines are concentrations, seperated by newlines (Note, comma seperated, no spaces!)
 
 What algorithm will be passed:
 	Requirements/		- Each file will have, as its name, the 4 letter major it needs.
@@ -24,7 +24,7 @@ Only update if both majors are entered.
 
 			|--------------------------------------------------|-------------------------|-------------------------|
 			| ----------------------   ----------------------  |                         |                         |
-			| |     Major 1    | ⬍ |   |     Major 2    | ⬍ |  |    Hass Requirement:    |  Enter the courses you  |
+			| |     Major 1    | ⬍ |   |     Major 2   | ⬍ |  |    Hass Requirement:    |  Enter the courses you  |
 			| ----------------------   ----------------------  |                         |     you have take       |
 			|--------------------------------------------------|            .            |                         |
 			|                                                  |            .            |     -------------       |
