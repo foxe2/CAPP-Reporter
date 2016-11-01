@@ -1,0 +1,55 @@
+Input from TJ to Ethan
+	(CSCI-1100 && CSCI-2000+) || B
+	CSCI-1200
+	CSCI-(Comp Org's #) || (Cocoa, no clue what this number or title is...)
+	'3 courses in same CSCI concentration'
+
+Concentration input from TJ:
+	Name the file: ConcentrationCSCI (or whatever)
+	File will contain:
+		CSCI-A,CSCII-B,CSCI-C				\
+											  > These are two concentrations, seperated by newlines (Note, comma seperated, no spaces!)
+		CSCI-D,CSCI-E						/
+
+What algorithm will be passed:
+	Requirements/		- Each file will have, as its name, the 4 letter major it needs.
+	Concentrations/		- Each file will have, as its name, the 4 letter major it needs.
+	GUI_Input.txt
+
+How the algorithm will be run: ./a.out <Path to Requirements directory> <Path to Concentrations directory> <Path to GUI_Input.txt>
+
+GUI updates as you enter your courses
+Only update if both majors are entered.
+
+
+			|--------------------------------------------------|-------------------------|-------------------------|
+			| ----------------------   ----------------------  |                         |                         |
+			| |     Major 1    | ⬍ |   |     Major 2    | ⬍ |  |    Hass Requirement:    |  Enter the courses you  |
+			| ----------------------   ----------------------  |                         |     you have take       |
+			|--------------------------------------------------|            .            |                         |
+			|                                                  |            .            |     -------------       |
+			|                        .                         |            .            |     | MAJR  | ⬍ |       |
+			|                        .                         |                         |     -------------       |
+			|                        .                         |                         |                         |
+			|                                                  |                         |     -------------       |
+			|                                                  |                         |     | Course ## |       |
+			|                                                  |                         |     -------------       |
+			|                                                  |                         |                         |
+			|                                                  |                         |-------------------------|
+			|                                                  |                         |                         |
+			|                                                  |                         |    Courses currently    | 
+			|                                                  |                         |    selected. Click one  |
+			|                                                  |                         |      to remove it       | 
+			|                                                  |                         |            .            |
+			|                                                  |                         |            .  --------- |
+			|                                                  |                         |            .  | Clear | |
+			|                                                  |                         |               --------- |
+			|--------------------------------------------------|-------------------------|-------------------------|
+
+
+Output for courses taken:
+
+CSCI/MATH
+CSCI-1100 
+CSCI-1200
+
