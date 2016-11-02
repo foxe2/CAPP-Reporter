@@ -12,6 +12,10 @@ TARGET = CAPP_Reporter
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    SmartScene.cpp \
+    GUI.cpp
 
-HEADERS  +=
+HEADERS  += \
+    SmartScene.hpp \
+    GUI.hpp

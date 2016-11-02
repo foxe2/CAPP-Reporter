@@ -1,14 +1,11 @@
-#include "Game.hpp"
 #include "SmartScene.hpp"
-#include "Highlight.hpp"
+#include "GUI.hpp"
 
 //Constructor
 SmartScene::SmartScene() {
 
     //Set the scene size
-    setSceneRect(0,0,Game::Width,Game::Height);
-    //TODO: Make resizable later
-
+    setSceneRect(0,0,GUI::Width,GUI::Height);
 }
 
 //If the mouse was clicked, highlight the appropriate square
