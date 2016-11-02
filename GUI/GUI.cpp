@@ -48,6 +48,7 @@ GUI::GUI() : StrokeThickness(4) {
     theView = new QGraphicsView(theScene);
     theView->setFixedSize(Width, Height);
 
+    //Draw outlines
     drawOutlines();
 
     //Show the GUI
@@ -56,6 +57,8 @@ GUI::GUI() : StrokeThickness(4) {
 
 //Destructor
 GUI::~GUI() {
-    delete theView;
-    delete theScene;
+
+    //Prevent memory leaks
+    delete theView; delete theScene;
+    for (auto i : Outlines) delete i;
 }
