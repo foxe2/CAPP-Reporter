@@ -1,6 +1,9 @@
 #include "main.hpp"
 
+#include <vector>
+
 #include <QGraphicsView>
+#include <QGraphicsRectItem>
 
 //Forward declerations
 class SmartScene;
@@ -21,9 +24,14 @@ public:
 
 private:
 
+    //Draw the outlines of each section
+    void drawOutlines();
+
 	//Representation
 	SmartScene * theScene;
-	QGraphicsView * theView;
+    QGraphicsView * theView;
+    const int StrokeThickness;
+    std::vector<QGraphicsRectItem*> Outlines;
 
     //Prevent mulitple GUIs
     static uint GUICount;
