@@ -19,20 +19,20 @@ public:
 	~GUI();
 
 	//Size of the display
-    static const uint Width;
-    static const uint Height;
+	static const uint Width;
+	static const uint Height;
 
 private:
 
-    //Draw the outlines of each section
-    void drawOutlines();
+	//Draw the outlines of each section
+	void drawOutlines();
 
 	//Representation
 	SmartScene * theScene;
-    QGraphicsView * theView;
-    const int StrokeThickness;
-    std::vector<QGraphicsRectItem*> Outlines;
+	QGraphicsView * theView;
+	const int StrokeThickness;
+	std::vector<QGraphicsRectItem*> Outlines;
 
-    //Prevent mulitple GUIs
-    static uint GUICount;
+	//Prevent mulitple GUIs
+	static uint GUICount;
 };
