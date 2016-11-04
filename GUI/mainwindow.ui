@@ -35,7 +35,7 @@
    <widget class="QComboBox" name="PrimaryMajor">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>50</x>
       <y>10</y>
       <width>104</width>
       <height>26</height>
@@ -53,7 +53,7 @@
    <widget class="QComboBox" name="SecondaryMajor">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>230</x>
       <y>10</y>
       <width>104</width>
       <height>26</height>
@@ -86,6 +86,9 @@
       <height>511</height>
      </rect>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
     <property name="html">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -113,12 +116,15 @@ p, li { white-space: pre-wrap; }
       <height>581</height>
      </rect>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QComboBox" name="CourseMajor">
     <property name="geometry">
      <rect>
       <x>640</x>
-      <y>40</y>
+      <y>30</y>
       <width>104</width>
       <height>26</height>
      </rect>
@@ -136,7 +142,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>640</x>
-      <y>80</y>
+      <y>70</y>
       <width>104</width>
       <height>26</height>
      </rect>
@@ -154,18 +160,47 @@ p, li { white-space: pre-wrap; }
       <height>391</height>
      </rect>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="resetButton">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>714</x>
       <y>560</y>
-      <width>115</width>
+      <width>81</width>
       <height>32</height>
      </rect>
     </property>
     <property name="text">
      <string>Reset</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addClassButton">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>120</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="removeClassButton">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>120</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove</string>
     </property>
    </widget>
    <zorder>graphicsView</zorder>
@@ -176,14 +211,16 @@ p, li { white-space: pre-wrap; }
    <zorder>CourseMajor</zorder>
    <zorder>CourseNumber</zorder>
    <zorder>CurrentCourses</zorder>
-   <zorder>pushButton</zorder>
+   <zorder>resetButton</zorder>
+   <zorder>addClassButton</zorder>
+   <zorder>removeClassButton</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>resetButton</sender>
    <signal>clicked()</signal>
    <receiver>CurrentCourses</receiver>
    <slot>clear()</slot>
