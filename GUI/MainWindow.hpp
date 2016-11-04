@@ -6,6 +6,8 @@
 #include <QMainWindow>
 #include <QGraphicsRectItem>
 
+#include <set>
+#include <string>
 #include <vector>
 
 //Forward declarations
@@ -29,14 +31,37 @@ public:
 	static const uint Width;
 	static const uint Height;
 
+private slots:
+
+    //Called to enable or disable
+    //tentative class adding/removing
+    void tentativeToggle(bool checked);
+
+    //Tentatively add or remove a class
+    void tentativelyRemoveClass();
+    void tentativelyAddClass();
+
+    //Add or remove a class
+    void removeClass();
+    void addClass();
+
 private:
-	//Draw the outlines of each section
-	void drawOutlines();
 
+    //Draw, position, and connect items
+    void PositionObjects(int,int);
+    void connectDefaults();
+    void drawOutlines();
 
-	//Representation
+    //Update the classes taken
+    //This will subsequently update
+    //everything else when it finishes
+    void updateClassesTaken();
+
+    //Representation
     Ui::MainWindow *ui;
     const int StrokeThickness;
+    std::string tentativeClassTaken;
+    std::set<std::string> classesTaken;
 	std::vector<QGraphicsRectItem*> Outlines;
 
 	//Prevent mulitple GUIs
