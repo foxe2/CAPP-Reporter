@@ -67,15 +67,6 @@
       <string>None</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>c</string>
-     </property>
-     <property name="icon">
-      <iconset theme="b">
-       <normaloff>.</normaloff>.</iconset>
-     </property>
-    </item>
    </widget>
    <widget class="QTextEdit" name="MainTest">
     <property name="geometry">
@@ -137,6 +128,26 @@ p, li { white-space: pre-wrap; }
       <string>CSCI</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>3</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
    </widget>
    <widget class="QComboBox" name="CourseNumber">
     <property name="geometry">
@@ -150,6 +161,29 @@ p, li { white-space: pre-wrap; }
     <property name="editable">
      <bool>true</bool>
     </property>
+    <property name="minimumContentsLength">
+     <number>0</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>!</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
    </widget>
    <widget class="QTextEdit" name="CurrentCourses">
     <property name="geometry">

@@ -3,11 +3,11 @@
 
 #include "main.hpp"
 
+#include <QString>
 #include <QMainWindow>
 #include <QGraphicsRectItem>
 
 #include <set>
-#include <string>
 #include <vector>
 
 //Forward declarations
@@ -37,9 +37,8 @@ private slots:
     //tentative class adding/removing
     void tentativeToggle(bool checked);
 
-    //Tentatively add or remove a class
-    void tentativelyRemoveClass();
-    void tentativelyAddClass();
+    //Tentatively add or remove a class as needed
+    void tentativelyAlterClasses(const QString&);
 
     //Add or remove a class
     void removeClass();
@@ -52,20 +51,30 @@ private:
     void connectDefaults();
     void drawOutlines();
 
-    //Update the classes taken
-    //This will subsequently update
-    //everything else when it finishes
-    void updateClassesTaken();
+    //Generates course to be added or removed as a string
+    void updateCourse();
+
+    //Update the classes taken. This will subsequently
+    //update everything else when it finishes. The first
+    //determines whether or not this was a tentative update
+    //or a non-tentative. If it does not equal 0 then theCourse
+    //is highlighted the color specified. The values to be passed
+    //in as an argument shoud only be one of the static color uints below.
+    void updateClassesTaken(uint Highlight = 0);
 
     //Representation
     Ui::MainWindow *ui;
+    QString * theCourse;
     const int StrokeThickness;
-    std::string tentativeClassTaken;
-    std::set<std::string> classesTaken;
-	std::vector<QGraphicsRectItem*> Outlines;
+    std::set<QString*> classesTaken;
+    std::vector<QGraphicsRectItem*> Outlines;
 
 	//Prevent mulitple GUIs
 	static uint GUICount;
+
+    //Static color vairables to be used as an enum
+    static const uint YELLOW;
+    static const uint RED;
 
 };
 
