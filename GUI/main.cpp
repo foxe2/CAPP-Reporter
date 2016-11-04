@@ -1,5 +1,5 @@
 #include "main.hpp"
-#include "GUI.hpp"
+#include "MainWindow.hpp"
 
 #include <QApplication>
 
@@ -21,11 +21,12 @@ void Assert(const bool b, const char * Msg) { if(!b) Err(Msg); }
 
 //Main function
 int main(int argc, char *argv[]) {
-	QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-	//Make the GUI
-    new GUI();
+    //Make the main window
+    MainWindow w;
 
-	//Run it
-	return a.exec();
+    //Run the program
+    w.show();
+    return a.exec();
 }

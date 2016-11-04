@@ -1,12 +1,11 @@
 #include "SmartScene.hpp"
-#include "GUI.hpp"
+#include "MainWindow.hpp"
+
 
 //Constructor
 SmartScene::SmartScene() {
 
     //Set the scene size
-    setSceneRect(0,0,GUI::Width,GUI::Height);
+    setSceneRect(0,0,MainWindow::Width,MainWindow::Height);
 }
 
-//If the mouse was clicked, highlight the appropriate square
-void SmartScene::mousePressEvent(QGraphicsSceneMouseEvent *e) {}

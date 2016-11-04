@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-11-02T14:21:10
+# Project created by QtCreator 2016-11-03T21:11:41
 #
 #-------------------------------------------------
 
@@ -12,10 +12,12 @@ TARGET = CAPP_Reporter
 TEMPLATE = app
 
 
-SOURCES += main.cpp \
-    SmartScene.cpp \
-    GUI.cpp
+SOURCES += main.cpp\
+        MainWindow.cpp \
+    SmartScene.cpp
 
-HEADERS  += \
-    SmartScene.hpp \
-    GUI.hpp
+HEADERS  += MainWindow.hpp \
+    main.hpp \
+    SmartScene.hpp
+
+FORMS    += mainwindow.ui
