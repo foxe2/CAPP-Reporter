@@ -34,38 +34,45 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 //Destructor
 MainWindow::~MainWindow() {
 
-    //Note, ui destructor calls delete on every
-    //item it has! No need to clean up anything else
+    //UI destructor calls destructor of all items it has
     delete ui;
+
+#if 0 //TODO: figure out if these must be deleted
+    //Record information to delete
+    auto theScene = ui->graphicsView->scene();
+    //Must delete destructed items still
+#endif
 }
 
 //Draw the outlines of each section
 void MainWindow::drawOutlines() {
 
-	//For readability
-	const int ST = StrokeThickness/2;
+    //For organization
+    int CoursesH = Width/5;
+    int MainWidth = Width/2;
+    int TopHeight = Height/8;
 
-	//Create a specialized pen
-	QPen p;
-	p.setCosmetic(false);
-	p.setWidth(StrokeThickness);
+    //Create a specialized pen
+    QPen p; p.setCosmetic(false);
+    p.setWidth(StrokeThickness);
 
     //For readability
+    const int ST = StrokeThickness/2;
     auto theScene = ui->graphicsView->scene();
 
-	//Top major selection
-	Outlines.push_back(theScene->addRect(ST, ST, Width/2-ST, Height/8-ST, p));
+    //Top major selection
+    Outlines.push_back(theScene->addRect(ST, ST, MainWidth-ST, TopHeight-ST, p));
 
 	//Main requirement
-	Outlines.push_back(theScene->addRect(ST, Height/8, Width/2-ST, (7*Height)/8-ST, p));
+    Outlines.push_back(theScene->addRect(ST, TopHeight, MainWidth-ST, Height-TopHeight-ST, p));
 
 	//Hass requirement
-	Outlines.push_back(theScene->addRect(Width/2, ST, Width/4, Height-2*ST, p));
+    Outlines.push_back(theScene->addRect(MainWidth, ST, MainWidth/2, Height-2*ST, p));
 
 	//Enter courses
-	Outlines.push_back(theScene->addRect((3*Width)/4, ST, Width/4-ST, (5*Height)/8-ST, p));
+    Outlines.push_back(theScene->addRect((3*MainWidth)/2, ST, MainWidth/2-ST, CoursesH-ST, p));
 
 	//Courses entered
-	Outlines.push_back(theScene->addRect((3*Width)/4, (5*Height)/8, Width/4-ST, (3*Height)/8-ST, p));
+    Outlines.push_back(theScene->addRect((3*MainWidth)/2, CoursesH, MainWidth/2-ST, Height-CoursesH-ST, p));
 }
 
