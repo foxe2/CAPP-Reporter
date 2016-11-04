@@ -11,13 +11,13 @@ class Highlight;
 class SmartScene : public QGraphicsScene {
 public:
 
-    //Constructor
-    SmartScene();
+	//Constructor
+	SmartScene();
 
 private slots:
 
-    //If the mouse was clicked
-    void mousePressEvent(QGraphicsSceneMouseEvent *);
+	//If the mouse was clicked
+	void mousePressEvent(QGraphicsSceneMouseEvent *);
 
 };
 
