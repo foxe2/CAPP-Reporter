@@ -7,7 +7,7 @@
 #include <QMainWindow>
 #include <QGraphicsRectItem>
 
-#include <set>
+#include <map>
 #include <vector>
 
 //Forward declarations
@@ -60,13 +60,13 @@ private:
     //or a non-tentative. If it does not equal 0 then theCourse
     //is highlighted the color specified. The values to be passed
     //in as an argument shoud only be one of the static color uints below.
-    void updateClassesTaken(uint Highlight = 0);
+    void updateClassesTaken(const uint Highlight = 0);
 
     //Representation
     Ui::MainWindow *ui;
     QString * theCourse;
     const int StrokeThickness;
-    std::set<QString*> classesTaken;
+    std::map<const QString, const QString*> classesTaken;
     std::vector<QGraphicsRectItem*> Outlines;
 
 	//Prevent mulitple GUIs

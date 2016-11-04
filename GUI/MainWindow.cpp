@@ -13,15 +13,10 @@ const uint MainWindow::YELLOW = 2;
 //Default number of GUIs
 uint MainWindow::GUICount = 0;
 
-//Use for comparing QString*s
-struct compareQString {
-    bool operator () (const QString* a, const QString* b)
-    {return *a < *b; }
-};
 
 //Constructor
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-    ui(new Ui::MainWindow), StrokeThickness(4) {
+        ui(new Ui::MainWindow), StrokeThickness(4) {
 
     //Make sure only one GUI exists
     Assert(!MainWindow::GUICount, "only 1 GUI can exist");
@@ -43,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     //Disable autocomplete for course number box
     ui->CourseNumber->setCompleter(NULL);
 
-	//Draw outlines
+    //Draw outlines
     drawOutlines();
 
     //Conect everything up
@@ -63,6 +58,7 @@ MainWindow::~MainWindow() {
     //Record information to delete
     auto theScene = ui->graphicsView->scene();
     //Must delete destructed items still
+    //Also must delete theCourse and classesTaken[i]
 #endif
 }
 
@@ -85,16 +81,16 @@ void MainWindow::drawOutlines() {
     //Top major selection
     Outlines.push_back(theScene->addRect(ST, ST, MainWidth-ST, TopHeight-ST, p));
 
-	//Main requirement
+    //Main requirement
     Outlines.push_back(theScene->addRect(ST, TopHeight, MainWidth-ST, Height-TopHeight-ST, p));
 
-	//Hass requirement
+    //Hass requirement
     Outlines.push_back(theScene->addRect(MainWidth, ST, MainWidth/2, Height-2*ST, p));
 
-	//Enter courses
+    //Enter courses
     Outlines.push_back(theScene->addRect((3*MainWidth)/2, ST, MainWidth/2-ST, CoursesH-ST, p));
 
-	//Courses entered
+    //Courses entered
     Outlines.push_back(theScene->addRect((3*MainWidth)/2, CoursesH, MainWidth/2-ST, Height-CoursesH-ST, p));
 }
 
@@ -126,46 +122,49 @@ void MainWindow::tentativeToggle(bool checked) {
     //Enable auto update
     if (checked) {
 
-       //Connect course Major box
-       QObject::connect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
-                        this, SLOT(tentativelyAlterClasses(QString)));
-       QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                        this, SLOT(tentativelyAlterClasses(QString)));
+        //Connect course Major box
+        QObject::connect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(QString)));
+        QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(QString)));
 
-       //Connect course Number box
-       QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                        this, SLOT(tentativelyAlterClasses(QString)));
-       QObject::connect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
-                        this, SLOT(tentativelyAlterClasses(QString)));
+        //Connect course Number box
+        QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(QString)));
+        QObject::connect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(QString)));
     }
 
     //Disable auto update
     else {
 
-       //Disconnect course Major box
-       QObject::disconnect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
-                        this, SLOT(tentativelyAddClass(QString)));
+        //Disconnect course Major box
+        QObject::disconnect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
+                            this, SLOT(tentativelyAddClass(QString)));
 
-       QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                        this, SLOT(tentativelyAddClass(QString)));
+        QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+                            this, SLOT(tentativelyAddClass(QString)));
 
-       //Disconnect course Number box
-       QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                        this, SLOT(tentativelyAddClass(QString)));
-       QObject::disconnect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
-                        this, SLOT(tentativelyAddClass(QString)));
+        //Disconnect course Number box
+        QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+                            this, SLOT(tentativelyAddClass(QString)));
+        QObject::disconnect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
+                            this, SLOT(tentativelyAddClass(QString)));
     }
 }
 
 //Update the definition of theCourse
 void MainWindow::updateCourse() {
-    delete theCourse;
-    theCourse = new QString(" ");
+    delete theCourse; theCourse = new QString(" ");
     theCourse->prepend(ui->CourseMajor->currentText());
     theCourse->append(ui->CourseNumber->currentText());
 }
 
+
 #include <QDebug>
+
+
+
 //Called if the tentative class selection changed
 void MainWindow::tentativelyAlterClasses(const QString&) {
 
@@ -173,7 +172,7 @@ void MainWindow::tentativelyAlterClasses(const QString&) {
     updateCourse();
 
     //If the class is new, tentatively add it, update the GUI
-    if (classesTaken.find(theCourse) == classesTaken.end())
+    if (classesTaken.find(*theCourse) == classesTaken.end())
         updateClassesTaken(YELLOW);
 
     //Otherwise, tentatively remove it, update the GUI
@@ -186,11 +185,11 @@ void MainWindow::removeClass() {
     //Update theCourse
     updateCourse();
 
-    qDebug() << "Remove called!";
     //Remove the class if it exists
-    auto tmp = classesTaken.find(theCourse);
+    auto tmp = classesTaken.find(*theCourse);
     if (tmp != classesTaken.end()) {
-        delete *tmp; classesTaken.erase(tmp);
+        delete tmp->second;
+        classesTaken.erase(tmp);
     }
 
     //Update the GUI
@@ -201,14 +200,52 @@ void MainWindow::addClass() {
 
     //Update theCourse
     updateCourse();
-
-    qDebug() << "Add called!";
-    classesTaken.insert(new QString(*theCourse));
+    classesTaken[*theCourse] = new QString(*theCourse);
     updateClassesTaken();
 }
 
 //Update the GUI's classes take list, and update the rest subsequently
-void MainWindow::updateClassesTaken(uint Highlight) {
+void MainWindow::updateClassesTaken(const uint Highlight) {
+
+    //The string to print
+    QString * toPrint = new QString("");
+
+    //Update course if needed
+    if (Highlight) updateCourse();
+
+    //Set to false only if we need to add a course
+    bool printedTentative = (Highlight != YELLOW);
+
+    qDebug() << "\n\nUpdate:";
+
+    //For each class taken
+    for(auto i : classesTaken) {
+
+        //If have yet to add theCourse
+        if (!printedTentative)
+
+            //If this is the correct place to add theCourse
+            if (*theCourse < i.first) {
+                qDebug() << "- " << (*theCourse) << " >= " << i.first;
+                qDebug() << "len(tC) = " << theCourse->size() << ", and len(i) = " << i.first.size();
+                toPrint->append(*theCourse); *toPrint += '\n';
+                printedTentative = true;
+            }
+
+        //Add i to the string
+        toPrint->append(i.first); *toPrint += '\n';
+    }
+
+    //In case theCourse comes last
+    if (!printedTentative) {
+        toPrint->append(*theCourse); *toPrint += '\n';
+    }
+
+    //Print the string
+    ui->currentCourses->setPlainText(*toPrint);
+
+    //TODO: add highlighting
+
     qDebug() << "Update called!";
     //TODO: CALL OTHER FUNCTIONS HERE
 
