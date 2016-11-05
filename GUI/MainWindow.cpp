@@ -108,6 +108,10 @@ void MainWindow::connectDefaults() {
     QObject::connect(ui->removeClassButton, SIGNAL(pressed()),
                      this, SLOT(removeClass()));
 
+    //Connect the reset button to the reset slot
+    QObject::connect(ui->resetButton, SIGNAL(pressed()),
+                     this, SLOT(reset()));
+
     //Set the defaults
     tentativeToggle(true);
 }
@@ -155,10 +159,13 @@ void MainWindow::tentativeToggle(bool checked) {
 }
 
 //Update the definition of theCourse
-void MainWindow::updateCourse() {
+//Returns true if this course is possible 		TODO: make it check files, numbers, majors, etc
+bool MainWindow::updateCourse() {
     delete theCourse; theCourse = new QString(" ");
     theCourse->prepend(ui->CourseMajor->currentText());
     theCourse->append(ui->CourseNumber->currentText());
+    return (ui->CourseMajor->currentText().size() == 4) &&
+           (ui->CourseNumber->currentText().size() == 4);
 }
 
 //Called if the tentative class selection changed
@@ -175,27 +182,30 @@ void MainWindow::tentativelyAlterClasses(const QString&) {
     else updateClassesTaken(Qt::red);
 }
 
-//Add or remove a class
+//Remove a class
 void MainWindow::removeClass() {
 
-    //Update theCourse
-    updateCourse();
+    //Update theCourse, return if it is invalid
+    if (!updateCourse()) return;
 
     //Remove the class if it exists
     auto tmp = classesTaken.find(*theCourse);
     if (tmp != classesTaken.end()) {
         delete tmp->second;
         classesTaken.erase(tmp);
-    }
 
-    //Update the GUI
-    updateClassesTaken();
+        //Update the GUI
+        updateClassesTaken();
+    }
 }
 
+//Add a class
 void MainWindow::addClass() {
 
-    //Update theCourse
-    updateCourse();
+    //Update theCourse, return if it is invalid
+    if (!updateCourse()) return;
+
+    //Add the class and update the GUI
     classesTaken[*theCourse] = new QString(*theCourse);
     updateClassesTaken();
 }
@@ -205,9 +215,6 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 
     //The string to print
     QString * toPrint = new QString("");
-
-    //Update course if needed
-    if (highlightColor != Qt::black) updateCourse();
 
     //Set to true if we are highlighting nothing
     bool printedTentative = (highlightColor == Qt::black);
@@ -248,4 +255,14 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
     ui->currentCourses->setPlainText(*toPrint);
 
     //TODO: CALL OTHER FUNCTIONS HERE
+}
+
+//Reset classesTaken
+void MainWindow::reset() {
+
+    //Prevent memory leaks
+    for(auto i : classesTaken) delete i.second;
+
+    //Reset
+    classesTaken.clear();
 }

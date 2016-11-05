@@ -23,15 +23,15 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
 
-	//Constructor
+    //Constructor
     explicit MainWindow(QWidget *parent = 0);
 
-	//Destructor
+    //Destructor
     ~MainWindow();
 
-	//Size of the display
-	static const uint Width;
-	static const uint Height;
+    //Size of the display
+    static const uint Width;
+    static const uint Height;
 
 private slots:
 
@@ -46,6 +46,9 @@ private slots:
     void removeClass();
     void addClass();
 
+    //Reset's classesTaken to empty
+    void reset();
+
 private:
 
     //Draw, position, and connect items
@@ -54,7 +57,8 @@ private:
     void drawOutlines();
 
     //Generates course to be added or removed as a string
-    void updateCourse();
+    //This function returns true if a valid course has been entered
+    bool updateCourse();
 
     //Update the classes taken. This will subsequently
     //update everything else when it finishes. The first
@@ -74,8 +78,8 @@ private:
     const int StrokeThickness;
     std::vector<QGraphicsRectItem*> Outlines;
 
-	//Prevent mulitple GUIs
-	static uint GUICount;
+    //Prevent mulitple GUIs
+    static uint GUICount;
 
 };
 
