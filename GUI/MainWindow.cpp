@@ -205,6 +205,9 @@ void MainWindow::addClass() {
     //Update theCourse, return if it is invalid
     if (!updateCourse()) return;
 
+    //If there is nothing to do, return
+    if (classesTaken.find(*theCourse) != classesTaken.end()) return;
+
     //Add the class and update the GUI
     classesTaken[*theCourse] = new QString(*theCourse);
     updateClassesTaken();
