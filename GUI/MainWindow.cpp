@@ -115,6 +115,8 @@ void MainWindow::connectDefaults() {
 //Set the positions of everything
 //void PositionObjects(int,int); //TODO: Implement
 
+
+
 //Called to enable or disable
 //tentative class adding/removing
 void MainWindow::tentativeToggle(bool checked) {
@@ -159,16 +161,11 @@ void MainWindow::updateCourse() {
     theCourse->append(ui->CourseNumber->currentText());
 }
 
-#include <QDebug>
-
-
 //Called if the tentative class selection changed
 void MainWindow::tentativelyAlterClasses(const QString&) {
 
     //Update theCourse
     updateCourse();
-
-    qDebug() << "Hi";
 
     //If the class is new, tentatively add it, update the GUI
     if (classesTaken.find(*theCourse) == classesTaken.end())
@@ -221,18 +218,19 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
         //If have yet to add theCourse
         if (!printedTentative) {
 
-            //If we should add theCourse here, do so
+            //If we should add theCourse
+            //here do so and note that we did so
             if (*theCourse < i.first) {
-                *toPrint += QString("+ ");
-                toPrint->append(*theCourse);
-                *toPrint += '\n';
+                printedTentative = true;
+                *toPrint += QString("+ ") + *theCourse + QString('\n');
             }
 
-            //If we should mark this course to be removed here, do so
-            else if (*theCourse == i.first) *toPrint += QString("- ");
-
-            //Note that the action has been completed
-            printedTentative = true;
+            //If we should mark this course to be
+            //removed here, do so and note that we did so
+            else if (*theCourse == i.first) {
+                *toPrint += QString("- ");
+                printedTentative = true;
+            }
         }
 
         //Add i to the string
@@ -240,11 +238,7 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
     }
 
     //In case theCourse comes last
-    if (!printedTentative) {
-        *toPrint += QString("+ ");
-        toPrint->append(*theCourse);
-        *toPrint += '\n';
-    }
+    if (!printedTentative) *toPrint += QString("+ ") + *theCourse + QString('\n');
 
     //Highlight what was requested
     auto tmp = *theCourse;
@@ -252,7 +246,6 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 
     //Print the string
     ui->currentCourses->setPlainText(*toPrint);
-
 
     //TODO: CALL OTHER FUNCTIONS HERE
 }
