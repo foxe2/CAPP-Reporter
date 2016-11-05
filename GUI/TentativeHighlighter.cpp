@@ -17,15 +17,7 @@ void TentativeHighlighter::setHighlightInfo(const QString& h, const Qt::GlobalCo
     theColor = c;
 }
 
-//Reset variables
-void TentativeHighlighter::reset() {
-    delete highlight;
-    highlight = NULL;
-    theColor = Qt::black;
-}
-
 //Override the highlighting function
-#include <QDebug>
 void TentativeHighlighter::highlightBlock(const QString& text) {
 
     //If there is no reason to call this function, skip it
@@ -34,13 +26,7 @@ void TentativeHighlighter::highlightBlock(const QString& text) {
 	//The current line to be read
 	QString currentLine;
 
-    qDebug() << "The text is: " << text;
-    qDebug() << "Highlight " << highlight << " - " << theColor;
-    qDebug() << "|" << *highlight << "|";
-
-    if (text == *highlight) setFormat(0, text.size(), theColor);
+    //Highlight as needed
+    if (text.mid(2,text.size()-2) == *highlight) setFormat(0, text.size(), theColor);
     else setFormat(0, text.size(), Qt::black);
-
-    //Call reset before returning
-    //reset();
 }

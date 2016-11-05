@@ -13,7 +13,7 @@ public:
     //Destructor
     ~TentativeHighlighter();
 
-    //Set current highlighting information this will call reset
+    //Set current highlighting information
     void setHighlightInfo(const QString& h, const Qt::GlobalColor c);
 
 protected:
@@ -22,9 +22,6 @@ protected:
 	void highlightBlock(const QString& text);
 
 private:
-
-    //Resets theColor and highlight
-    void reset();
 
 	//The string and color to highlight
     const QString * highlight;

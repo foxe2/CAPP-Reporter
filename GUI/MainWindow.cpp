@@ -59,7 +59,6 @@ MainWindow::~MainWindow() {
     auto theScene = ui->graphicsView->scene();
     //Must delete destructed items still
     //Also must delete theCourse and classesTaken[i]
-    //delete higlight too?
 #endif
 }
 
@@ -125,15 +124,15 @@ void MainWindow::tentativeToggle(bool checked) {
 
         //Connect course Major box
         QObject::connect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
-                         this, SLOT(tentativelyAlterClasses(QString)));
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
         QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                         this, SLOT(tentativelyAlterClasses(QString)));
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
 
         //Connect course Number box
         QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                         this, SLOT(tentativelyAlterClasses(QString)));
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
         QObject::connect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
-                         this, SLOT(tentativelyAlterClasses(QString)));
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
     }
 
     //Disable auto update
@@ -141,16 +140,15 @@ void MainWindow::tentativeToggle(bool checked) {
 
         //Disconnect course Major box
         QObject::disconnect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
-                            this, SLOT(tentativelyAddClass(QString)));
-
+                            this, SLOT(tentativelyAlterClasses(const QString&)));
         QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                            this, SLOT(tentativelyAddClass(QString)));
+                            this, SLOT(tentativelyAlterClasses(const QString&)));
 
         //Disconnect course Number box
         QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
-                            this, SLOT(tentativelyAddClass(QString)));
+                            this, SLOT(tentativelyAlterClasses(const QString&)));
         QObject::disconnect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
-                            this, SLOT(tentativelyAddClass(QString)));
+                            this, SLOT(tentativelyAlterClasses(const QString&)));
     }
 }
 
@@ -161,9 +159,7 @@ void MainWindow::updateCourse() {
     theCourse->append(ui->CourseNumber->currentText());
 }
 
-
 #include <QDebug>
-
 
 
 //Called if the tentative class selection changed
@@ -171,6 +167,8 @@ void MainWindow::tentativelyAlterClasses(const QString&) {
 
     //Update theCourse
     updateCourse();
+
+    qDebug() << "Hi";
 
     //If the class is new, tentatively add it, update the GUI
     if (classesTaken.find(*theCourse) == classesTaken.end())
@@ -214,22 +212,28 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
     //Update course if needed
     if (highlightColor != Qt::black) updateCourse();
 
-    //Set to false only if we need to add a course
-    bool printedTentative = (highlightColor != Qt::green);
+    //Set to true if we are highlighting nothing
+    bool printedTentative = (highlightColor == Qt::black);
 
     //For each class taken
     for(auto i : classesTaken) {
 
         //If have yet to add theCourse
-        if (!printedTentative)
+        if (!printedTentative) {
 
-            //If this is the correct place to add theCourse
+            //If we should add theCourse here, do so
             if (*theCourse < i.first) {
-                qDebug() << "- " << (*theCourse) << " >= " << i.first;
-                qDebug() << "len(tC) = " << theCourse->size() << ", and len(i) = " << i.first.size();
-                toPrint->append(*theCourse); *toPrint += '\n';
-                printedTentative = true;
+                *toPrint += QString("+ ");
+                toPrint->append(*theCourse);
+                *toPrint += '\n';
             }
+
+            //If we should mark this course to be removed here, do so
+            else if (*theCourse == i.first) *toPrint += QString("- ");
+
+            //Note that the action has been completed
+            printedTentative = true;
+        }
 
         //Add i to the string
         toPrint->append(i.first); *toPrint += '\n';
@@ -237,7 +241,9 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 
     //In case theCourse comes last
     if (!printedTentative) {
-        toPrint->append(*theCourse); *toPrint += '\n';
+        *toPrint += QString("+ ");
+        toPrint->append(*theCourse);
+        *toPrint += '\n';
     }
 
     //Highlight what was requested
@@ -247,7 +253,6 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
     //Print the string
     ui->currentCourses->setPlainText(*toPrint);
 
-    qDebug() << "Done!\n\n\n";
-    //TODO: CALL OTHER FUNCTIONS HERE
 
+    //TODO: CALL OTHER FUNCTIONS HERE
 }
