@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     ui->centralWidget->setFixedSize(Width, Height);
     ui->graphicsView->setFixedSize(Width, Height);
-    ui->graphicsView->setScene(new QGraphicsScene());
+    ui->graphicsView->setScene(new QGraphicsScene(ui->graphicsView));
     ui->graphicsView->scene()->setSceneRect(0,0,MainWindow::Width,MainWindow::Height);
 
     //Disable scrolling
@@ -51,24 +51,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 //Destructor
 MainWindow::~MainWindow() {
 
-    //UI destructor calls destructor of all items it has
+    //UI destructor calls destructor
+    //of all items it is the parent of
     delete ui;
 
-#if 0 //TODO: figure out if these must be deleted
-    //Record information to delete
-    auto theScene = ui->graphicsView->scene();
     //Must delete destructed items still
-    //Also must delete theCourse and classesTaken[i]
-#endif
+    for(auto i : classesTaken) delete i.second;
+
+    //Reset the string
+    delete theCourse;
 }
+
+
+//------------------------------Drawing GUI------------------------------
+
 
 //Draw the outlines of each section
 void MainWindow::drawOutlines() {
 
     //For organization
-    int CoursesH = Width/5;
-    int MainWidth = Width/2;
-    int TopHeight = Height/8;
+    int coursesH = Width/5;
+    int mainWidth = Width/2;
+    int topHeight = Height/8;
 
     //Create a specialized pen
     QPen p; p.setCosmetic(false);
@@ -79,19 +83,33 @@ void MainWindow::drawOutlines() {
     auto theScene = ui->graphicsView->scene();
 
     //Top major selection
-    Outlines.push_back(theScene->addRect(ST, ST, MainWidth-ST, TopHeight-ST, p));
+    Outlines.push_back(theScene->addRect(ST, ST,
+        mainWidth-ST, topHeight-ST, p));
 
     //Main requirement
-    Outlines.push_back(theScene->addRect(ST, TopHeight, MainWidth-ST, Height-TopHeight-ST, p));
+    Outlines.push_back(theScene->addRect(ST, topHeight,
+        mainWidth-ST, Height-topHeight-ST, p));
 
     //Hass requirement
-    Outlines.push_back(theScene->addRect(MainWidth, ST, MainWidth/2, Height-2*ST, p));
+    Outlines.push_back(theScene->addRect(mainWidth, ST,
+        mainWidth/2, Height-2*ST, p));
 
     //Enter courses
-    Outlines.push_back(theScene->addRect((3*MainWidth)/2, ST, MainWidth/2-ST, CoursesH-ST, p));
+    Outlines.push_back(theScene->addRect((3*mainWidth)/2, ST,
+        mainWidth/2-ST, coursesH-ST, p));
 
     //Courses entered
-    Outlines.push_back(theScene->addRect((3*MainWidth)/2, CoursesH, MainWidth/2-ST, Height-CoursesH-ST, p));
+    Outlines.push_back(theScene->addRect((3*mainWidth)/2, coursesH,
+        mainWidth/2-ST, Height-coursesH-ST, p));
+}
+
+//Set the positions of everything
+void PositionObjects(int coursesH, int mainWidth, int topHeight) {
+
+
+
+
+
 }
 
 void MainWindow::connectDefaults() {
@@ -115,11 +133,6 @@ void MainWindow::connectDefaults() {
     //Set the defaults
     tentativeToggle(true);
 }
-
-//Set the positions of everything
-//void PositionObjects(int,int); //TODO: Implement
-
-
 
 //Called to enable or disable
 //tentative class adding/removing
@@ -158,6 +171,10 @@ void MainWindow::tentativeToggle(bool checked) {
     }
 }
 
+
+//----------------------Setting up Signals and slots---------------------
+
+
 //Update the definition of theCourse
 //Returns true if this course is possible 		TODO: make it check files, numbers, majors, etc
 bool MainWindow::updateCourse() {
@@ -167,6 +184,10 @@ bool MainWindow::updateCourse() {
     return (ui->CourseMajor->currentText().size() == 4) &&
            (ui->CourseNumber->currentText().size() == 4);
 }
+
+
+//-----------------------Altering course selection----------------------
+
 
 //Called if the tentative class selection changed
 void MainWindow::tentativelyAlterClasses(const QString&) {
@@ -213,6 +234,20 @@ void MainWindow::addClass() {
     updateClassesTaken();
 }
 
+//Reset classesTaken
+void MainWindow::reset() {
+
+    //Prevent memory leaks
+    for(auto i : classesTaken) delete i.second;
+
+    //Reset
+    classesTaken.clear();
+}
+
+
+//-------------------------Altering GUI's output------------------------
+
+
 //Update the GUI's classes take list, and update the rest subsequently
 void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 
@@ -258,14 +293,4 @@ void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
     ui->currentCourses->setPlainText(*toPrint);
 
     //TODO: CALL OTHER FUNCTIONS HERE
-}
-
-//Reset classesTaken
-void MainWindow::reset() {
-
-    //Prevent memory leaks
-    for(auto i : classesTaken) delete i.second;
-
-    //Reset
-    classesTaken.clear();
 }

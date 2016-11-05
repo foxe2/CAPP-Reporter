@@ -61,12 +61,9 @@ private:
     bool updateCourse();
 
     //Update the classes taken. This will subsequently
-    //update everything else when it finishes. The first
-    //determines whether or not this was a tentative update
-    //or a non-tentative. If it does not equal 0 then theCourse
-    //is highlighted the color specified. The values to be passed
-    //in as an argument shoud only be one of the static color uints below.
-    void updateClassesTaken(const Qt::GlobalColor Highlight = Qt::black);
+    //update everything else when it finishes. If an argument
+    //is passed, this function will highlight theCourse the color passed
+    void updateClassesTaken(const Qt::GlobalColor = Qt::black);
 
     //Used for current courses
     std::map<const QString, const QString*> classesTaken;
