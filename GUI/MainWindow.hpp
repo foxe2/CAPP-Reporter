@@ -3,14 +3,16 @@
 
 #include "main.hpp"
 
+#include <map>
+#include <vector>
 #include <QString>
 #include <QMainWindow>
 #include <QGraphicsRectItem>
+#include <QSyntaxHighlighter>
 
-#include <map>
-#include <vector>
 
 //Forward declarations
+class TentativeHighlighter;
 class SmartScene;
 
 //For ease
@@ -60,21 +62,20 @@ private:
     //or a non-tentative. If it does not equal 0 then theCourse
     //is highlighted the color specified. The values to be passed
     //in as an argument shoud only be one of the static color uints below.
-    void updateClassesTaken(const uint Highlight = 0);
+    void updateClassesTaken(const Qt::GlobalColor Highlight = Qt::black);
 
-    //Representation
-    Ui::MainWindow *ui;
-    QString * theCourse;
-    const int StrokeThickness;
+    //Used for current courses
     std::map<const QString, const QString*> classesTaken;
+    TentativeHighlighter * highlighter;
+    QString * theCourse;
+
+    //GUI representation
+    Ui::MainWindow *ui;
+    const int StrokeThickness;
     std::vector<QGraphicsRectItem*> Outlines;
 
 	//Prevent mulitple GUIs
 	static uint GUICount;
-
-    //Static color vairables to be used as an enum
-    static const uint YELLOW;
-    static const uint RED;
 
 };
 

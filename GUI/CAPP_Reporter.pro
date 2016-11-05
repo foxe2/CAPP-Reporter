@@ -14,10 +14,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    SmartScene.cpp
+    TentativeHighlighter.cpp
 
 HEADERS  += MainWindow.hpp \
     main.hpp \
-    SmartScene.hpp
+    TentativeHighlighter.hpp
 
 FORMS    += mainwindow.ui

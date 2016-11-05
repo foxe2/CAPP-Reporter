@@ -1,28 +1,46 @@
-#include <QSyntaxHighlighter>
+#include "TentativeHighlighter.hpp"
+
 
 //Constructor
-TentativeHighlighter::TentativeHighlighter(const QString * h) : highlight(h), 
-	theColor(color==YELLOW ? Qt::yellow : Qt::red) {}
+TentativeHighlighter::TentativeHighlighter(QTextEdit * parent)
+    : QSyntaxHighlighter(parent) {
+    theColor = Qt::black;
+    highlight = NULL;
+}
+
+//Destructor
+TentativeHighlighter::~TentativeHighlighter() { delete highlight; }
+
+//Set current highlighting information
+void TentativeHighlighter::setHighlightInfo(const QString& h, const Qt::GlobalColor c) {
+    highlight = new QString(h);
+    theColor = c;
+}
+
+//Reset variables
+void TentativeHighlighter::reset() {
+    delete highlight;
+    highlight = NULL;
+    theColor = Qt::black;
+}
 
 //Override the highlighting function
-void TentativeHighlighter::highlightBlock(const QString& text); {
+#include <QDebug>
+void TentativeHighlighter::highlightBlock(const QString& text) {
+
+    //If there is no reason to call this function, skip it
+    if (!highlight) return;
 
 	//The current line to be read
 	QString currentLine;
 
-	//For each character in the text
-	for(int i = 0; i < text.size(); i++) {
+    qDebug() << "The text is: " << text;
+    qDebug() << "Highlight " << highlight << " - " << theColor;
+    qDebug() << "|" << *highlight << "|";
 
-		//If we are not at the newline charcter
-		//then add it to the currentLine string
-		if (text.at(i) != '\n') currentLine += text.at(i);
+    if (text == *highlight) setFormat(0, text.size(), theColor);
+    else setFormat(0, text.size(), Qt::black);
 
-		//Otherwise, check if this line should
-		//be highlighted. If so, do so then return
-		//line should be highlighted
-		else if (currentLine == *highlight) {
-			setFormat(i-currentLine.size(), currentLine.size()+1, theColor);
-			return;
-		}
-	}
+    //Call reset before returning
+    //reset();
 }

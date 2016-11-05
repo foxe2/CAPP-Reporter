@@ -1,14 +1,10 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
-#include "SmartScene.hpp"
+#include "TentativeHighlighter.hpp"
 
 //Size of the scene
 const uint MainWindow::Width = 800;
 const uint MainWindow::Height = 600;
-
-//Define color variables
-const uint MainWindow::RED = 1;
-const uint MainWindow::YELLOW = 2;
 
 //Default number of GUIs
 uint MainWindow::GUICount = 0;
@@ -29,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     ui->centralWidget->setFixedSize(Width, Height);
     ui->graphicsView->setFixedSize(Width, Height);
-    ui->graphicsView->setScene(new SmartScene());
+    ui->graphicsView->setScene(new QGraphicsScene());
+    ui->graphicsView->scene()->setSceneRect(0,0,MainWindow::Width,MainWindow::Height);
 
     //Disable scrolling
     ui->graphicsView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
@@ -43,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     //Conect everything up
     connectDefaults();
+
+    //Create a custom syntax highlighter
+    highlighter = new TentativeHighlighter(ui->currentCourses);
 
     //Draw the GUI
     updateClassesTaken();
@@ -59,6 +59,7 @@ MainWindow::~MainWindow() {
     auto theScene = ui->graphicsView->scene();
     //Must delete destructed items still
     //Also must delete theCourse and classesTaken[i]
+    //delete higlight too?
 #endif
 }
 
@@ -173,10 +174,10 @@ void MainWindow::tentativelyAlterClasses(const QString&) {
 
     //If the class is new, tentatively add it, update the GUI
     if (classesTaken.find(*theCourse) == classesTaken.end())
-        updateClassesTaken(YELLOW);
+        updateClassesTaken(Qt::green);
 
     //Otherwise, tentatively remove it, update the GUI
-    else updateClassesTaken(RED);
+    else updateClassesTaken(Qt::red);
 }
 
 //Add or remove a class
@@ -205,18 +206,16 @@ void MainWindow::addClass() {
 }
 
 //Update the GUI's classes take list, and update the rest subsequently
-void MainWindow::updateClassesTaken(const uint Highlight) {
+void MainWindow::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 
     //The string to print
     QString * toPrint = new QString("");
 
     //Update course if needed
-    if (Highlight) updateCourse();
+    if (highlightColor != Qt::black) updateCourse();
 
     //Set to false only if we need to add a course
-    bool printedTentative = (Highlight != YELLOW);
-
-    qDebug() << "\n\nUpdate:";
+    bool printedTentative = (highlightColor != Qt::green);
 
     //For each class taken
     for(auto i : classesTaken) {
@@ -241,12 +240,14 @@ void MainWindow::updateClassesTaken(const uint Highlight) {
         toPrint->append(*theCourse); *toPrint += '\n';
     }
 
+    //Highlight what was requested
+    auto tmp = *theCourse;
+    highlighter->setHighlightInfo(tmp, highlightColor);
+
     //Print the string
     ui->currentCourses->setPlainText(*toPrint);
 
-    //TODO: add highlighting
-
-    qDebug() << "Update called!";
+    qDebug() << "Done!\n\n\n";
     //TODO: CALL OTHER FUNCTIONS HERE
 
 }
