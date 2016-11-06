@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     //Draw the GUI
     updateClassesTaken();
+    ui->graphicsView->lower();
 }
 
 //Destructor
