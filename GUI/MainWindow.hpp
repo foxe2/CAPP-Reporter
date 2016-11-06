@@ -52,7 +52,8 @@ private slots:
 private:
 
     //Draw, position, and connect items
-    void PositionObjects(int,int);
+    //Notes, drawOutliens calls positionObjects
+    void positionObjects(int,int,int);
     void connectDefaults();
     void drawOutlines();
 

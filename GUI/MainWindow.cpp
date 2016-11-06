@@ -10,6 +10,9 @@ const uint MainWindow::Height = 600;
 uint MainWindow::GUICount = 0;
 
 
+//--------------------------Constructor/Destructor-----------------------
+
+
 //Constructor
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         ui(new Ui::MainWindow), StrokeThickness(4) {
@@ -33,9 +36,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->graphicsView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
 
     //Disable autocomplete for course number box
-    ui->CourseNumber->setCompleter(NULL);
+    ui->courseNumber->setCompleter(NULL);
 
-    //Draw outlines
+    //Draw and position the GUI's items
     drawOutlines();
 
     //Conect everything up
@@ -88,28 +91,56 @@ void MainWindow::drawOutlines() {
 
     //Main requirement
     Outlines.push_back(theScene->addRect(ST, topHeight,
-        mainWidth-ST, Height-topHeight-ST, p));
+        mainWidth-ST, Height-topHeight-2*ST, p));
 
     //Hass requirement
     Outlines.push_back(theScene->addRect(mainWidth, ST,
-        mainWidth/2, Height-2*ST, p));
+        mainWidth/2, Height-3*ST, p));
 
     //Enter courses
     Outlines.push_back(theScene->addRect((3*mainWidth)/2, ST,
-        mainWidth/2-ST, coursesH-ST, p));
+        mainWidth/2-2*ST, coursesH-ST, p));
 
     //Courses entered
     Outlines.push_back(theScene->addRect((3*mainWidth)/2, coursesH,
-        mainWidth/2-ST, Height-coursesH-ST, p));
+        mainWidth/2-2*ST, Height-coursesH-2*ST, p));
+
+    //Position the objects in the outlines
+    positionObjects(coursesH, mainWidth, topHeight);
 }
 
+#include <QDebug>
 //Set the positions of everything
-void PositionObjects(int coursesH, int mainWidth, int topHeight) {
+void MainWindow::positionObjects(int coursesH, int mainWidth, int topHeight) {
 
+    //Distance from stroke constants
+    const int xDFS = 1 + /*The distance ->*/ 5;
+    const int yDFS = 1 + /*The distance ->*/ 5;
 
+    //For readability
+    int x, y, x1, y1;
+    const int ST = StrokeThickness/2;
 
+    //Position the main display
+    x = 2*ST + xDFS;
+    y = topHeight + yDFS + ST;
+    x1 = mainWidth - x - xDFS;
+    y1 = Height - y - yDFS - 2*ST;
+    ui->mainText->setGeometry(QRect(x,y,x1,y1));
 
+    //Position the hass display
+    x = mainWidth + ST + xDFS;
+    y = 0 + yDFS + 2*ST;
+    x1 = 3*mainWidth/2 - x - xDFS;
+    y1 = Height - y - yDFS - 2*ST;
+    ui->hassText->setGeometry(QRect(x,y,x1,y1));
 
+    //Position the current courses display
+    x = 3*mainWidth/2 + ST + xDFS;
+    y = coursesH + ST + yDFS;
+    x1 = Width - x - xDFS - 2*ST;
+    y1 = Height - y - yDFS - 2*ST;
+    ui->currentCourses->setGeometry(QRect(x,y,x1,y1));
 }
 
 void MainWindow::connectDefaults() {
@@ -142,15 +173,15 @@ void MainWindow::tentativeToggle(bool checked) {
     if (checked) {
 
         //Connect course Major box
-        QObject::connect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
+        QObject::connect(ui->courseMajor, SIGNAL(currentTextChanged(QString)),
                          this, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+        QObject::connect(ui->courseNumber, SIGNAL(currentTextChanged(QString)),
                          this, SLOT(tentativelyAlterClasses(const QString&)));
 
         //Connect course Number box
-        QObject::connect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+        QObject::connect(ui->courseNumber, SIGNAL(currentTextChanged(QString)),
                          this, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::connect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
+        QObject::connect(ui->courseNumber, SIGNAL(editTextChanged(QString)),
                          this, SLOT(tentativelyAlterClasses(const QString&)));
     }
 
@@ -158,15 +189,15 @@ void MainWindow::tentativeToggle(bool checked) {
     else {
 
         //Disconnect course Major box
-        QObject::disconnect(ui->CourseMajor, SIGNAL(currentTextChanged(QString)),
+        QObject::disconnect(ui->courseMajor, SIGNAL(currentTextChanged(QString)),
                             this, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+        QObject::disconnect(ui->courseNumber, SIGNAL(currentTextChanged(QString)),
                             this, SLOT(tentativelyAlterClasses(const QString&)));
 
         //Disconnect course Number box
-        QObject::disconnect(ui->CourseNumber, SIGNAL(currentTextChanged(QString)),
+        QObject::disconnect(ui->courseNumber, SIGNAL(currentTextChanged(QString)),
                             this, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::disconnect(ui->CourseNumber, SIGNAL(editTextChanged(QString)),
+        QObject::disconnect(ui->courseNumber, SIGNAL(editTextChanged(QString)),
                             this, SLOT(tentativelyAlterClasses(const QString&)));
     }
 }
@@ -179,10 +210,10 @@ void MainWindow::tentativeToggle(bool checked) {
 //Returns true if this course is possible 		TODO: make it check files, numbers, majors, etc
 bool MainWindow::updateCourse() {
     delete theCourse; theCourse = new QString(" ");
-    theCourse->prepend(ui->CourseMajor->currentText());
-    theCourse->append(ui->CourseNumber->currentText());
-    return (ui->CourseMajor->currentText().size() == 4) &&
-           (ui->CourseNumber->currentText().size() == 4);
+    theCourse->prepend(ui->courseMajor->currentText());
+    theCourse->append(ui->courseNumber->currentText());
+    return (ui->courseMajor->currentText().size() == 4) &&
+           (ui->courseNumber->currentText().size() == 4);
 }
 
 

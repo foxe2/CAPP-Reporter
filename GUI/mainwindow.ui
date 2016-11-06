@@ -32,7 +32,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QComboBox" name="PrimaryMajor">
+   <widget class="QComboBox" name="primaryMajor">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -50,7 +50,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QComboBox" name="SecondaryMajor">
+   <widget class="QComboBox" name="secondaryMajor">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -71,7 +71,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QTextEdit" name="MainText">
+   <widget class="QTextEdit" name="mainText">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -104,7 +104,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="HASSText">
+   <widget class="QTextEdit" name="hassText">
     <property name="geometry">
      <rect>
       <x>410</x>
@@ -118,40 +118,6 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="readOnly">
      <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="CourseMajor">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>30</y>
-      <width>104</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="editable">
-     <bool>true</bool>
-    </property>
-    <item>
-     <property name="text">
-      <string>CSCI</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QComboBox" name="CourseNumber">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>70</y>
-      <width>104</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="editable">
-     <bool>true</bool>
-    </property>
-    <property name="minimumContentsLength">
-     <number>0</number>
     </property>
    </widget>
    <widget class="QTextEdit" name="currentCourses">
@@ -202,91 +168,107 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="addClassButton">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>100</y>
-      <width>81</width>
-      <height>32</height>
+      <y>30</y>
+      <width>165</width>
+      <height>121</height>
      </rect>
     </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::StrongFocus</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>Add</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-    <property name="autoRepeat">
-     <bool>false</bool>
-    </property>
-    <property name="autoExclusive">
-     <bool>false</bool>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="removeClassButton">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>100</y>
-      <width>81</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::StrongFocus</enum>
-    </property>
-    <property name="text">
-     <string>Remove</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="toggleTentaive">
-    <property name="geometry">
-     <rect>
-      <x>620</x>
-      <y>130</y>
-      <width>141</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Update as you type</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-    <property name="tristate">
-     <bool>false</bool>
-    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" colspan="2">
+      <widget class="QComboBox" name="courseMajor">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>CSCI</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QComboBox" name="courseNumber">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="minimumContentsLength">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="addClassButton">
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="removeClassButton">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QCheckBox" name="toggleTentaive">
+       <property name="text">
+        <string>Update as you type</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
    <zorder>graphicsView</zorder>
-   <zorder>PrimaryMajor</zorder>
-   <zorder>SecondaryMajor</zorder>
-   <zorder>MainText</zorder>
-   <zorder>HASSText</zorder>
-   <zorder>CourseMajor</zorder>
-   <zorder>CourseNumber</zorder>
+   <zorder>primaryMajor</zorder>
+   <zorder>secondaryMajor</zorder>
+   <zorder>mainText</zorder>
+   <zorder>hassText</zorder>
+   <zorder>courseMajor</zorder>
+   <zorder>courseNumber</zorder>
    <zorder>currentCourses</zorder>
    <zorder>resetButton</zorder>
    <zorder>addClassButton</zorder>
