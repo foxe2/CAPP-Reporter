@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     //Draw the GUI
     updateClassesTaken();
     ui->graphicsView->lower();
+    setMaximumSize(this->size()); //TODO: remove need for this
 }
 
 //Destructor

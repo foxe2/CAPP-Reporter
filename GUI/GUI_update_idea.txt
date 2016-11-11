@@ -1,0 +1,11 @@
+In the future
+Same layout, use layout manager for resizing
+menubar and tool bar for save, open, etc.
+	Open -> load a file containing the courses int
+Use widigtlist (maybe) for better classes taken list
+	This allows highlighting!
+	Perheaps a widgittree?
+	Allow clicking on this
+Progress bar to show how close
+Somehow pop up messages, perhaps not pop up but display for sure!
+

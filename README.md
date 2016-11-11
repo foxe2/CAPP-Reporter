@@ -2,7 +2,7 @@
 
 Are you an RPI **dual** major? Have you ever noticed that if you try to view your CAPP report on SIS you only get the CAPP report for your *primary* major? We have, and that is why we are creating CAPP Reporter!
 
-This application is being made to allow single, double, and even dual majors to get an *accurate* CAPP report! As you enter the courses you have taken, this *open source* application will allow you to view what courses you must take to graduate! No more needlessly worrying and fussing that you may have made a mistake while trying to discover what you need by hand!
+This application is being made to allow single, and even dual majors to get an *accurate* CAPP report! As you enter the courses you have taken, this *open source* application will allow you to view what courses you must take to graduate! No more needlessly worrying and fussing that you may have made a mistake while trying to discover what you need by hand!
 
 This application will have a user friendly GUI and should update the courses that need to be taken as you type. Furthermore, since you enter the courses manually you can enter the courses you will have taken by the end of next semester if you wish!
 
