@@ -129,7 +129,7 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>610</x>
@@ -223,7 +223,7 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -262,18 +262,27 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="readFromFile">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>560</y>
+      <width>101</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choose File</string>
+    </property>
+   </widget>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
    <zorder>graphicsView</zorder>
-   <zorder>primaryMajor</zorder>
-   <zorder>secondaryMajor</zorder>
    <zorder>mainText</zorder>
    <zorder>hassText</zorder>
-   <zorder>courseMajor</zorder>
-   <zorder>courseNumber</zorder>
    <zorder>currentCourses</zorder>
    <zorder>resetButton</zorder>
-   <zorder>addClassButton</zorder>
-   <zorder>removeClassButton</zorder>
-   <zorder>toggleTentaive</zorder>
+   <zorder>readFromFile</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
