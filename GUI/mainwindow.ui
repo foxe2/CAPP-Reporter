@@ -110,39 +110,65 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="resetButton">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>710</x>
+      <x>600</x>
       <y>560</y>
-      <width>81</width>
-      <height>32</height>
+      <width>195</width>
+      <height>41</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Reset</string>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="readFromFile">
+       <property name="text">
+        <string>Choose File</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetButton">
+       <property name="text">
+        <string>Reset</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>30</y>
-      <width>165</width>
-      <height>121</height>
+      <x>20</x>
+      <y>10</y>
+      <width>361</width>
+      <height>61</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0" colspan="2">
-      <widget class="QComboBox" name="courseMajor">
-       <property name="editable">
-        <bool>true</bool>
+      <widget class="QLabel" name="chooseMajorLabel">
+       <property name="text">
+        <string>Choose your major/majors:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="indent">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QComboBox" name="primaryMajor">
+       <property name="mouseTracking">
+        <bool>false</bool>
        </property>
        <item>
         <property name="text">
@@ -151,17 +177,50 @@ p, li { white-space: pre-wrap; }
        </item>
       </widget>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QComboBox" name="courseNumber">
+     <item row="1" column="1">
+      <widget class="QComboBox" name="secondaryMajor">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
        <property name="editable">
         <bool>true</bool>
        </property>
-       <property name="minimumContentsLength">
-        <number>0</number>
+       <item>
+        <property name="text">
+         <string>None</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>0</y>
+      <width>181</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="coursesTakenLabel">
+       <property name="text">
+        <string>Courses taken:</string>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QPushButton" name="addClassButton">
        <property name="mouseTracking">
         <bool>false</bool>
@@ -198,17 +257,17 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="removeClassButton">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
+     <item row="2" column="0" colspan="2">
+      <widget class="QComboBox" name="courseNumber">
+       <property name="editable">
+        <bool>true</bool>
        </property>
-       <property name="text">
-        <string>Remove</string>
+       <property name="minimumContentsLength">
+        <number>0</number>
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="2">
+     <item row="4" column="0" colspan="2">
       <widget class="QCheckBox" name="toggleTentaive">
        <property name="text">
         <string>Update as you type</string>
@@ -221,22 +280,20 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>371</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QComboBox" name="primaryMajor">
-       <property name="mouseTracking">
-        <bool>false</bool>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="removeClassButton">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QComboBox" name="courseMajor">
+       <property name="editable">
+        <bool>true</bool>
        </property>
        <item>
         <property name="text">
@@ -245,35 +302,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </widget>
      </item>
-     <item>
-      <widget class="QComboBox" name="secondaryMajor">
-       <property name="focusPolicy">
-        <enum>Qt::TabFocus</enum>
-       </property>
-       <property name="editable">
-        <bool>true</bool>
-       </property>
-       <item>
-        <property name="text">
-         <string>None</string>
-        </property>
-       </item>
-      </widget>
-     </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="readFromFile">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>560</y>
-      <width>101</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choose File</string>
-    </property>
    </widget>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
@@ -283,6 +312,9 @@ p, li { white-space: pre-wrap; }
    <zorder>currentCourses</zorder>
    <zorder>resetButton</zorder>
    <zorder>readFromFile</zorder>
+   <zorder>chooseMajorLabel</zorder>
+   <zorder>coursesTakenLabel</zorder>
+   <zorder>toggleTentaive</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

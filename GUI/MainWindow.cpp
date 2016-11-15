@@ -10,6 +10,11 @@ const uint MainWindow::Height = 600;
 uint MainWindow::GUICount = 0;
 
 
+//TODO: replace the following
+inline bool verifyCourse(const QString m, const QString n) {
+    return m.size() == 4 && n.size() == 4;
+}
+
 //--------------------------Constructor/Destructor-----------------------
 
 
@@ -141,7 +146,7 @@ void MainWindow::positionObjects(int coursesH, int mainWidth, int topHeight) {
     x = 3*mainWidth/2 + ST + xDFS;
     y = coursesH + ST + yDFS;
     x1 = Width - x - xDFS - 2*ST;
-    y1 = Height - y - yDFS - 2*ST;
+    y1 = Height - y - yDFS - 2*ST - /* Bottom buttons */ 25;
     ui->currentCourses->setGeometry(QRect(x,y,x1,y1));
 }
 
@@ -214,8 +219,8 @@ bool MainWindow::updateCourse() {
     delete theCourse; theCourse = new QString(" ");
     theCourse->prepend(ui->courseMajor->currentText());
     theCourse->append(ui->courseNumber->currentText());
-    return (ui->courseMajor->currentText().size() == 4) &&
-           (ui->courseNumber->currentText().size() == 4);
+    return verifyCourse(ui->courseMajor->currentText(),
+                        ui->courseNumber->currentText());
 }
 
 
