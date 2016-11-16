@@ -110,7 +110,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -124,6 +124,9 @@ p, li { white-space: pre-wrap; }
       <widget class="QPushButton" name="readFromFile">
        <property name="text">
         <string>Choose File</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -141,8 +144,10 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
     </layout>
+    <zorder>resetButton</zorder>
+    <zorder>readFromFile</zorder>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -194,7 +199,7 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>610</x>
@@ -306,15 +311,11 @@ p, li { white-space: pre-wrap; }
    </widget>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
    <zorder>graphicsView</zorder>
    <zorder>mainText</zorder>
    <zorder>hassText</zorder>
    <zorder>currentCourses</zorder>
-   <zorder>resetButton</zorder>
-   <zorder>readFromFile</zorder>
-   <zorder>chooseMajorLabel</zorder>
-   <zorder>coursesTakenLabel</zorder>
-   <zorder>toggleTentaive</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -327,8 +328,8 @@ p, li { white-space: pre-wrap; }
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>360</y>
+     <x>794</x>
+     <y>564</y>
     </hint>
     <hint type="destinationlabel">
      <x>648</x>

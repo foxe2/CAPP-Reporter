@@ -49,6 +49,9 @@ private slots:
     //Reset's classesTaken to empty
     void reset();
 
+    //Read classes from a file
+    void readFromFile();
+
 private:
 
     //Draw, position, and connect items

@@ -2,6 +2,12 @@
 #include "ui_mainwindow.h"
 #include "TentativeHighlighter.hpp"
 
+#include <fstream>
+#include <sstream>
+
+#include <QFileDialog>
+#include <QStandardPaths>
+
 //Size of the scene
 const uint MainWindow::Width = 800;
 const uint MainWindow::Height = 600;
@@ -116,7 +122,6 @@ void MainWindow::drawOutlines() {
     positionObjects(coursesH, mainWidth, topHeight);
 }
 
-#include <QDebug>
 //Set the positions of everything
 void MainWindow::positionObjects(int coursesH, int mainWidth, int topHeight) {
 
@@ -157,16 +162,20 @@ void MainWindow::connectDefaults() {
                      this, SLOT(tentativeToggle(bool)));
 
     //Connect add class button to the addClass function
-    QObject::connect(ui->addClassButton, SIGNAL(pressed()),
+    QObject::connect(ui->addClassButton, SIGNAL(clicked()),
                      this, SLOT(addClass()));
 
     //Connect remove class button to the removeClass function
-    QObject::connect(ui->removeClassButton, SIGNAL(pressed()),
+    QObject::connect(ui->removeClassButton, SIGNAL(clicked()),
                      this, SLOT(removeClass()));
 
     //Connect the reset button to the reset slot
-    QObject::connect(ui->resetButton, SIGNAL(pressed()),
+    QObject::connect(ui->resetButton, SIGNAL(clicked()),
                      this, SLOT(reset()));
+
+    //Connect read from file button
+    QObject::connect(ui->readFromFile, SIGNAL(clicked()),
+                     this, SLOT(readFromFile()));
 
     //Set the defaults
     tentativeToggle(true);
@@ -272,14 +281,105 @@ void MainWindow::addClass() {
     updateClassesTaken();
 }
 
+//Clear the map passed in, preventing memory leaks
+inline void clearMap(std::map<const QString, const QString*>& a) {
+    for(auto i : a) delete i.second;
+    a.clear();
+}
+
 //Reset classesTaken
 void MainWindow::reset() {
 
-    //Prevent memory leaks
-    for(auto i : classesTaken) delete i.second;
+    //Clear classesTaken
+    clearMap(classesTaken);
+    updateClassesTaken();
+}
 
-    //Reset
-    classesTaken.clear();
+#include <QDebug>
+
+//Returns true if the string contains
+//solely whitespace or is empty, false otherwise
+inline bool emptyString(const std::string& s) {
+    for (uint i = 0; i < s.size(); i++)
+        if (!isspace(s[i])) return false;
+    return !s.size();
+}
+
+//If the button was clicked
+void MainWindow::readFromFile() {
+
+    qDebug() << "Clicked";
+    ui->readFromFile->setEnabled(false);
+
+
+    //Have the user choose a file to read from
+    QString inFileName = QFileDialog::getOpenFileName(NULL, tr("Choose the file to read from:"),
+                                 QStandardPaths::writableLocation(QStandardPaths::DesktopLocation),
+                                 "All files (*);;Text File (*.txt);;Simple Text File (*.stf)");
+
+    ui->readFromFile->setEnabled(true);
+
+
+    //Do nothing if the user clicked cancel
+    if (inFileName == "") return;
+
+    //Open the file if possible
+    std::ifstream inFile(inFileName.toLatin1().constData());
+
+    //If the file failed to open
+    if (inFile.fail()) {
+
+        //TODO: implement
+
+        return;
+    }
+
+    //Create a temporary map to hold the file contents
+    //The reason we do this is in case there is an error
+    //in reading in the file contents, classesTaken isn't affected
+    std::map<const QString, const QString*> tmpCourses;
+
+    //Read in each course
+    std::string line, course, number;
+    while (std::getline(inFile, line)) {
+
+        //Ignore whitespace lines
+        if (emptyString(line)) continue;
+
+        //Prep to parse the line
+        std::istringstream nextCourse(line);
+
+        //If there was an error parsing
+        if (!(nextCourse >> course >> number)) {
+
+            //TODO: implement
+
+            //Prevent leaks
+            clearMap(tmpCourses);
+            return;
+        }
+
+        //If the course is not valid
+        if (!verifyCourse(QString(course.c_str()), QString(number.c_str()))) {
+
+            //TODO: implement
+
+            //Prevent leaks and return
+            clearMap(tmpCourses);
+            return;
+        }
+
+        //If the course is valid, add it to the map
+        QString * tmp = new QString(line.c_str());
+        tmpCourses[*tmp] = tmp;
+    }
+
+    //Clear classes taken
+    reset();
+
+    //Populate classes taken with the new classes
+    for(auto i : tmpCourses) classesTaken[i.first] = i.second;
+    updateClassesTaken();
 }
 
 
