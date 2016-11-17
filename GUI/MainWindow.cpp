@@ -155,6 +155,11 @@ void MainWindow::positionObjects(int coursesH, int mainWidth, int topHeight) {
     ui->currentCourses->setGeometry(QRect(x,y,x1,y1));
 }
 
+
+//----------------------Setting up Signals and slots---------------------
+
+
+//Connect signal and slot defaults
 void MainWindow::connectDefaults() {
 
     //Connect the toggle switch to the toggle slot
@@ -219,7 +224,7 @@ void MainWindow::tentativeToggle(bool checked) {
 }
 
 
-//----------------------Setting up Signals and slots---------------------
+//-----------------------Altering course selection----------------------
 
 
 //Update the definition of theCourse
@@ -231,10 +236,6 @@ bool MainWindow::updateCourse() {
     return verifyCourse(ui->courseMajor->currentText(),
                         ui->courseNumber->currentText());
 }
-
-
-//-----------------------Altering course selection----------------------
-
 
 //Called if the tentative class selection changed
 void MainWindow::tentativelyAlterClasses(const QString&) {
@@ -295,8 +296,6 @@ void MainWindow::reset() {
     updateClassesTaken();
 }
 
-#include <QDebug>
-
 //Returns true if the string contains
 //solely whitespace or is empty, false otherwise
 inline bool emptyString(const std::string& s) {
@@ -305,18 +304,18 @@ inline bool emptyString(const std::string& s) {
     return !s.size();
 }
 
-//If the button was clicked
+//If the user wishes to input classes via a file
 void MainWindow::readFromFile() {
 
-    qDebug() << "Clicked";
+    //Prevent clicking readFromFile while choosing a file
     ui->readFromFile->setEnabled(false);
-
 
     //Have the user choose a file to read from
     QString inFileName = QFileDialog::getOpenFileName(NULL, tr("Choose the file to read from:"),
                                  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation),
                                  "All files (*);;Text File (*.txt);;Simple Text File (*.stf)");
 
+    //Re-enable the button
     ui->readFromFile->setEnabled(true);
 
 
