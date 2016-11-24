@@ -1,0 +1,12 @@
+TODO for GUI 1.0:
+	• CombosBox's should read from Database for default possibilities
+	• Major refactoring with the addition classes where appropriate
+	• Finish placing everything based on relative coordinates to allow for re-sizing.
+
+GUI 2.0 ideas:
+	• Click to remove course from already taken
+	• verifyCourse should work by checking if the course is valid against some database. Consult YACS perhaps?
+	• Enable hover over for 'tool tip' for course info
+	• Enhance read in from file button:
+		• Allow 'add'/'remove' contents of the file to the current classes taken list
+
