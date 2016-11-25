@@ -8,12 +8,6 @@
 #include <QString>
 #include <QMainWindow>
 #include <QGraphicsRectItem>
-#include <QSyntaxHighlighter>
-
-
-//Forward declarations
-class TentativeHighlighter;
-class SmartScene;
 
 //For ease
 namespace Ui { class MainWindow; }
@@ -35,22 +29,8 @@ public:
 
 private slots:
 
-    //Called to enable or disable
-    //tentative class adding/removing
-    void tentativeToggle(bool checked);
-
-    //Tentatively add or remove a class as needed
-    void tentativelyAlterClasses(const QString&);
-
-    //Add or remove a class
-    void removeClass();
-    void addClass();
-
-    //Reset's classesTaken to empty
+	//Reset the application
     void reset();
-
-    //Read classes from a file
-    void readFromFile();
 
 private:
 
@@ -60,19 +40,8 @@ private:
     void connectDefaults();
     void drawOutlines();
 
-    //Generates course to be added or removed as a string
-    //This function returns true if a valid course has been entered
-    bool updateCourse();
-
-    //Update the classes taken. This will subsequently
-    //update everything else when it finishes. If an argument
-    //is passed, this function will highlight theCourse the color passed
-    void updateClassesTaken(const Qt::GlobalColor = Qt::black);
-
-    //Used for current courses
-    std::map<const QString, const QString*> classesTaken;
-    TentativeHighlighter * highlighter;
-    QString * theCourse;
+	//Used to select courses
+	courseSelector * courses;
 
     //GUI representation
     Ui::MainWindow *ui;
@@ -81,7 +50,6 @@ private:
 
     //Prevent mulitple GUIs
     static uint GUICount;
-
 };
 
 #endif // MAINWINDOW_HPP
