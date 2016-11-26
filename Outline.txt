@@ -46,9 +46,9 @@ The language the algorithm will read:
 		3:C:A
 		4:C:*
 
-	The last keyword allowed is //. This is a comment indicator. Anything written after it up until the next new line will be ignored.
+	The last keyword allowed is #. This is a comment indicator. Anything written after it up until the next new line will be ignored.
 	For example, the following is valid:
-		CSCI-1100//This is all ok to type. Note however, there may be NO whitespace before the //. That is important to remember!
+		CSCI-1100#This is all ok to type. Note however, there may be NO whitespace before the #. That is important to remember!
 
 
 The GUI sketch, how it will hopefully look in the end (Note, Read f stands for read courses in from file:
