@@ -35,7 +35,7 @@ The language the algorithm will read:
 	This lauguage allows for the logical operators || and &&. For example, the following says either CS-1100 or CSCI-4090 must be taken, but that CSCI-1300 must NOT be taken
 		CSCI-1100||CSCI-4090
 
-	Thie language also has a few keywords. The character + following denotes that any course of the same major but with a greater or equal number will be accepted.
+	The language also has a few keywords. The character + following denotes that any course of the same major but with a greater or equal number will be accepted.
 	For example, the following says either CSCI-1100 must be taken, or a 2000 or higher level CS course must be taken
 		CSCI-1100||CSCI-2000+
 
