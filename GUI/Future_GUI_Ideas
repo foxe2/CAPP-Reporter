@@ -1,6 +1,5 @@
 TODO for GUI 1.0:
 	• CombosBox's should read from Database for default possibilities
-	• Major refactoring with the addition classes where appropriate
 	• Finish placing everything based on relative coordinates to allow for re-sizing.
 
 GUI 2.0 ideas:
