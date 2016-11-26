@@ -1,6 +1,5 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
-#include "ColorText.hpp"
 #include "CourseSelector.hpp"
 
 

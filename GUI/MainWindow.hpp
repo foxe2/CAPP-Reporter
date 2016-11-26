@@ -5,7 +5,7 @@
 
 #include <map>
 #include <vector>
-#include <QString>
+
 #include <QMainWindow>
 #include <QGraphicsRectItem>
 
@@ -35,6 +35,7 @@ private slots:
 	//Reset the application
     void reset();
 
+    //Update the GUI
     void updateAll();
 
 private:
@@ -49,7 +50,7 @@ private:
     CourseSelector * courses;
 
     //GUI representation
-    Ui::MainWindow *ui;
+    Ui::MainWindow * ui;
     const int StrokeThickness;
     std::vector<QGraphicsRectItem*> Outlines;
 
