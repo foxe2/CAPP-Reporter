@@ -7,7 +7,7 @@ Algorithm input:
 		A file genereated by the GUI, formated as described below. This file contains the list of courses the user already took.
 
 	Requirements folder:
-		Each file will have as its name: <Major 1>/<Major 2 or "None"> 	
+		Each file will have as its name: <Major 1>-<Major 2 or "None"> 	
 		Each ifle will have a list or courses written in it using the language described below
 
 	Concentration folder:
@@ -35,7 +35,7 @@ The language the algorithm will read:
 	This lauguage allows for the logical operators || and &&. For example, the following says either CS-1100 or CSCI-4090 must be taken, but that CSCI-1300 must NOT be taken
 		CSCI-1100||CSCI-4090
 
-	The language also has a few keywords. The character + following denotes that any course of the same major but with a greater or equal number will be accepted.
+	This language also has a few keywords. The character + following denotes that any course of the same major but with a greater or equal number will be accepted.
 	For example, the following says either CSCI-1100 must be taken, or a 2000 or higher level CS course must be taken
 		CSCI-1100||CSCI-2000+
 
@@ -46,9 +46,9 @@ The language the algorithm will read:
 		3:C:A
 		4:C:*
 
-	The last keyword allowed is //. This is a comment indicator. Anything written after it up until the next new line will be ignored.
+	The last keyword allowed is #. This is a comment indicator. Anything written after it up until the next new line will be ignored.
 	For example, the following is valid:
-		CSCI-1100//This is all ok to type. Note however, there may be NO whitespace before the //. That is important to remember!
+		CSCI-1100#This is all ok to type. Note however, there may be NO whitespace before the #. That is important to remember!
 
 
 The GUI sketch, how it will hopefully look in the end (Note, Read f stands for read courses in from file:
