@@ -1,13 +1,8 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
+#include "ColorText.hpp"
 #include "CourseSelector.hpp"
-#include "TentativeHighlighter.hpp"
 
-#include <fstream>
-#include <sstream>
-
-#include <QFileDialog>
-#include <QStandardPaths>
 
 //Size of the scene
 const uint MainWindow::Width = 800;
@@ -15,6 +10,7 @@ const uint MainWindow::Height = 600;
 
 //Default number of GUIs
 uint MainWindow::GUICount = 0;
+
 
 //--------------------------Constructor/Destructor-----------------------
 
@@ -37,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     //Disable scrolling
     ui->graphicsView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     ui->graphicsView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+
+	//Create CourseSelector
+	courses = new CourseSelector(ui->courseMajor, ui->courseNumber,
+								 ui->currentCourses, ui->readFromFile);
 
     //Draw and position the GUI's items
     drawOutlines();
@@ -146,7 +146,7 @@ void MainWindow::connectDefaults() {
 
     //Connect the toggle switch to the toggle slot
     QObject::connect(ui->toggleTentaive, SIGNAL(toggled(bool)),
-                     this, SLOT(tentativeToggle(bool)));
+                     courses, SLOT(tentativeToggle(bool)));
 
     //Connect add class button to the addClass function
     QObject::connect(ui->addClassButton, SIGNAL(clicked()),
@@ -164,55 +164,17 @@ void MainWindow::connectDefaults() {
     QObject::connect(ui->resetButton, SIGNAL(clicked()),
                      this, SLOT(reset()));
 
-	//COnnect courses update function to dependencies
-	QObject::connect(courses, SIGNAL(coursesUpdated()),
-					 this, updateAll());
+    //Connect courses update function to dependencies
+    QObject::connect(courses, SIGNAL(coursesChanged()),
+                     this, SLOT(updateAll()));
 
     //Set the defaults
-    tentativeToggle(true);
-}
-
-//Called to enable or disable
-//tentative class adding/removing
-void MainWindow::tentativeToggle(bool checked) {
-
-    //Enable auto update
-    if (checked) {
-
-        //Connect course Major box
-        QObject::connect(ui->courseMajor, SIGNAL(editTextChanged(QString)),
-                         coursesthis, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::connect(ui->courseMajor, SIGNAL(currentTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-
-        //Connect course Number box
-        QObject::connect(ui->courseNumber, SIGNAL(editTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::connect(ui->courseNumber, SIGNAL(currentTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-    }
-
-    //Disable auto update
-    else {
-
-        //Disconnect course Major box
-        QObject::disconnect(ui->courseMajor, SIGNAL(editTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::disconnect(ui->courseMajor, SIGNAL(currentTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-
-        //Disconnect course Number box
-        QObject::disconnect(ui->courseNumber, SIGNAL(editTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-        QObject::disconnect(ui->courseNumber, SIGNAL(currentTextChanged(QString)),
-                         courses, SLOT(tentativelyAlterClasses(const QString&)));
-    }
+    courses->tentativeToggle(true);
 }
 
 //Reset the application 
-void MainWindow::reset() {
-	courses.reset(); updateAll();
-}
+void MainWindow::reset() { courses->reset(); }
+
 
 //-------------------------Altering GUI's output------------------------
 
@@ -220,4 +182,5 @@ void MainWindow::reset() {
 //Update the GUI's classes take list, and update the rest subsequently
 void MainWindow::updateAll() {
 
+	//TODO: implement
 }

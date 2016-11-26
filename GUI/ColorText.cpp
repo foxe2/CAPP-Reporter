@@ -1,24 +1,23 @@
-#include "TentativeHighlighter.hpp"
-
+#include "ColorText.hpp"
 
 //Constructor
-TentativeHighlighter::TentativeHighlighter(QTextEdit * parent)
+ColorText::ColorText(QTextEdit * parent)
     : QSyntaxHighlighter(parent) {
     theColor = Qt::black;
     highlight = NULL;
 }
 
 //Destructor
-TentativeHighlighter::~TentativeHighlighter() { delete highlight; }
+ColorText::~ColorText() { delete highlight; }
 
 //Set current highlighting information
-void TentativeHighlighter::setHighlightInfo(const QString& h, const Qt::GlobalColor c) {
+void ColorText::setHighlightInfo(const QString& h, const Qt::GlobalColor c) {
     highlight = new QString(h);
     theColor = c;
 }
 
 //Override the highlighting function
-void TentativeHighlighter::highlightBlock(const QString& text) {
+void ColorText::highlightBlock(const QString& text) {
 
     //If there is no reason to call this function, skip it
     if (!highlight) return;

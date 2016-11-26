@@ -12,6 +12,9 @@
 //For ease
 namespace Ui { class MainWindow; }
 
+//Forward declerations
+class CourseSelector;
+
 //Main window class
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -32,6 +35,8 @@ private slots:
 	//Reset the application
     void reset();
 
+    void updateAll();
+
 private:
 
     //Draw, position, and connect items
@@ -41,7 +46,7 @@ private:
     void drawOutlines();
 
 	//Used to select courses
-	courseSelector * courses;
+    CourseSelector * courses;
 
     //GUI representation
     Ui::MainWindow *ui;

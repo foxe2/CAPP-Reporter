@@ -1,5 +1,5 @@
 #include "CourseSelector.hpp"
-#include "TentativeHighlighter.hpp"
+#include "ColorText.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -8,17 +8,86 @@
 #include <QStandardPaths>
 
 
-//Default number of GUIs
+//Default number of CourseSelectors
 uint CourseSelector::staticCount = 0;
+
 
 //TODO: replace the following
 inline bool verifyCourse(const QString m, const QString n) {
     return m.size() == 4 && n.size() == 4;
 }
 
-CourseSelector::CourseSelector(
 
 
+//Constructor
+CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QTextEdit *c, QPushButton *d) : 
+    currentCourses(c), readFromFileBtn(d), courseMajor(a), courseNumber(b) {
+
+    //Make sure only one CourseSelector exists
+    Assert(!CourseSelector::staticCount, "only 1 CourseSelector can exist");
+    CourseSelector::staticCount = 1;
+
+	//Create a custom syntax highlighter
+    highlighter = new ColorText(currentCourses);
+
+    //Initalize theCourse
+    theCourse = new QString("");
+}
+
+//Destructor
+CourseSelector::~CourseSelector() {
+
+    //Must delete destructed items still
+    for(auto i : classesTaken) delete i.second;
+
+	//Prevent memory leaks
+	delete highlighter;
+    delete theCourse;
+}
+
+
+//----------------------Setting up Signals and slots---------------------
+
+
+//Called to enable or disable
+//tentative class adding/removing
+void CourseSelector::tentativeToggle(bool checked) {
+
+    //Enable auto update
+    if (checked) {
+
+        //Connect course Major box
+        QObject::connect(courseMajor, SIGNAL(editTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::connect(courseMajor, SIGNAL(currentTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
+
+        //Connect course Number box
+        QObject::connect(courseNumber, SIGNAL(editTextChanged(QString)),
+                        this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::connect(courseNumber, SIGNAL(currentTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
+    }
+
+    //Disable auto update
+    else {
+
+        //Disconnect course Major box
+        QObject::disconnect(courseMajor, SIGNAL(editTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::disconnect(courseMajor, SIGNAL(currentTextChanged(QString)),
+                         this, SLOT(tentativelyAlterClasses(const QString&)));
+
+        //Disconnect course Number box
+        QObject::disconnect(courseNumber, SIGNAL(editTextChanged(QString)),
+                        this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::disconnect(courseNumber, SIGNAL(currentTextChanged(QString)),
+                        this, SLOT(tentativelyAlterClasses(const QString&)));
+
+        //Redraw the GUI
+        updateClassesTaken(Qt::black);
+    }
+}
 
 
 //-----------------------Altering course selection----------------------
@@ -105,7 +174,7 @@ inline bool emptyString(const std::string& s) {
 void CourseSelector::readFromFile() {
 
     //Prevent clicking readFromFile while choosing a file
-    readFromFile->setEnabled(false);
+    readFromFileBtn->setEnabled(false);
 
     //Have the user choose a file to read from
     QString inFileName = QFileDialog::getOpenFileName(NULL, tr("Choose the file to read from:"),
@@ -113,7 +182,7 @@ void CourseSelector::readFromFile() {
                                  "All files (*);;Text File (*.txt);;Simple Text File (*.stf)");
 
     //Re-enable the button
-    readFromFile->setEnabled(true);
+    readFromFileBtn->setEnabled(true);
 
     //Do nothing if the user clicked cancel
     if (inFileName == "") return;
@@ -174,14 +243,14 @@ void CourseSelector::readFromFile() {
 
     //Populate classes taken with the new classes
     for(auto i : tmpCourses) classesTaken[i.first] = i.second;
-    updateClassesTaken();
+    updateClassesTaken(Qt::black);
 }
 
 
 //-------------------------Altering GUI's output------------------------
 
 
-//Update the GUI's classes takem list, and update dependencies subsequently
+//Update the GUI's classes taken list, and update dependencies subsequently
 void CourseSelector::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 
     //The string to print

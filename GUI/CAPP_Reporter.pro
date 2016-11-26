@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    TentativeHighlighter.cpp
+    ColorText.cpp \
+    CourseSelector.cpp
 
 HEADERS  += MainWindow.hpp \
     main.hpp \
-    TentativeHighlighter.hpp
+    ColorText.hpp \
+    CourseSelector.hpp
 
 FORMS    += mainwindow.ui

@@ -4,14 +4,14 @@
 #include <QSyntaxHighlighter>
 
 //A class used to highlight a line in a QTextEdit
-class TentativeHighlighter : public QSyntaxHighlighter {
+class ColorText : public QSyntaxHighlighter {
 public:
 
 	//Constructor
-    TentativeHighlighter(QTextEdit * parent);
+    ColorText(QTextEdit * parent);
 
     //Destructor
-    ~TentativeHighlighter();
+    ~ColorText();
 
     //Set current highlighting information
     void setHighlightInfo(const QString& h, const Qt::GlobalColor c);

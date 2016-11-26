@@ -4,28 +4,37 @@
 #include "main.hpp"
 
 #include <map>
-#include <QString>
-#include <QSyntaxHighlighter>
 
+#include <QString>
+#include <QTextEdit>
+#include <QComboBox>
+#include <QPushButton>
 
 //Forward declarations
-class TentativeHighlighter;
+class ColorText;
 
+
+//A class to handle the courses taken
+//and the graphics associated with them
 class CourseSelector : public QObject {
     Q_OBJECT
 public:
 
 	//Constructor
-	CourseSelector();
+	CourseSelector(QComboBox *, QComboBox *, QTextEdit *, QPushButton *);
+
+	//Destructor
+	~CourseSelector();
 
     //Reset's classesTaken to empty
     void reset();
 
 public slots:
 
-    //Called to enable or disable
-    //tentative class adding/removing
-    void tentativeToggle(bool checked);
+    //Connects or disconnects what is
+    //needed when the user decides to
+    //activate or deactivate auto-updating
+    void tentativeToggle(bool);
 
     //Tentatively add or remove a class as needed
     void tentativelyAlterClasses(const QString&);
@@ -40,7 +49,7 @@ public slots:
 signals:
 
 	//A signal to be emitted if updateClassesTaken is called
-	void coursesChanged();
+    void coursesChanged();
 
 private:
 
@@ -55,11 +64,17 @@ private:
 
     //Used for current courses
     std::map<const QString, const QString*> classesTaken;
-    TentativeHighlighter * highlighter;
+    ColorText * highlighter;
     QString * theCourse;
 
+    //Used to store GUI items
+    QTextEdit * currentCourses;
+    QPushButton * readFromFileBtn;
+    const QComboBox * courseMajor;
+    const QComboBox * courseNumber;
+
 	//Ensure there is only one CourseSelector
-    static uint CourseListCount;
+    static uint staticCount;
 };
 
 #endif 
