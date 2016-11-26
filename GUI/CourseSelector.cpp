@@ -1,9 +1,9 @@
 #include "CourseSelector.hpp"
 #include "ColorText.hpp"
 
-#include <libgen.h>
 #include <fstream>
 #include <sstream>
+#include <libgen.h>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -12,13 +12,6 @@
 
 //Default number of CourseSelectors
 uint CourseSelector::staticCount = 0;
-
-
-//TODO: replace the following
-inline bool verifyCourse(const QString m, const QString n) {
-	return m.size() == 4 && n.size() == 4;
-}
-
 
 
 //Constructor
@@ -45,6 +38,26 @@ CourseSelector::~CourseSelector() {
 	//Prevent memory leaks
 	delete highlighter;
 	delete theCourse;
+}
+
+//--------------------------------Inlines--------------------------------
+
+
+//Returns true if the course is legal, false otherwise
+inline bool verifyCourse(const QString m, const QString n) {	//TODO: improve
+	return m.size() == 4 && n.size() == 4;
+}
+
+//Displays an error message, prompts to retry, then returns result
+//If the second argument is passed as false, the function will not display the retry button
+inline bool errorPrompt(const QString& txt, bool retry = true) {
+
+	//Display error message txt
+    auto buttons = retry ? (QMessageBox::Ok | QMessageBox::Retry) : QMessageBox::Ok;
+	int ret = QMessageBox::critical(NULL, QObject::tr(APPLICATION_NAME), txt, buttons, QMessageBox::Ok);
+
+	//If the user wishes to retry, do so.
+	return (ret == QMessageBox::Retry);
 }
 
 
@@ -122,8 +135,12 @@ void CourseSelector::tentativelyAlterClasses(const QString&) {
 //Remove a class
 void CourseSelector::removeClass() {
 
-	//Update theCourse, return if it is invalid
-	if (!updateCourse()) return;
+	//Update theCourse, if invalid display the error then exit. 
+	if (!updateCourse()) {
+        QString txt = tr("The following course is invalid.\n") + *theCourse;
+		errorPrompt(txt, false);
+		return;
+	}
 
 	//Remove the class if it exists
 	auto tmp = classesTaken.find(*theCourse);
@@ -139,8 +156,12 @@ void CourseSelector::removeClass() {
 //Add a class
 void CourseSelector::addClass() {
 
-	//Update theCourse, return if it is invalid
-	if (!updateCourse()) return;
+	//Update theCourse, if invalid display the error then exit. 
+	if (!updateCourse()) {
+        QString txt = tr("The following course is invalid.\n") + *theCourse;
+		errorPrompt(txt, false);
+		return;
+	}
 
 	//If there is nothing to do, return
 	if (classesTaken.find(*theCourse) != classesTaken.end()) return;
@@ -172,17 +193,6 @@ inline bool emptyString(const std::string& s) {
 	return !s.size();
 }
 
-//Displays an error message, prompts to retry, then returns result
-inline bool readFromFileError(const QString& txt) {
-
-	//Display error message txt
-	int ret = QMessageBox::critical(NULL, QObject::tr(APPLICATION_NAME), txt,
-			QMessageBox::Retry | QMessageBox::Ok, QMessageBox::Ok);
-
-	//If the user wishes to retry, do so.
-	return (ret == QMessageBox::Retry);
-}
-
 //If the user wishes to input classes via a file
 void CourseSelector::readFromFile() {
 
@@ -212,7 +222,7 @@ void CourseSelector::readFromFile() {
 		txt += tr(basename(tmp.data())) + tr("\" failed to open");
 
 		//Error then exit the function
-		if (readFromFileError(txt)) readFromFile();
+		if (errorPrompt(txt)) readFromFile();
 		return;
 	}
 
@@ -249,7 +259,7 @@ void CourseSelector::readFromFile() {
 		if (failInfo != tr("")) {
 			clearMap(tmpCourses);
 			failInfo += (line.size()<20)?tr(line.c_str()):tr(line.substr(0,20).c_str())+tr("...");
-			if (readFromFileError(failInfo)) readFromFile();
+			if (errorPrompt(failInfo)) readFromFile();
 			return;
 		}
 
