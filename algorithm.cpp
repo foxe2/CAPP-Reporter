@@ -37,7 +37,7 @@ void parse_major_reqs(vector<vector<string>> &reqs, string f_name){
 }
 
 int main(){
-	//DS
-	parse_major_reqs();
-	parse_major_reqs();
+	vector<vector<string>> reqs;
+	parse_major_reqs(reqs);
+	parse_major_reqs(reqs);
 }
