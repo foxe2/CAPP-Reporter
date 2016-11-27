@@ -16,28 +16,37 @@
 using namespace std;
 
 //Takes in a datastructure which it will add classes to
-void parse_major_reqs(vector<vector<string>> &reqs, string f_name){
-	ifstream instr;
-	instr.open (f_name);
-	string temp;
-    while(!infile.eof){
-	    getline(infile,temp);
-	    vector<string> options;
-    	options.push_back(temp);
-    	reqs.push_back(options);
-    	int a = temp.find("||");
-    	while(a != -1){
-    		options.push_back(temp.substr(0,a-1));
-    		temp=temp.substr(a+2);
+void parse_major_reqs(vector<vector<string> > &reqs, string f_name){
+	ifstream instr(f_name);
+	if (instr.is_open()){
+		string temp;
+    	while(getline(instr,temp)){
+		    vector<string> options;
+	    	int a = temp.find("||");
+	    	while(a != -1){
+	    		options.push_back(temp.substr(0,a-1));
+	    		temp=temp.substr(a+2);
+	    		a = temp.find("||");
+	    	}
+	    	options.push_back(temp);
+	    	reqs.push_back(options);
     	}
-    	options.push_back(temp)
-    	reqs.push_back();
     }
-	infile.close();
+    else
+    	cout << "error";
+	instr.close();
 }
 
-int main(){
-	vector<vector<string>> reqs;
-	parse_major_reqs(reqs);
-	parse_major_reqs(reqs);
+int main(int n, char* args[]){
+	vector<vector<string> > reqs;
+	if(args[1] != NULL){
+		string f_name = args[1];
+		parse_major_reqs(reqs, f_name);
+	}
+	for(int i = 0; i < reqs.size(); ++i){
+		for(int j = 0; j < reqs[i].size(); ++j)
+			cout << reqs[i][j] << " ";
+		cout << endl;
+	}
+	//parse_major_reqs(reqs);
 }
