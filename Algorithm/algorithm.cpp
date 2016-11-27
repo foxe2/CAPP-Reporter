@@ -16,11 +16,13 @@
 using namespace std;
 
 //Takes in a datastructure which it will add classes to
-void parse_major_reqs(vector<vector<string> > &reqs, string f_name){
+void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 	ifstream instr(f_name);
 	if (instr.is_open()){
 		string temp;
     	while(getline(instr,temp)){
+		    if(temp.find("//") != -1)
+		    	continue;
 		    vector<string> options;
 	    	int a = temp.find("||");
 	    	while(a != -1){
@@ -37,11 +39,26 @@ void parse_major_reqs(vector<vector<string> > &reqs, string f_name){
 	instr.close();
 }
 
+void compare_courses(vector<vector<string> > &reqs, Set<string> &classes, vector<int> &needed){
+	for(int i = 0; i < reqs.size(); ++i){
+		bool satisfied = false;
+		for(int j = 0; j < reqs.size(); ++j){
+			if(classes.find(reqs[i][j]) != classes.end()){
+				satisfied = true;
+				classes.erase(reqs[i][j]);
+				break;
+			}
+		}
+		if(!satisfied)
+			needed.push_back(i);
+	}
+}
+
 int main(int n, char* args[]){
 	vector<vector<string> > reqs;
 	if(args[1] != NULL){
 		string f_name = args[1];
-		parse_major_reqs(reqs, f_name);
+		parse_reqs(reqs, f_name);
 	}
 	for(int i = 0; i < reqs.size(); ++i){
 		for(int j = 0; j < reqs[i].size(); ++j)
