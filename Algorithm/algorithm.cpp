@@ -18,10 +18,10 @@ using namespace std;
 
 //Takes in a datastructure which it will add classes to
 void parse_reqs(vector<vector<string> > &reqs, string &f_name){
-	ifstream instr(f_name);
-	if (instr.is_open()){
+	ifstream inFile(f_name);
+	if (inFile.is_open()){
 		string temp;
-    	while(getline(instr,temp)){
+    	while(getline(inFile,temp)){
 		    if(temp.find("//") != -1)
 		    	continue;
 		    vector<string> options;
@@ -44,7 +44,7 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
     }
     else
     	cout << "error";
-	instr.close();
+	inFile.close();
 }
 
 bool special_compare(string &req, set<string> &classes, vector<string> &unacceptable){
@@ -87,16 +87,39 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 	}
 }
 
+bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_name){
+	ofstream outFile(f_name);
+  	
+  	if (!outFile.is_open())
+    	return false;
+	
+	for(int i = 0; i < needed.size(); ++i){
+		for(int j = 0; j < reqs[needed[i]].size(); ++j){
+			outFile << reqs[needed[i]][j] << " ";
+		}
+		outFile << endl;
+	}
+	outFile.close();
+	return true;
+}
+
 int main(int n, char* args[]){
 	vector<vector<string> > reqs;
-	if(args[1] != NULL){
-		string f_name = args[1];
-		parse_reqs(reqs, f_name);
+	vector<int> needed;
+	const string OUTPUT_FILE_NAME = "algorithm_output.txt";
+	string input_file_name;
+	if(args[1]==NULL || args[2]==NULL || args[3]==NULL){
+		cerr << "One or more arguments is NULL." << endl;
+		return 0;
 	}
+	input_file_name= args[1];
+	parse_reqs(reqs, f_name);
 	for(int i = 0; i < reqs.size(); ++i){
 		for(int j = 0; j < reqs[i].size(); ++j)
 			cout << reqs[i][j] << " ";
 		cout << endl;
 	}
 	//parse_major_reqs(reqs);
+
+	file_output(reqs, needed, OUTPUT_FILE_NAME);
 }
