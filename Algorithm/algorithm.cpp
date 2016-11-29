@@ -51,18 +51,48 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 	inFile.close();
 }
 
-bool special_compare(string &req, set<string> &classes, vector<string> &unacceptable){
+bool special_compare(string &req, set<string> &classes, vector<string> &unacceptable, bool noRepeat){
 	//Iterate through set checking for a match
 	for(set<string>::iterator itr = classes.begin(), itr != classes.end(); ++itr){
 		int courseNum = stoi(*itr.substring(5));
 		int reqNum = stoi(req.substring(5,9));
-		if(courseNum >= reqNum  && unacceptable.find(*itr) == unacceptable.end() )
+		if(courseNum >= reqNum  && unacceptable.find(*itr) == unacceptable.end()){
+			if(noRepeat)
+				classes.erase(*itr);
 			return true;
+		}
 	}
 	return false;
 }
 
-void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector<int> &needed){
+bool concentration_compare(string &concentration, set<string> &classes){
+	//Checks if repition in multiple requirements is allowed (ex Comm intensive)
+	bool canRepeat;
+	if(concentration.substring(0,1).compare("#") == 0){
+		concentration = concentration.substring(1);
+		canRepeat = true;
+	}
+	else
+		canRepeat = false;
+
+	int num_courses = stoi(concentration(0,1));
+	concentration = concentration.substring(2);
+	int a = concentration.find("&&");
+	string f_name;
+	if(a == -1)
+		f_name = "../Concentrations/" + concentration + ".txt";
+	else
+		f_name = "../Concentrations/" + concentration.substring(0,a) + ".txt";
+	vector<vector<string> > conc_reqs;
+	vector<int> not_taken;
+	parse_reqs(conc_reqs, f_name);
+	//  IMPLEMENT COURSE COUNTING
+	compare_courses(conc_reqs, classes, not_taken, !canRepeat, num_courses);
+	if(conc_reqs.size()-not_taken.size() == num_courses)
+		return true;
+}
+
+void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector<int> &needed, bool noRepeat){
 	for(int i = 0; i < reqs.size(); ++i){
 		//Find unacceptable course
 		set<string> unacceptable;
@@ -76,14 +106,18 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 		for(int j = before; j < reqs.size(); ++j){
 			string temp = reqs[i][j];
 			//Range(CSCI-4000+)
-			if(temp.subtring(0,1).compare("*") == 0){
-				satisfied = special_compare(temp, classes, unacceptable);
+			if(temp.substring(0,1).compare("@") == 0){
+				satisfied = concentraion_compare(temp.substring(1), classes);
+			}
+			else if(temp.find("+") != -1){
+				satisfied = special_compare(temp, classes, unacceptable, noRepeat);
 			}
 			//Regular courses
 			else{
 				if(classes.find(temp) != classes.end()){
 					satisfied = true;
-					classes.erase(reqs[i][reset_to]);
+					if(noRepeat)
+						classes.erase(reqs[i][reset_to]);
 				}
 			}
 			if(satisfied)
@@ -98,6 +132,8 @@ bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_na
 	ofstream outFile(f_name);
   	if (!outFile.is_open())
     	return false;
+    outFile << "CAUTION: Read the READ.ME before using this program." << endl;
+    outFile << "It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings." << endl;
 	//Loop through in needed and output each req
 	for(int i = 0; i < needed.size(); ++i){
 		for(int j = 0; j < reqs[needed[i]].size(); ++j){
