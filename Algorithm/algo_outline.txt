@@ -6,7 +6,7 @@ read_reqs_input(Dictionary<string> completed, string filename){
 	Parse file and add elements to completed
 }
 
-compare_classes(Vector<Vector<string>> reqs, Dictionary<string> completed, Vector<int> needed){
+compare_classes(Vector<Vector<string>> reqs, Set<string> completed, Vector<int> needed){
 	The 'needed' DS is a list of indexes of requirements not satisfied
 
 	Iterate through the requirements, finding classes that satisfy each 
