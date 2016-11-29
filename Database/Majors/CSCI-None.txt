@@ -1,10 +1,17 @@
+// Comm-Intensive Option - 1 from CSCI and 1 from HASS
+@#1:C:CSCI
+@#1:C:HASS
+// Math Requirement
 MATH-1010
 MATH-1020
+// Bio Requirement
 BIOL-1010
 BIOL-1015
+// Physics Requirement
 PHYS-1100
-ASTR-1000+||BIOL-1000+||ERTH-1000+||CHEM-1000+||PHYS-1000+&&!ERTH-1030&&!ERTH-1040
-CSCI-1100||CSCI-2000+
+// Science Option
+ASTR-1000+||BIOL-1000+||ERTH-1000+||CHEM-1000+||PHYS-1000+||!ERTH-1030||!ERTH-1040
+// Comp Sci Requirements
 CSCI-1200
 CSCI-2200
 CSCI-2300
@@ -12,9 +19,11 @@ CSCI-2500
 CSCI-2600
 CSCI-4210
 CSCI-4430
-3:C:Option_1&&!ECSE-4630&&!ECSE-4640&&!ECSE-4720
-// OTHER CSCI OPTIONS
-// COMM INTENSIVE REQUIREMENTS
-2:C:Math_Logic
+CSCI-1100||CSCI-2000+
+// CS Option
+// Option 1 - No Concentration, Option 2 - Concentration
+@3:C:Option_1&&!ECSE-4630&&!ECSE-4640&&!ECSE-4720&&CSCI-4940||@3:C:Theory_Alg||@3:C:Sys_Soft||@3:C:AI_Data||@3:C:VGRG
+// Math/Logic Option
+@2:C:Math_Logic
 // HASS
 // FREE ELECTIVES
