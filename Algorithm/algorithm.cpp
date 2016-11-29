@@ -22,12 +22,16 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 	if (inFile.is_open()){
 		string temp;
     	while(getline(inFile,temp)){
+    		//If comment then skip
 		    if(temp.find("//") != -1)
 		    	continue;
+
 		    vector<string> options;
+		    //Loop through and parse
 	    	int a = temp.find("||");
 	    	while(a != -1){
 	    		string course = temp.substr(0,a-1);
+	    		//If it cant be taken to satisfy req
 	    		if(course.substring(0,1).compare("!") == 0)
 	    			options.push_front(course);
 	    		else
@@ -48,8 +52,11 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 }
 
 bool special_compare(string &req, set<string> &classes, vector<string> &unacceptable){
+	//Iterate through set checking for a match
 	for(set<string>::iterator itr = classes.begin(), itr != classes.end(); ++itr){
-		if(req /*matches*/ *itr && unacceptable.find(*itr) == unacceptable.end() )
+		int courseNum = stoi(*itr.substring(5));
+		int reqNum = stoi(req.substring(5,9));
+		if(courseNum >= reqNum  && unacceptable.find(*itr) == unacceptable.end() )
 			return true;
 	}
 	return false;
@@ -64,11 +71,11 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 			unacceptable.insert(reqs[i][before].subtring(1));
 			before++;
 		}
+
 		bool satisfied = false;
-		int reset_to = 0;
 		for(int j = before; j < reqs.size(); ++j){
 			string temp = reqs[i][j];
-			//Range
+			//Range(CSCI-4000+)
 			if(temp.subtring(0,1).compare("*") == 0){
 				satisfied = special_compare(temp, classes, unacceptable);
 			}
@@ -89,10 +96,9 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 
 bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_name){
 	ofstream outFile(f_name);
-  	
   	if (!outFile.is_open())
     	return false;
-	
+	//Loop through in needed and output each req
 	for(int i = 0; i < needed.size(); ++i){
 		for(int j = 0; j < reqs[needed[i]].size(); ++j){
 			outFile << reqs[needed[i]][j] << " ";
@@ -104,16 +110,18 @@ bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_na
 }
 
 int main(int n, char* args[]){
-	vector<vector<string> > reqs;
-	vector<int> needed;
-	const string OUTPUT_FILE_NAME = "algorithm_output.txt";
-	string input_file_name;
 	if(args[1]==NULL || args[2]==NULL || args[3]==NULL){
 		cerr << "One or more arguments is NULL." << endl;
 		return 0;
 	}
-	input_file_name= args[1];
+
+	vector<vector<string> > reqs;
+	vector<int> needed;
+	string input_file_name= args[1];
+	const string OUTPUT_FILE_NAME = "algorithm_output.txt";
+
 	parse_reqs(reqs, f_name);
+
 	for(int i = 0; i < reqs.size(); ++i){
 		for(int j = 0; j < reqs[i].size(); ++j)
 			cout << reqs[i][j] << " ";
