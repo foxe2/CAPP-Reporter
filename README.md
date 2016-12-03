@@ -8,7 +8,7 @@ This application will have a user friendly GUI and should update the courses tha
 
 Currently this application is being made only CS, MATH, and CS/MATH dual majors (due to time restrictions) however we intend to extend it in the future. With the design we have implemented adding another major is as simple as adding a file with the name of the four letter major into the Requirements folder, its contents being solely the requirements needed to obtain this major! If this major requires a student take multiple courses in the same concentration, simply add a file with the name of your four letter major to the Concentrations folder containing the courses in each concentration.
 
-Installation instructions:
+##Installation instructions:
 
 First, cd into the directory you would like to install this application in
 
