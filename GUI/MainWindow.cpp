@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->graphicsView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
 
 	//Create CourseSelector
-	courses = new CourseSelector(ui->courseMajor, ui->courseNumber,
+    courses = new CourseSelector(ui->courseMajor, ui->courseNumber, ui->numCredits,
 								 ui->currentCourses, ui->readFromFile);
 
     //Draw and position the GUI's items
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     //Draw the GUI
 	reset(); ui->graphicsView->lower();
-    setMaximumSize(this->size()); //TODO: remove need for this
+    setMaximumSize(this->size());
 }
 
 //Destructor
@@ -132,8 +132,12 @@ void MainWindow::positionObjects(int coursesH, int mainWidth, int topHeight) {
     x = 3*mainWidth/2 + ST + xDFS;
     y = coursesH + ST + yDFS;
     x1 = Width - x - xDFS - 2*ST;
-    y1 = Height - y - yDFS - 2*ST - /* Bottom buttons */ 25;
+    y1 = Height - y - yDFS - 2*ST /* Account for bottom buttons */ - 25;
     ui->currentCourses->setGeometry(QRect(x,y,x1,y1));
+
+    //Size the graphics view
+    ui->graphicsView->setFixedSize(this->size());
+    ui->graphicsView->lower();
 }
 
 

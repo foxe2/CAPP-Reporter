@@ -15,8 +15,9 @@ uint CourseSelector::staticCount = 0;
 
 
 //Constructor
-CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QTextEdit *c, QPushButton *d) : 
-	currentCourses(c), readFromFileBtn(d), courseMajor(a), courseNumber(b) {
+CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QComboBox *c,
+    QTextEdit *d, QPushButton *e) : currentCourses(d), readFromFileBtn(e),
+    courseMajor(a), courseNumber(b), numCredits(c) {
 
 		//Make sure only one CourseSelector exists
 		Assert(!CourseSelector::staticCount, "only 1 CourseSelector can exist");
@@ -44,7 +45,7 @@ CourseSelector::~CourseSelector() {
 
 
 //Returns true if the course is legal, false otherwise
-inline bool verifyCourse(const QString m, const QString n) {	//TODO: improve
+inline bool verifyCourse(const QString m, const QString n) {
 	return m.size() == 4 && n.size() == 4;
 }
 
@@ -54,7 +55,8 @@ inline bool errorPrompt(const QString& txt, bool retry = true) {
 
 	//Display error message txt
     auto buttons = retry ? (QMessageBox::Ok | QMessageBox::Retry) : QMessageBox::Ok;
-	int ret = QMessageBox::critical(NULL, QObject::tr(APPLICATION_NAME), txt, buttons, QMessageBox::Ok);
+    int ret = QMessageBox::critical(NULL, QObject::tr(APPLICATION_NAME),
+                                    txt, buttons, QMessageBox::Ok);
 
 	//If the user wishes to retry, do so.
 	return (ret == QMessageBox::Retry);
@@ -77,10 +79,16 @@ void CourseSelector::tentativeToggle(bool checked) {
 		QObject::connect(courseMajor, SIGNAL(currentTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
 
-		//Connect course Number box
-		QObject::connect(courseNumber, SIGNAL(editTextChanged(QString)),
+        //Connect course Number box
+        QObject::connect(courseNumber, SIGNAL(editTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::connect(courseNumber, SIGNAL(currentTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+
+        //Connect num Credits Number box
+        QObject::connect(numCredits, SIGNAL(editTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
-		QObject::connect(courseNumber, SIGNAL(currentTextChanged(QString)),
+        QObject::connect(numCredits, SIGNAL(currentTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
 	}
 
@@ -99,6 +107,12 @@ void CourseSelector::tentativeToggle(bool checked) {
 		QObject::disconnect(courseNumber, SIGNAL(currentTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
 
+        //Disconnect num Credits Number box
+        QObject::disconnect(numCredits, SIGNAL(editTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::disconnect(numCredits, SIGNAL(currentTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+
 		//Redraw the GUI
 		updateClassesTaken(Qt::black);
 	}
@@ -114,6 +128,7 @@ bool CourseSelector::updateCourse() {
 	delete theCourse; theCourse = new QString(tr(" "));
 	theCourse->prepend(courseMajor->currentText());
 	theCourse->append(courseNumber->currentText());
+    theCourse->append(tr(" - ") + numCredits->currentText() + tr(" credits"));
 	return verifyCourse(courseMajor->currentText(),
 			courseNumber->currentText());
 }
