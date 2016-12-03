@@ -29,5 +29,5 @@ qmake ../GUI/CAPP_Reporter.pro && make
 
 With that, you should have a functional CAPP_Reporter application!
 
-Usage:
-	This application takes no arguments. Just open it like you would any application
+##Usage
+This application takes no arguments. Just open it like you would any application
