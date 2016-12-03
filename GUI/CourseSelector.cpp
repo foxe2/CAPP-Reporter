@@ -122,13 +122,24 @@ void CourseSelector::tentativeToggle(bool checked) {
 //-----------------------Altering course selection----------------------
 
 
+//Format the the pieces into a course string
+inline QString * formatCourse(const QString mjr,
+                              const QString num,
+                              const QString crd) {
+    QString * ret = new QString(QObject::tr(" "));
+    ret->prepend(mjr);
+    ret->append(num);
+    ret->append(QObject::tr(" - ") + crd + QObject::tr(" credits"));
+    return ret;
+}
+
 //Update the definition of theCourse
-//Returns true if this course is possible 		TODO: make it check files, numbers, majors, etc
+//Returns true if this course is possible
 bool CourseSelector::updateCourse() {
-	delete theCourse; theCourse = new QString(tr(" "));
-	theCourse->prepend(courseMajor->currentText());
-	theCourse->append(courseNumber->currentText());
-    theCourse->append(tr(" - ") + numCredits->currentText() + tr(" credits"));
+    delete theCourse;
+    theCourse = formatCourse(courseMajor->currentText(),
+                             courseNumber->currentText(),
+                             numCredits->currentText());
 	return verifyCourse(courseMajor->currentText(),
 			courseNumber->currentText());
 }
@@ -249,8 +260,9 @@ void CourseSelector::readFromFile() {
 	//Set to true if there was an error
 	QString failInfo = tr("");
 
-	//Read in each course
-	std::string line, course, number;
+    //Read in each course
+    int cNum, credits;
+    std::string line, course;
 	while (std::getline(inFile, line)) {
 
 		//Ignore whitespace lines
@@ -260,13 +272,13 @@ void CourseSelector::readFromFile() {
 		std::istringstream nextCourse(line);
 
 		//If there was an error parsing, note so
-		if (!(nextCourse >> course >> number)) {
+        if (!(nextCourse >> course >>cNum >> credits)) {
 			failInfo = tr("There was an error reading in file. The");
 			failInfo += tr("following line is not correctly formatted:\n");
-		}
+        }
 
 		//If the course is not valid, note so
-		else if (!verifyCourse(QString(course.c_str()), QString(number.c_str())))
+        else if (!verifyCourse(QString(course.c_str()), QString::number(cNum)))
 			failInfo = tr("The following course is not a valid course:\n");
 
 		//If there was an error, prevent leaks, finish
@@ -279,7 +291,9 @@ void CourseSelector::readFromFile() {
 		}
 
 		//If the course is valid, add it to the map
-		QString * tmp = new QString(line.c_str());
+        QString * tmp = formatCourse(QString(course.c_str()),
+                                     QString::number(cNum),
+                                     QString::number(credits));
 		tmpCourses[*tmp] = tmp;
 	}
 
