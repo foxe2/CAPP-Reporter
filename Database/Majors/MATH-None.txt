@@ -1,0 +1,37 @@
+// Comm-Intensive Option - 1 from CSCI and 1 from HASS
+@#1:MATH
+@#1:HASS
+// Core Requirements
+MATH-1010
+MATH-1020
+MATH-2400
+MATH-4090
+MATH-2010
+// CS Requirement
+CSCI-1100
+// Bio Requirement
+BIOL-1010
+BIOL-1015
+// Physics Requirement
+PHYS-1100
+// Culminating Experience Requirement
+MATH-4950
+// Curriculum Requirements
+#6:MATH_OPT
+// Science Options
+#2:Math_science
+// HASS Requirement
+// Depth Requirement
+@#2:HASS_ART||@#2:HASS_COMM||@#2:HASS_LANG||@#2:HASS_LITR||@#2:HASS_PHIL||@#2:HASS_STSH||@#2:HASS_WRIT||@#2:HASS_IHSS||@#2:HASS_COGS||@#2:HASS_ECON||@#2:HASS_PSYC||@#2:HASS_STSS
+// 2 classes within Humanities
+ARTS-2000+||COMM-2000+||LANG-2000+||LITR-2000+||PHIL-2000+||STSH-2000+||WRIT-2000+||IHSS-2000+
+ARTS-1000+||COMM-1000+||LANG-1000+||LITR-1000+||PHIL-1000+||STSH-1000+||WRIT-1000+||IHSS-1000+
+// 2 classes within Social Sciences
+COGS-2000+||ECON-2000+||PSYC-2000+||STSS-2000+||IHSS-2000+
+COGS-1000+||ECON-1000+||PSYC-1000+||STSS-1000+||IHSS-1000+
+// Must take another class in either school (Requirement is 24 credits total)
+@1:HASS_ART||@1:HASS_COMM||@1:HASS_LANG||@1:HASS_LITR||@1:HASS_PHIL||@1:HASS_STSH||@1:HASS_WRIT||@1:HASS_IHSS||@1:HASS_COGS||@1:HASS_ECON||@1:HASS_PSYC||@1:HASS_STSS
+// One course must be 4000-level or above
+@1:HASS_4000
+// FREE ELECTIVES
+$32
