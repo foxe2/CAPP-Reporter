@@ -10,7 +10,7 @@ BIOL-1015
 // Physics Requirement
 PHYS-1100
 // Science Option
-ASTR-1000+||BIOL-1000+||ERTH-1000+||CHEM-1000+||PHYS-1000+||!ERTH-1030||!ERTH-1040
+ASTR-1000+||BIOL-1000+||ERTH-1000+||CHEM-1000+||PHYS-1000+||!ERTH-1030||!ERTH-1040||!ERTH-1150||!ERTH-1100||(ERTH-1100&&ERTH-1150)
 // Comp Sci Requirements
 CSCI-1200
 CSCI-2200
@@ -22,7 +22,7 @@ CSCI-4430
 CSCI-1100||CSCI-2000+
 // CS Option
 // Option 1 - No Concentration, Option 2 - Concentration
-@3:Option_1&&!ECSE-4630&&!ECSE-4640&&!ECSE-4720&&CSCI-4940||@3:C:Theory_Alg||@3:C:Sys_Soft||@3:C:AI_Data||@3:C:VGRG
+@(3:Option_1&&CSCI-4940)||@3:C:Theory_Alg||@3:C:Sys_Soft||@3:C:AI_Data||@3:C:VGRG
 // Math/Logic Option
 @2:Math_Logic
 // HASS Requirement
@@ -39,3 +39,4 @@ COGS-1000+||ECON-1000+||PSYC-1000+||STSS-1000+||IHSS-1000+
 // One course must be 4000-level or above
 @1:HASS_4000
 // FREE ELECTIVES
+$32

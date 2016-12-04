@@ -11,10 +11,9 @@ TO BE CHANGED:
 					Each file will have a list or courses written in it using the language described below
 
 				Concentration folder:
-					Each file will have as its name: <The Major>
-					Each file will have as its contents, multiple lines, each of which contains a comma delimited list of courses which comprise a single concentration
-						For example, the following represents courses in a single concentration of the major <the name of the file> : CSCI-A,CSCI-B,CSCI-C,CSCI-D
-						Note, comma separated, no spaces!
+					A broad container that holds any groups of classes we may need to pull from.
+					A given file will have a list of classes and the user will need to have taken any of these classes.
+
 
 			Algorithm output:
 				Algorithm_Output.txt:
@@ -24,7 +23,7 @@ TO BE CHANGED:
 				This language is a simple language used to list files, and list the option to substitute those files.
 
 				Classes are denoted as <Major>-<Course number>
-				Every line in this file is anded together to make a large condition statement.
+				Every line in this file is added together to make a large condition statement.
 				For example, the following denotes that each of these courses has/must be taken (depending on which file it is in)
 					CSCI-1100
 					CSCI-1200
@@ -46,8 +45,34 @@ TO BE CHANGED:
 					@3:A
 					@4:*
 
+				Another example:
+					@2:LITR
+
+				The above line indicates that a student must take 2 classes that are located in
+				LITR.txt, which is displayed here:
+					LITR-2110
+					LITR-2450
+					LITR-2770
+					LITR-4150
+					LITR-4160
+
 				The # symbol indicates that this class is not used to fill just one requirement.  For example,
 				the classes that fulfill the Comm-Intensive requirement can also be used to fill the HASS options and the CS Options.
+
+				Another symbol is !.  Much like in logic, this character indicates that the following
+				class cannot be used to fulfill the requirement.  For example:
+					CSCI-2000+||!CSCI-2300
+
+				The % symbol is used in the double major files.  It indicates to the algorithm that the following file
+				will be used to satisfy the requirements of that major. For example, for CS-Math duals:
+					%MATH-None
+					%CSCI-None
+
+				This file will call on MATH-None.txt and CSCI-None.txt to make sure each of their separate requirements are fulfilled,
+				including free electives.
+
+				This means that any 2000-level CS class or above can be used for this requirement, EXCEPT for CSCI-2300,
+				which will not work for this requirement.
 
 				The last keyword allowed is //. This is a comment indicator. Anything written after it up until the next new line will be ignored.
 				Comments must be on their own line.
@@ -75,7 +100,7 @@ The GUI sketch, how it will hopefully look in the end (Note, Read f stands for r
 			|                                                  |                         |                         |
 			|                                                  |                         |    Courses currently    |
 			|                                                  |                         |    	  selected		   |
-			|                                                  |                         |     					   | 
+			|                                                  |                         |     					   |
 			|                                                  |                         |            .            |
 			|                                                  |                         | ---------- .  --------- |
 			|                                                  |                         | | Read f | .  | Clear | |
