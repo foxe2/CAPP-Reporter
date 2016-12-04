@@ -15,8 +15,9 @@ uint CourseSelector::staticCount = 0;
 
 
 //Constructor
-CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QTextEdit *c, QPushButton *d) : 
-	currentCourses(c), readFromFileBtn(d), courseMajor(a), courseNumber(b) {
+CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QComboBox *c,
+    QTextEdit *d, QPushButton *e) : currentCourses(d), readFromFileBtn(e),
+    courseMajor(a), courseNumber(b), numCredits(c) {
 
 		//Make sure only one CourseSelector exists
 		Assert(!CourseSelector::staticCount, "only 1 CourseSelector can exist");
@@ -44,7 +45,7 @@ CourseSelector::~CourseSelector() {
 
 
 //Returns true if the course is legal, false otherwise
-inline bool verifyCourse(const QString m, const QString n) {	//TODO: improve
+inline bool verifyCourse(const QString m, const QString n) {
 	return m.size() == 4 && n.size() == 4;
 }
 
@@ -54,7 +55,8 @@ inline bool errorPrompt(const QString& txt, bool retry = true) {
 
 	//Display error message txt
     auto buttons = retry ? (QMessageBox::Ok | QMessageBox::Retry) : QMessageBox::Ok;
-	int ret = QMessageBox::critical(NULL, QObject::tr(APPLICATION_NAME), txt, buttons, QMessageBox::Ok);
+    int ret = QMessageBox::critical(NULL, QObject::tr(APPLICATION_NAME),
+                                    txt, buttons, QMessageBox::Ok);
 
 	//If the user wishes to retry, do so.
 	return (ret == QMessageBox::Retry);
@@ -77,10 +79,16 @@ void CourseSelector::tentativeToggle(bool checked) {
 		QObject::connect(courseMajor, SIGNAL(currentTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
 
-		//Connect course Number box
-		QObject::connect(courseNumber, SIGNAL(editTextChanged(QString)),
+        //Connect course Number box
+        QObject::connect(courseNumber, SIGNAL(editTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::connect(courseNumber, SIGNAL(currentTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+
+        //Connect num Credits Number box
+        QObject::connect(numCredits, SIGNAL(editTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
-		QObject::connect(courseNumber, SIGNAL(currentTextChanged(QString)),
+        QObject::connect(numCredits, SIGNAL(currentTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
 	}
 
@@ -99,6 +107,12 @@ void CourseSelector::tentativeToggle(bool checked) {
 		QObject::disconnect(courseNumber, SIGNAL(currentTextChanged(QString)),
 				this, SLOT(tentativelyAlterClasses(const QString&)));
 
+        //Disconnect num Credits Number box
+        QObject::disconnect(numCredits, SIGNAL(editTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+        QObject::disconnect(numCredits, SIGNAL(currentTextChanged(QString)),
+                this, SLOT(tentativelyAlterClasses(const QString&)));
+
 		//Redraw the GUI
 		updateClassesTaken(Qt::black);
 	}
@@ -108,12 +122,24 @@ void CourseSelector::tentativeToggle(bool checked) {
 //-----------------------Altering course selection----------------------
 
 
+//Format the the pieces into a course string
+inline QString * formatCourse(const QString mjr,
+                              const QString num,
+                              const QString crd) {
+    QString * ret = new QString(QObject::tr(" "));
+    ret->prepend(mjr);
+    ret->append(num);
+    ret->append(QObject::tr(" - ") + crd + QObject::tr(" credits"));
+    return ret;
+}
+
 //Update the definition of theCourse
-//Returns true if this course is possible 		TODO: make it check files, numbers, majors, etc
+//Returns true if this course is possible
 bool CourseSelector::updateCourse() {
-	delete theCourse; theCourse = new QString(tr(" "));
-	theCourse->prepend(courseMajor->currentText());
-	theCourse->append(courseNumber->currentText());
+    delete theCourse;
+    theCourse = formatCourse(courseMajor->currentText(),
+                             courseNumber->currentText(),
+                             numCredits->currentText());
 	return verifyCourse(courseMajor->currentText(),
 			courseNumber->currentText());
 }
@@ -234,8 +260,9 @@ void CourseSelector::readFromFile() {
 	//Set to true if there was an error
 	QString failInfo = tr("");
 
-	//Read in each course
-	std::string line, course, number;
+    //Read in each course
+    int cNum, credits;
+    std::string line, course;
 	while (std::getline(inFile, line)) {
 
 		//Ignore whitespace lines
@@ -245,13 +272,13 @@ void CourseSelector::readFromFile() {
 		std::istringstream nextCourse(line);
 
 		//If there was an error parsing, note so
-		if (!(nextCourse >> course >> number)) {
+        if (!(nextCourse >> course >>cNum >> credits)) {
 			failInfo = tr("There was an error reading in file. The");
 			failInfo += tr("following line is not correctly formatted:\n");
-		}
+        }
 
 		//If the course is not valid, note so
-		else if (!verifyCourse(QString(course.c_str()), QString(number.c_str())))
+        else if (!verifyCourse(QString(course.c_str()), QString::number(cNum)))
 			failInfo = tr("The following course is not a valid course:\n");
 
 		//If there was an error, prevent leaks, finish
@@ -264,7 +291,9 @@ void CourseSelector::readFromFile() {
 		}
 
 		//If the course is valid, add it to the map
-		QString * tmp = new QString(line.c_str());
+        QString * tmp = formatCourse(QString(course.c_str()),
+                                     QString::number(cNum),
+                                     QString::number(credits));
 		tmpCourses[*tmp] = tmp;
 	}
 
