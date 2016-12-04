@@ -13,6 +13,7 @@
 #include <fstream>
 #include <vector>
 #include <set>
+#include <map>
 
 using namespace std;
 
@@ -32,15 +33,15 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 	    	while(a != -1){
 	    		string course = temp.substr(0,a-1);
 	    		//If it cant be taken to satisfy req
-	    		if(course.substring(0,1).compare("!") == 0)
-	    			options.push_front(course);
+	    		if(course.substr(0,1).compare("!") == 0)
+	    			options.insert(options.begin(), course);
 	    		else
 	    			options.push_back(course);
 	    		temp=temp.substr(a+2);
 	    		a = temp.find("||");
 	    	}
-	    	if(temp.substring(0,1).compare("!") == 0)
-	    		options.push_front(temp);
+	    	if(temp.substr(0,1).compare("!") == 0)
+	    		options.insert(options.begin(),temp);
 	    	else
 	    		options.push_back(temp);
 	    	reqs.push_back(options);
@@ -53,10 +54,14 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 
 bool special_compare(string &req, set<string> &classes, vector<string> &unacceptable, bool noRepeat){
 	//Iterate through set checking for a match
-	for(set<string>::iterator itr = classes.begin(), itr != classes.end(); ++itr){
-		int courseNum = stoi(*itr.substring(5));
-		int reqNum = stoi(req.substring(5,9));
-		if(courseNum >= reqNum  && unacceptable.find(*itr) == unacceptable.end()){
+	for(set<string>::iterator itr = classes.begin(); itr != classes.end(); ++itr){
+		int courseNum = stoi(itr->substr(5));
+		int reqNum = stoi(req.substr(5,4));
+		bool isUnacceptable = false;
+		for(int j = 0; j < unacceptable.size(); ++j)
+			if(unacceptable[j].compare(*itr) == 0)
+				isUnacceptable = true;
+		if(courseNum >= reqNum  && !isUnacceptable){
 			if(noRepeat)
 				classes.erase(*itr);
 			return true;
@@ -68,21 +73,21 @@ bool special_compare(string &req, set<string> &classes, vector<string> &unaccept
 bool concentration_compare(string &concentration, set<string> &classes){
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)
 	bool canRepeat;
-	if(concentration.substring(0,1).compare("#") == 0){
-		concentration = concentration.substring(1);
+	if(concentration.substr(0,1).compare("#") == 0){
+		concentration = concentration.substr(1);
 		canRepeat = true;
 	}
 	else
 		canRepeat = false;
 
-	int num_courses = stoi(concentration(0,1));
-	concentration = concentration.substring(2);
+	int num_courses = stoi(concentration.substr(0,1));
+	concentration = concentration.substr(2);
 	int a = concentration.find("&&");
 	string f_name;
 	if(a == -1)
 		f_name = "../Concentrations/" + concentration + ".txt";
 	else
-		f_name = "../Concentrations/" + concentration.substring(0,a) + ".txt";
+		f_name = "../Concentrations/" + concentration.substr(0,a) + ".txt";
 	vector<vector<string> > conc_reqs;
 	vector<int> not_taken;
 	parse_reqs(conc_reqs, f_name);
@@ -97,8 +102,8 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 		//Find unacceptable course
 		set<string> unacceptable;
 		int before = 0;
-		while(reqs[i][before].substring(0,1).compare("!") == 0){
-			unacceptable.insert(reqs[i][before].subtring(1));
+		while(reqs[i][before].substr(0,1).compare("!") == 0){
+			unacceptable.insert(reqs[i][before].substr(1));
 			before++;
 		}
 
@@ -106,8 +111,8 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 		for(int j = before; j < reqs.size(); ++j){
 			string temp = reqs[i][j];
 			//Range(CSCI-4000+)
-			if(temp.substring(0,1).compare("@") == 0){
-				satisfied = concentraion_compare(temp.substring(1), classes);
+			if(temp.substr(0,1).compare("@") == 0){
+				satisfied = concentration_compare(temp.substr(1), classes);
 			}
 			else if(temp.find("+") != -1){
 				satisfied = special_compare(temp, classes, unacceptable, noRepeat);
@@ -145,12 +150,7 @@ bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_na
 	return true;
 }
 
-int main(int n, char* args[]){
-	if(args[1]==NULL || args[2]==NULL || args[3]==NULL){
-		cerr << "One or more arguments is NULL." << endl;
-		return 0;
-	}
-
+pair<map<string, string>, map<string, string> > generateCappReport(string input_file, map<string, int> courses){
 	vector<vector<string> > reqs;
 	vector<int> needed;
 	string input_file_name= args[1];
@@ -167,3 +167,4 @@ int main(int n, char* args[]){
 
 	file_output(reqs, needed, OUTPUT_FILE_NAME);
 }
+
