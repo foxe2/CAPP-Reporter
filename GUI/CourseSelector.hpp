@@ -21,7 +21,7 @@ class CourseSelector : public QObject {
 public:
 
 	//Constructor
-	CourseSelector(QComboBox *, QComboBox *, QTextEdit *, QPushButton *);
+    CourseSelector(QComboBox*,QComboBox*,QComboBox*,QTextEdit*,QPushButton*);
 
 	//Destructor
 	~CourseSelector();
@@ -70,6 +70,7 @@ private:
     //Used to store GUI items
     QTextEdit * currentCourses;
     QPushButton * readFromFileBtn;
+    const QComboBox * numCredits;
     const QComboBox * courseMajor;
     const QComboBox * courseNumber;
 

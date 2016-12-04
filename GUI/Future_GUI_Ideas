@@ -1,4 +1,6 @@
 TODO for GUI 1.0:
+	• Box to indicate number of credits, default to 4
+	• Read input from memory first, prompt to reload it
 	• CombosBox's should read from Database for default possibilities
 	• Finish placing everything based on relative coordinates to allow for re-sizing.
 

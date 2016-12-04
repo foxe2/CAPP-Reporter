@@ -1,30 +1,25 @@
 // Comm-Intensive Option - 1 from CSCI and 1 from HASS
-@#1:CSCI
+@#1:MATH
 @#1:HASS
-// Math Requirement
+// Core Requirements
 MATH-1010
 MATH-1020
+MATH-2400
+MATH-4090
+MATH-2010
+// CS Requirement
+CSCI-1100
 // Bio Requirement
 BIOL-1010
 BIOL-1015
 // Physics Requirement
 PHYS-1100
-// Science Option
-ASTR-1000+||BIOL-1000+||ERTH-1000+||CHEM-1000+||PHYS-1000+||!ERTH-1030||!ERTH-1040||!ERTH-1150||!ERTH-1100||(ERTH-1100&&ERTH-1150)
-// Comp Sci Requirements
-CSCI-1200
-CSCI-2200
-CSCI-2300
-CSCI-2500
-CSCI-2600
-CSCI-4210
-CSCI-4430
-CSCI-1100||CSCI-2000+
-// CS Option
-// Option 1 - No Concentration, Option 2 - Concentration
-@(3:Option_1&&CSCI-4940)||@3:C:Theory_Alg||@3:C:Sys_Soft||@3:C:AI_Data||@3:C:VGRG
-// Math/Logic Option
-@2:Math_Logic
+// Culminating Experience Requirement
+MATH-4950
+// Curriculum Requirements
+@6:MATH_OPT
+// Science Options
+@2:Math_science
 // HASS Requirement
 // Depth Requirement
 @#2:HASS_ART||@#2:HASS_COMM||@#2:HASS_LANG||@#2:HASS_LITR||@#2:HASS_PHIL||@#2:HASS_STSH||@#2:HASS_WRIT||@#2:HASS_IHSS||@#2:HASS_COGS||@#2:HASS_ECON||@#2:HASS_PSYC||@#2:HASS_STSS

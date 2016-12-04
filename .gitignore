@@ -1,2 +1,4 @@
-GUI/build/*
 testInput
+build/*
+*.swp
+algo
