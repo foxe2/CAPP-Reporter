@@ -15,9 +15,9 @@ BIOL-1015
 // Physics Requirement
 PHYS-1100
 // Culminating Experience Requirement
-// ASK TJ AND ZACH -- MATH-4950?
+MATH-4950
 // Curriculum Requirements
-// ASK TJ AND ZACH
+#6:MATH_OPT
 // Science Options
 #2:Math_science
 // HASS Requirement
