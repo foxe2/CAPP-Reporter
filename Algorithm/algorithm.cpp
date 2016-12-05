@@ -13,6 +13,7 @@
 #include <fstream>
 #include <vector>
 #include <set>
+#include <string>
 #include <map>
 
 using namespace std;
@@ -46,22 +47,19 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 	    		options.push_back(temp);
 	    	reqs.push_back(options);
     	}
+    	inFile.close();
     }
     else
-    	cout << "error";
-	inFile.close();
+    	cout << "Could not open " << f_name << endl;
 }
 
-bool special_compare(string &req, set<string> &classes, vector<string> &unacceptable, bool noRepeat){
+bool special_compare(string &req, set<string> &classes, set<string> &unacceptable, bool noRepeat){
 	//Iterate through set checking for a match
 	for(set<string>::iterator itr = classes.begin(); itr != classes.end(); ++itr){
 		int courseNum = stoi(itr->substr(5));
 		int reqNum = stoi(req.substr(5,4));
 		bool isUnacceptable = false;
-		for(int j = 0; j < unacceptable.size(); ++j)
-			if(unacceptable[j].compare(*itr) == 0)
-				isUnacceptable = true;
-		if(courseNum >= reqNum  && !isUnacceptable){
+		if(courseNum >= reqNum  && unacceptable.find(*itr) == unacceptable.end()){
 			if(noRepeat)
 				classes.erase(*itr);
 			return true;
@@ -92,9 +90,14 @@ bool concentration_compare(string &concentration, set<string> &classes){
 	vector<int> not_taken;
 	parse_reqs(conc_reqs, f_name);
 	//  IMPLEMENT COURSE COUNTING
-	compare_courses(conc_reqs, classes, not_taken, !canRepeat, num_courses);
+	//compare_courses(conc_reqs, classes, not_taken, !canRepeat, num_courses);
 	if(conc_reqs.size()-not_taken.size() == num_courses)
 		return true;
+	return false;
+}
+
+bool free_electives(set<string> &classes, string credits ){
+	return false;
 }
 
 void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector<int> &needed, bool noRepeat){
@@ -112,7 +115,11 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 			string temp = reqs[i][j];
 			//Range(CSCI-4000+)
 			if(temp.substr(0,1).compare("@") == 0){
-				satisfied = concentration_compare(temp.substr(1), classes);
+				string name = temp.substr(1);
+				satisfied = concentration_compare(name, classes);
+			}
+			else if(temp.substr(0,1).compare("$") == 0){
+				satisfied = free_electives(classes, temp.substr(1));
 			}
 			else if(temp.find("+") != -1){
 				satisfied = special_compare(temp, classes, unacceptable, noRepeat);
@@ -122,7 +129,7 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 				if(classes.find(temp) != classes.end()){
 					satisfied = true;
 					if(noRepeat)
-						classes.erase(reqs[i][reset_to]);
+						classes.erase(reqs[i][j]);
 				}
 			}
 			if(satisfied)
@@ -150,20 +157,44 @@ bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_na
 	return true;
 }
 
-pair<map<string, string>, map<string, string> > generateCappReport(string input_file, map<string, int> courses){
+void read_classes(set<string> &classes, string fname){
+	ifstream inFile(fname);
+	if (inFile.is_open()){
+		string temp;
+    	while(getline(inFile,temp)){
+    		//If comment then skip
+		    if(temp.find("//") != -1)
+		    	continue;
+		    classes.insert(temp);
+		}
+		inFile.close();
+    }
+    else
+    	cout << "error";
+}
+
+//pair<map<string, string>, map<string, string> > generateCappReport(string input_file, map<string, int> courses){
+int main(int argc, const char* args[]){
+	if(args[1]==NULL || args[2]==NULL){
+		cerr << "One or more arguments is NULL." << endl;
+		return 0;
+	}
+
 	vector<vector<string> > reqs;
 	vector<int> needed;
 	string input_file_name= args[1];
-	const string OUTPUT_FILE_NAME = "algorithm_output.txt";
-
-	parse_reqs(reqs, f_name);
+	string classes_fname = args[2];
+	string OUTPUT_FILE_NAME = "Test_Files//algorithm_output.txt";
+	set<string> classes;
+	read_classes(classes, classes_fname);
+	parse_reqs(reqs, input_file_name);
 
 	for(int i = 0; i < reqs.size(); ++i){
 		for(int j = 0; j < reqs[i].size(); ++j)
 			cout << reqs[i][j] << " ";
 		cout << endl;
 	}
-	//parse_major_reqs(reqs);
+	compare_courses(reqs, classes, needed, true);
 
 	file_output(reqs, needed, OUTPUT_FILE_NAME);
 }

@@ -1,0 +1,6 @@
+CAUTION: Read the READ.ME before using this program.
+It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings.
+CSCI-1200 
+CSCI-2200 
+CSCI-4210 
+CSCI-4430 
