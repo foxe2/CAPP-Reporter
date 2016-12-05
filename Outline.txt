@@ -1,5 +1,6 @@
-Made in vim, ASCII is displayed properly in vim.
+Made in vim, ASCII is displayed properly at least in vim.
 
+TO BE CHANGED:
 			How the algorithm will be run: ./<The Algorithm> <Path to Requirements directory> <Path to Concentrations directory> <Path to GUI_Input.txt>
 			Algorithm input:
 				Algorithm_Input.txt:
