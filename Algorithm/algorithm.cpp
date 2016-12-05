@@ -111,25 +111,46 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 		}
 		bool satisfied = false;
 		for(int j = before; j < reqs[i].size(); ++j){
-			string temp = reqs[i][j];
-			//Range(CSCI-4000+)
-			if(temp.substr(0,1).compare("@") == 0){
-				string name = temp.substr(1);
-				satisfied = concentration_compare(name, classes);
-			}
-			else if(temp.substr(0,1).compare("$") == 0){
-				satisfied = free_electives(classes, temp.substr(1));
-			}
-			else if(temp.find("+") != -1){
-				satisfied = special_compare(temp, classes, unacceptable, noRepeat);
-			}
-			//Regular courses
-			else{
-				if(classes.find(temp) != classes.end()){
-					satisfied = true;
-					if(noRepeat)
-						classes.erase(reqs[i][j]);
+			string element = reqs[i][j];
+			if(element.find("(") != -1)
+				element = element.substr(1).substr(0,element.length()-2);
+				int index; 
+				string temp;
+				cout << temp << endl;
+			while(true){
+				satisfied = false;
+				index = element.find("&&");
+				if(index == -1)
+					temp = element;
+				else{
+					temp = element.substr(0,index);
+					element = element.substr(index+2);
 				}
+				cout << temp << " a: " << index << endl;
+				//Range(CSCI-4000+)
+				if(temp.substr(0,1).compare("@") == 0){
+					string name = temp.substr(1);
+					satisfied = concentration_compare(name, classes);
+				}
+				else if(temp.substr(0,1).compare("$") == 0){
+					satisfied = free_electives(classes, temp.substr(1));
+				}
+				else if(temp.find("+") != -1){
+					satisfied = special_compare(temp, classes, unacceptable, noRepeat);
+				}
+				//Regular courses
+				else{
+					if(classes.find(temp) != classes.end()){
+						satisfied = true;
+						if(noRepeat)
+							classes.erase(reqs[i][j]);
+					}
+				}
+				cout << satisfied << endl;
+				if(!satisfied)
+					break;
+				if(index == -1)
+					break;
 			}
 			if(satisfied)
 				break;
