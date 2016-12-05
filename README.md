@@ -6,7 +6,7 @@ This application is being made to allow single, and even dual majors to get an *
 
 This application will have a user friendly GUI and should update the courses that need to be taken as you type. Furthermore, since you enter the courses manually you can enter the courses you will have taken by the end of next semester if you wish!
 
-Currently this application is being made only CS, MATH, and CS/MATH dual majors (due to time restrictions) however we intend to extend it in the future. With the design we have implemented adding another major is as simple as adding a file with the name of the four letter major into the Requirements folder, its contents being solely the requirements needed to obtain this major! If this major requires a student take multiple courses in the same concentration, simply add a file with the name of your four letter major to the Concentrations folder containing the courses in each concentration.
+Currently this application is being made only CS, MATH, and CS/MATH dual majors (due to time restrictions) however we intend to extend it in the future. The process for adding majors is complicated, so if we were to extend this to incorporate many majors, it would take the effort of a few dedicated developers since each combination of majors has their specific requirements and special rules to satisfy both majors. However, the language that is used to implement the logic is documented well enough that anyone that desires to do so could make a pull request and implement whatever majors they wish.
 
 ##Disclaimer
 
