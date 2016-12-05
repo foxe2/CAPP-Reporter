@@ -53,22 +53,22 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
     	cout << "Could not open " << f_name << endl;
 }
 
-bool special_compare(string &req, set<string> &classes, set<string> &unacceptable, bool noRepeat){
+bool special_compare(string &req, map<string, int> &classes, set<string> &unacceptable, bool noRepeat){
 	//Iterate through set checking for a match
-	for(set<string>::iterator itr = classes.begin(); itr != classes.end(); ++itr){
-		int courseNum = stoi(itr->substr(5));
+	for(map<string, int>::iterator itr = classes.begin(); itr != classes.end(); ++itr){
+		int courseNum = stoi(itr->first.substr(5,4));
 		int reqNum = stoi(req.substr(5,4));
 		bool isUnacceptable = false;
-		if(courseNum >= reqNum  && unacceptable.find(*itr) == unacceptable.end()){
+		if(itr->first.substr(0,4).compare(req.substr(0,4)) == 0 && courseNum >= reqNum  && unacceptable.find(itr->first) == unacceptable.end()){
 			if(noRepeat)
-				classes.erase(*itr);
+				classes.erase(itr);
 			return true;
 		}
 	}
 	return false;
 }
 
-bool concentration_compare(string &concentration, set<string> &classes){
+bool concentration_compare(string &concentration, map<string, int> &classes_credits){
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)
 	bool canRepeat;
 	if(concentration.substr(0,1).compare("#") == 0){
@@ -96,11 +96,20 @@ bool concentration_compare(string &concentration, set<string> &classes){
 	return false;
 }
 
-bool free_electives(set<string> &classes, string credits ){
-	return false;
+int free_electives(map<string, int> &classes, string credits ){
+	int numCreds = stoi(credits);
+	int currentCreds = 0;
+	cout << "h";
+	for(map<string, int>::iterator itr = classes.begin(); itr != classes.end(); ++itr){
+		cout << currentCreds << ": " << itr->first << endl;
+		currentCreds += itr->second;
+		if(currentCreds >= numCreds)
+			return 0;
+	}
+	return numCreds - currentCreds;
 }
 
-void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector<int> &needed, bool noRepeat){
+void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, vector<int> &needed, bool noRepeat){
 	for(int i = 0; i < reqs.size(); ++i){
 		//Find unacceptable course
 		set<string> unacceptable;
@@ -112,11 +121,22 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 		bool satisfied = false;
 		for(int j = before; j < reqs[i].size(); ++j){
 			string element = reqs[i][j];
-			if(element.find("(") != -1)
+			if(element.find("$") == 0){
+				string credits = element.substr(1);
+				cout<< credits << " " << element<<endl;
+				int dif = free_electives(classes, credits);
+				if(dif > 0){
+					vector<string> creds;
+					creds.push_back("You need " + to_string(dif) + " more free elective credits.");
+					reqs[i] = creds;
+				}
+				else
+					satisfied = true;
+			}
+			else if(element.find("(") != -1)
 				element = element.substr(1).substr(0,element.length()-2);
 				int index; 
 				string temp;
-				cout << temp << endl;
 			while(true){
 				satisfied = false;
 				index = element.find("&&");
@@ -126,14 +146,10 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 					temp = element.substr(0,index);
 					element = element.substr(index+2);
 				}
-				cout << temp << " a: " << index << endl;
 				//Range(CSCI-4000+)
 				if(temp.substr(0,1).compare("@") == 0){
 					string name = temp.substr(1);
 					satisfied = concentration_compare(name, classes);
-				}
-				else if(temp.substr(0,1).compare("$") == 0){
-					satisfied = free_electives(classes, temp.substr(1));
 				}
 				else if(temp.find("+") != -1){
 					satisfied = special_compare(temp, classes, unacceptable, noRepeat);
@@ -146,7 +162,6 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 							classes.erase(reqs[i][j]);
 					}
 				}
-				cout << satisfied << endl;
 				if(!satisfied)
 					break;
 				if(index == -1)
@@ -177,7 +192,7 @@ bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_na
 	return true;
 }
 
-void read_classes(set<string> &classes, string fname){
+void read_classes(map<string, int> &classes, string fname){
 	ifstream inFile(fname);
 	if (inFile.is_open()){
 		string temp;
@@ -185,7 +200,8 @@ void read_classes(set<string> &classes, string fname){
     		//If comment then skip
 		    if(temp.find("//") != -1)
 		    	continue;
-		    classes.insert(temp);
+		    int index = temp.find(":");
+		    classes[temp.substr(0, index)] = stoi(temp.substr(index+1));
 		}
 		inFile.close();
     }
@@ -205,17 +221,20 @@ int main(int argc, const char* args[]){
 	string input_file_name= args[1];
 	string classes_fname = args[2];
 	string OUTPUT_FILE_NAME = "Test_Files//algorithm_output.txt";
-	set<string> classes;
+	map<string, int> classes;
 	read_classes(classes, classes_fname);
 	parse_reqs(reqs, input_file_name);
 
+	
+	compare_courses(reqs, classes, needed, true);
 	for(int i = 0; i < reqs.size(); ++i){
 		for(int j = 0; j < reqs[i].size(); ++j)
 			cout << reqs[i][j] << " ";
 		cout << endl;
 	}
-	compare_courses(reqs, classes, needed, true);
-
+	cout << endl;
+	for(int i = 0; i <needed.size(); ++i)
+		cout << needed[i] << endl;
 	file_output(reqs, needed, OUTPUT_FILE_NAME);
 }
 
