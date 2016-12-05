@@ -32,7 +32,7 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 		    //Loop through and parse
 	    	int a = temp.find("||");
 	    	while(a != -1){
-	    		string course = temp.substr(0,a-1);
+	    		string course = temp.substr(0,a);
 	    		//If it cant be taken to satisfy req
 	    		if(course.substr(0,1).compare("!") == 0)
 	    			options.insert(options.begin(), course);
@@ -109,9 +109,8 @@ void compare_courses(vector<vector<string> > &reqs, set<string> &classes, vector
 			unacceptable.insert(reqs[i][before].substr(1));
 			before++;
 		}
-
 		bool satisfied = false;
-		for(int j = before; j < reqs.size(); ++j){
+		for(int j = before; j < reqs[i].size(); ++j){
 			string temp = reqs[i][j];
 			//Range(CSCI-4000+)
 			if(temp.substr(0,1).compare("@") == 0){
