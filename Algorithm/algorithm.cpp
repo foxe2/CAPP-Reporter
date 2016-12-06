@@ -135,20 +135,33 @@ int concentration_compare(string &concentration, map<string, int> &classes_credi
 		concentration = concentration.substr(1);
 		noRepeat = false;
 	}
-
+	cout << concentration << endl;
 	int num_courses = stoi(concentration.substr(0,1));
-	string c_name = "Database/" + concentration.substr(2) + ".txt";
+	cout << num_courses <<endl;
+	string c_name = "Database/Concentrations/" + concentration.substr(2) + ".txt";
 	vector<vector<string> > conc_reqs;
 	vector<int> not_taken;
 	parse_reqs(conc_reqs, c_name);
 	// IMPLEMENT COURSE COUNTING
 	compare_courses(conc_reqs, classes_credits, not_taken, noRepeat, num_courses);
+	for(int i = 0; i < conc_reqs.size(); ++i){
+		for(int j = 0; j < conc_reqs[i].size(); ++j)
+			cout << conc_reqs[i][j] << " ";
+		cout << endl;
+	}
+	cout<< "NEEDED: " << endl;
+	for(int i = 0; i < not_taken.size(); ++i)
+		cout<< not_taken[i];
+	cout << endl<<"done"<<endl;
 	if(conc_reqs.size()-not_taken.size() >= num_courses)
-		return 0;
+		return -1;
+	cout << "res: " << conc_reqs.size()-not_taken.size()<<endl;
 	return conc_reqs.size()-not_taken.size();
 }
 
 void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, vector<int> &needed, bool noRepeat, int num_courses){
+	cout << "reqs size:  " << reqs.size()<<endl;
+	vector<int> classes_to_delete;
 	for(int i = 0; i < reqs.size(); ++i){
 		//Find unacceptable course
 		set<string> unacceptable;
@@ -188,7 +201,7 @@ void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, v
 				if(temp.substr(0,1).compare("@") == 0){
 					string name = temp.substr(1);
 					int num_left = concentration_compare(name, classes);
-					if(num_left == 0)
+					if(num_left == -1)
 						satisfied = true;
 				}
 				else if(temp.find("+") != -1){
@@ -212,8 +225,11 @@ void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, v
 		}
 		if(!satisfied)
 			needed.push_back(i);
-		if(reqs.size()-needed.size() >= num_courses)
+		if(i-needed.size()+1 >= num_courses){
+			cout<< needed.size()<< endl;
+			cout << num_courses<<"i: "<<i<<endl;
 			break;
+		}
 	}
 }
 
@@ -257,7 +273,7 @@ void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, v
 				if(temp.substr(0,1).compare("@") == 0){
 					string name = temp.substr(1);
 					int num_left = concentration_compare(name, classes);
-					if(num_left == 0)
+					if(num_left == -1)
 						satisfied = true;
 				}
 				else if(temp.find("+") != -1){

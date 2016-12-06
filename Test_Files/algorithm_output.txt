@@ -8,5 +8,7 @@ Core Classes
 CSCI-4210 
 Core Classes
 CSCI-4430 
+Math/Logic
+@2:Math_Logic 
 Free Electives
 You need 16 more free elective credits. 
