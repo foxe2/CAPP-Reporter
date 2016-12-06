@@ -22,7 +22,7 @@ CSCI-4430
 CSCI-1100||CSCI-2000+
 // CS Option
 // Option 1 - No Concentration, Option 2 - Concentration
-@(3:Option_1&&CSCI-4940)||@3:C:Theory_Alg||@3:C:Sys_Soft||@3:C:AI_Data||@3:C:VGRG
+@(3:Option_1&&CSCI-4940)||@3:Theory_Alg||@3:Sys_Soft||@3:AI_Data||@3:VGRG
 // Math/Logic Option
 @2:Math_Logic
 // HASS Requirement

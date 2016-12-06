@@ -1,5 +1,6 @@
-Made in vim, ASCII is displayed properly in vim.
+Made in vim, ASCII is displayed properly at least in vim.
 
+TO BE CHANGED:
 			How the algorithm will be run: ./<The Algorithm> <Path to Requirements directory> <Path to Concentrations directory> <Path to GUI_Input.txt>
 			Algorithm input:
 				Algorithm_Input.txt:
@@ -62,16 +63,8 @@ Made in vim, ASCII is displayed properly in vim.
 				class cannot be used to fulfill the requirement.  For example:
 					CSCI-2000+||!CSCI-2300
 
-				The % symbol is used in the double major files.  It indicates to the algorithm that the following file
-				will be used to satisfy the requirements of that major. For example, for CS-Math duals:
-					%MATH-None
-					%CSCI-None
-
 				This file will call on MATH-None.txt and CSCI-None.txt to make sure each of their separate requirements are fulfilled,
 				including free electives.
-
-				This means that any 2000-level CS class or above can be used for this requirement, EXCEPT for CSCI-2300,
-				which will not work for this requirement.
 
 				The last keyword allowed is //. This is a comment indicator. Anything written after it up until the next new line will be ignored.
 				Comments must be on their own line.
