@@ -18,7 +18,7 @@
 
 using namespace std;
 
-void parse_reqs(vector<vector<string> > &reqs, string &f_name, vector<string> &comments);
+void parse_reqs(string &f_name, vector<vector<string> > &major_reqs, vector<string> &major_comments, vector<vector<string> > &hass_reqs, vector<string> &hass_comments);
 void parse_reqs(vector<vector<string> > &reqs, string &f_name);
 bool special_compare(string &req, map<string, int> &classes, set<string> &unacceptable, bool noRepeat);
 int free_electives(map<string, int> &classes, string credits);
@@ -27,12 +27,17 @@ void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, v
 void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, vector<int> &needed);
 
 //Takes in a datastructure which it will add classes to
-void parse_reqs(vector<vector<string> > &reqs, string &f_name, vector<string> &comments){
+void parse_reqs(string &f_name, vector<vector<string> > &major_reqs, vector<string> &major_comments, vector<vector<string> > &hass_reqs, vector<string> &hass_comments){
 	ifstream inFile(f_name);
 	if (inFile.is_open()){
 		string temp;
 		string most_recent_comment = "";
+    	bool inHass = false;
     	while(getline(inFile,temp)){
+    		if(temp.find("// HASS Requirement") != -1){
+    			inHass = true;
+    			continue;
+    		}
     		//If comment then update field
     		int comment_index = temp.find("//");
 		    if( comment_index != -1){
@@ -57,8 +62,14 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name, vector<string> &c
 	    		options.insert(options.begin(),temp);
 	    	else
 	    		options.push_back(temp);
-	    	reqs.push_back(options);
-	    	comments.push_back(most_recent_comment);
+	    	if(inHass && options[0].find("$") == -1){
+	    		hass_reqs.push_back(options);
+	    		hass_comments.push_back(most_recent_comment);
+	    	}
+	    	else{
+	    		major_reqs.push_back(options);
+	    		major_comments.push_back(most_recent_comment);
+	    	}
     	}
     	inFile.close();
     }
@@ -316,54 +327,77 @@ void read_classes(map<string, int> &classes, string fname){
     	cout << "error";
 }
 
-bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_name, vector<string> &comments){
+void file_output(string f_name, pair<map<string, string>*, map<string, string>* > pairMH){
 	ofstream outFile(f_name);
   	if (!outFile.is_open())
-    	return false;
+    	cout << "Error writing to output file";
     outFile << "CAUTION: Read the READ.ME before using this program." << endl;
-    outFile << "It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings." << endl;
+    outFile << "It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings." << endl << endl;
 	//Loop through in needed and output each req
-	for(int i = 0; i < needed.size(); ++i){
-		outFile << comments[needed[i]] << endl;
-		for(int j = 0; j < reqs[needed[i]].size(); ++j){
-			outFile << reqs[needed[i]][j] << " ";
-		}
-		outFile << endl;
-	}
+	outFile << "Major requirements to complete: " << endl;
+	for(map<string,string>::iterator itr = pairMH.first->begin(); itr != pairMH.first->end(); ++itr)
+		outFile << itr->second << endl << itr->first << endl;
+	outFile << endl << "HASS requirements to complete: "  << endl;
+	for(map<string,string>::iterator itr = pairMH.second->begin(); itr != pairMH.second->end(); ++itr)
+		outFile << itr->second << endl << itr->first << endl;
 	outFile.close();
-	return true;
 }
 
-/*&pair<map<string, string>, map<string, string> > runAlgo(string req_file, map<string, int> courses){
-	return NULL;
-}*/
+pair<map<string, string>*, map<string, string>* > runAlgo(string req_file, map<string, int> courses){
+	map<string, string>* hass = new map<string, string>();
+	vector<vector<string> > hass_reqs;
+	vector<int> hass_needed;
+	vector<string> hass_comments;
+	map<string, string>* major = new map<string, string>();
+	vector<vector<string> > major_reqs;
+	vector<int> major_needed;
+	vector<string> major_comments;
+	parse_reqs(req_file, major_reqs, major_comments, hass_reqs, hass_comments);
+	compare_courses(hass_reqs, courses, hass_needed);
+	for(int i = 0; i < hass_needed.size(); ++i){
+		string temp = "";
+		vector<string> components = hass_reqs[hass_needed[i]];
+		for(int j = 0; j < components.size(); ++j)
+			temp = temp + components[j] + " ";
+		(*hass)[temp.substr(0,temp.length()-1)]= hass_comments[hass_needed[i]];
+	}
+	compare_courses(major_reqs, courses, major_needed);
+	for(int i = 0; i < major_needed.size(); ++i){
+		string temp = "";
+		vector<string> components = major_reqs[major_needed[i]];
+		for(int j = 0; j < components.size(); ++j)
+			temp = temp + components[j] + " ";
+		(*major)[temp.substr(0,temp.length()-1)] = major_comments[major_needed[i]];
+	}
+	return make_pair(major,hass);
+}
 
-//pair<map<string, string>, map<string, string> > generateCappReport(string input_file, map<string, int> courses){
 int main(int argc, const char* args[]){
 	if(args[1]==NULL || args[2]==NULL){
 		cerr << "One or more arguments is NULL." << endl;
 		return 0;
 	}
 
-	vector<vector<string> > reqs;
+	/*vector<vector<string> > reqs;
 	vector<string> comments;
-	vector<int> needed;
+	vector<int> needed;*/
 	string input_file_name= args[1];
 	string classes_fname = args[2];
 	string OUTPUT_FILE_NAME = "Test_Files/algorithm_output.txt";
 	map<string, int> classes;
 	read_classes(classes, classes_fname);
-	parse_reqs(reqs, input_file_name, comments);
+	pair<map<string, string>*, map<string, string>* > pairMH = runAlgo(input_file_name, classes);
+	//parse_reqs(reqs, input_file_name, comments);
 	
-	compare_courses(reqs, classes, needed);
-	for(int i = 0; i < reqs.size(); ++i){
+	//compare_courses(reqs, classes, needed);
+	/*for(int i = 0; i < reqs.size(); ++i){
 		for(int j = 0; j < reqs[i].size(); ++j)
 			cout << reqs[i][j] << " ";
 		cout << endl;
 	}
 	cout << endl;
 	for(int i = 0; i <needed.size(); ++i)
-		cout << needed[i] << endl;
-	file_output(reqs, needed, OUTPUT_FILE_NAME, comments);
+		cout << needed[i] << endl;*/
+	file_output(OUTPUT_FILE_NAME, pairMH);
 }
 
