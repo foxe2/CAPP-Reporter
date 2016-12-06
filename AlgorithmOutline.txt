@@ -1,0 +1,31 @@
+read_reqs_input(Vector<Vector<string>> reqs, string filename){
+	Parse file and add elements to reqs
+}
+
+read_reqs_input(Dictionary<string> completed, string filename){
+	Parse file and add elements to completed
+}
+
+compare_classes(Vector<Vector<string>> reqs, Set<string> completed, Vector<int> needed){
+	The 'needed' DS is a list of indexes of requirements not satisfied
+
+	Iterate through the requirements, finding classes that satisfy each 
+}
+
+main(){
+	1) Take arguments
+	2) Create DSs
+	3) Call the parse_input function for each major
+	3) Call the parse_classes taken function
+	4) Compare reqs to classes taken
+	5) Output missing requirements
+}
+
+Data structure for Classes Required: Vector<Vector<string>>
+	-Each element in the set will be a requirement vector
+	-Each requirement vector will contain a list of OR classes
+	-This means that if there is a required class the size of that element vector will be 1
+	-Since it is a string, something such as CSCI-* will be stored as such and any required class will satisfy it
+
+Data structure for Class Taken: Dictionary<string>
+	- Easy, fast look up
