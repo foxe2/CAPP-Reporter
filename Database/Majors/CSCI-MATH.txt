@@ -31,7 +31,7 @@ CSCI-4430
 CSCI-1100||CSCI-2000+
 // CS Option
 // Option 1 - No Concentration, Option 2 - Concentration
-@(3:Option_1&&CSCI-4940)||@3:C:Theory_Alg||@3:C:Sys_Soft||@3:C:AI_Data||@3:C:VGRG
+@(3:Option_1&&CSCI-4940)||@3:Theory_Alg||@3:Sys_Soft||@3:AI_Data||@3:VGRG
 // HASS Requirement
 // Depth Requirement
 @#2:HASS_ART||@#2:HASS_COMM||@#2:HASS_LANG||@#2:HASS_LITR||@#2:HASS_PHIL||@#2:HASS_STSH||@#2:HASS_WRIT||@#2:HASS_IHSS||@#2:HASS_COGS||@#2:HASS_ECON||@#2:HASS_PSYC||@#2:HASS_STSS
