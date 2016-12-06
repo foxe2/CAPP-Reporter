@@ -13,6 +13,8 @@
 //Forward declarations
 class ColorText;
 
+//Helpful typedef
+typedef std::map<const QString, const QString*> courses;
 
 //A class to handle the courses taken
 //and the graphics associated with them
@@ -46,6 +48,9 @@ public slots:
     //Read classes from a file
     void readFromFile();
 
+    //Get the courses taken for the algo
+    const std::map<const std::string, const int> * getCoursesTaken() const;
+
 signals:
 
 	//A signal to be emitted if updateClassesTaken is called
@@ -63,16 +68,16 @@ private:
     void updateClassesTaken(const Qt::GlobalColor);
 
     //Used for current courses
-    std::map<const QString, const QString*> classesTaken;
     ColorText * highlighter;
+    courses classesTaken;
     QString * theCourse;
 
     //Used to store GUI items
     QTextEdit * currentCourses;
     QPushButton * readFromFileBtn;
-    const QComboBox * numCredits;
     const QComboBox * courseMajor;
     const QComboBox * courseNumber;
+    const QComboBox * numCredits;
 
 	//Ensure there is only one CourseSelector
     static uint staticCount;
