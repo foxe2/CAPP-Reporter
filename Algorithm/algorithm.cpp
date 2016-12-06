@@ -19,14 +19,18 @@
 using namespace std;
 
 //Takes in a datastructure which it will add classes to
-void parse_reqs(vector<vector<string> > &reqs, string &f_name){
+void parse_reqs(vector<vector<string> > &reqs, string &f_name, vector<string> &comments){
 	ifstream inFile(f_name);
 	if (inFile.is_open()){
 		string temp;
+		string most_recent_comment = "";
     	while(getline(inFile,temp)){
-    		//If comment then skip
-		    if(temp.find("//") != -1)
+    		//If comment then update field
+    		int comment_index = temp.find("//");
+		    if( comment_index != -1){
+		    	most_recent_comment = temp.substr(comment_index+2);
 		    	continue;
+		    }
 
 		    vector<string> options;
 		    //Loop through and parse
@@ -46,6 +50,7 @@ void parse_reqs(vector<vector<string> > &reqs, string &f_name){
 	    	else
 	    		options.push_back(temp);
 	    	reqs.push_back(options);
+	    	comments.push_back(most_recent_comment);
     	}
     	inFile.close();
     }
@@ -70,13 +75,11 @@ bool special_compare(string &req, map<string, int> &classes, set<string> &unacce
 
 bool concentration_compare(string &concentration, map<string, int> &classes_credits){
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)
-	bool canRepeat;
+	bool canRepeat = false;
 	if(concentration.substr(0,1).compare("#") == 0){
 		concentration = concentration.substr(1);
 		canRepeat = true;
 	}
-	else
-		canRepeat = false;
 
 	int num_courses = stoi(concentration.substr(0,1));
 	concentration = concentration.substr(2);
@@ -88,7 +91,7 @@ bool concentration_compare(string &concentration, map<string, int> &classes_cred
 		f_name = "../Concentrations/" + concentration.substr(0,a) + ".txt";
 	vector<vector<string> > conc_reqs;
 	vector<int> not_taken;
-	parse_reqs(conc_reqs, f_name);
+	//parse_reqs(conc_reqs, f_name, comments);
 	//  IMPLEMENT COURSE COUNTING
 	//compare_courses(conc_reqs, classes, not_taken, !canRepeat, num_courses);
 	if(conc_reqs.size()-not_taken.size() == num_courses)
@@ -123,7 +126,6 @@ void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, v
 			string element = reqs[i][j];
 			if(element.find("$") == 0){
 				string credits = element.substr(1);
-				cout<< credits << " " << element<<endl;
 				int dif = free_electives(classes, credits);
 				if(dif > 0){
 					vector<string> creds;
@@ -175,7 +177,7 @@ void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, v
 	}
 }
 
-bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_name){
+bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_name, vector<string> &comments){
 	ofstream outFile(f_name);
   	if (!outFile.is_open())
     	return false;
@@ -183,6 +185,7 @@ bool file_output(vector<vector<string> > &reqs, vector<int> &needed, string f_na
     outFile << "It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings." << endl;
 	//Loop through in needed and output each req
 	for(int i = 0; i < needed.size(); ++i){
+		outFile << comments[needed[i]] << endl;
 		for(int j = 0; j < reqs[needed[i]].size(); ++j){
 			outFile << reqs[needed[i]][j] << " ";
 		}
@@ -209,6 +212,10 @@ void read_classes(map<string, int> &classes, string fname){
     	cout << "error";
 }
 
+/*&pair<map<string, string>, map<string, string> > runAlgo(string req_file, map<string, int> courses){
+	return NULL;
+}*/
+
 //pair<map<string, string>, map<string, string> > generateCappReport(string input_file, map<string, int> courses){
 int main(int argc, const char* args[]){
 	if(args[1]==NULL || args[2]==NULL){
@@ -217,13 +224,14 @@ int main(int argc, const char* args[]){
 	}
 
 	vector<vector<string> > reqs;
+	vector<string> comments;
 	vector<int> needed;
 	string input_file_name= args[1];
 	string classes_fname = args[2];
-	string OUTPUT_FILE_NAME = "Test_Files//algorithm_output.txt";
+	string OUTPUT_FILE_NAME = "Test_Files/algorithm_output.txt";
 	map<string, int> classes;
 	read_classes(classes, classes_fname);
-	parse_reqs(reqs, input_file_name);
+	parse_reqs(reqs, input_file_name, comments);
 
 	
 	compare_courses(reqs, classes, needed, true);
@@ -235,6 +243,8 @@ int main(int argc, const char* args[]){
 	cout << endl;
 	for(int i = 0; i <needed.size(); ++i)
 		cout << needed[i] << endl;
-	file_output(reqs, needed, OUTPUT_FILE_NAME);
+	for(int i = 0; i < comments.size(); ++ i)
+		cout << comments[i] << endl;
+	file_output(reqs, needed, OUTPUT_FILE_NAME, comments);
 }
 

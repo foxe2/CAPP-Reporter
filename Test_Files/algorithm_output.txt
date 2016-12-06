@@ -1,8 +1,14 @@
 CAUTION: Read the READ.ME before using this program.
 It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings.
+Core Classes
 CSCI-1200 
+Core Classes
 CSCI-2200 
+Core Classes
 CSCI-4210 
+Core Classes
 CSCI-4430 
+Science Option
 !ERTH-1100 !ERTH-1150 !ERTH-1040 !ERTH-1030 ASTR-1000+ BIOL-1000+ ERTH-1000+ CHEM-1000+ PHYS-1000+ (ERTH-1100&&ERTH-1150) 
+Free Electives
 You need 17 more free elective credits. 
