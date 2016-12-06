@@ -198,15 +198,13 @@ void CourseSelector::addClass() {
 }
 
 //Clear the map passed in, preventing memory leaks
-inline void clearMap(std::map<const QString, const QString*>& a) {
+inline void clearMap(courses& a) {
 	for(auto i : a) delete i.second;
 	a.clear();
 }
 
 //Reset classesTaken
 void CourseSelector::reset() {
-
-	//Clear classesTaken
 	clearMap(classesTaken);
 	updateClassesTaken(Qt::black);
 }
@@ -233,7 +231,7 @@ void CourseSelector::readFromFile() {
 	//Re-enable the button
 	readFromFileBtn->setEnabled(true);
 
-	//Do nothing if the user clicked cancel
+    //Do nothing if the user clicked cancel
 	if (inFileName == tr("")) return;
 
 	//Open the file if possible
@@ -255,7 +253,7 @@ void CourseSelector::readFromFile() {
 	//Create a temporary map to hold the file contents
 	//The reason we do this is in case there is an error
 	//in reading in the file contents, classesTaken isn't affected
-	std::map<const QString, const QString*> tmpCourses;
+    courses tmpCourses;
 
 	//Set to true if there was an error
 	QString failInfo = tr("");
@@ -303,6 +301,37 @@ void CourseSelector::readFromFile() {
 	//Populate classes taken with the new classes
 	for(auto i : tmpCourses) classesTaken[i.first] = i.second;
 	updateClassesTaken(Qt::black);
+}
+
+//Takes in a course and converts it to what the algo expects
+inline std::pair<const std::string,const int>
+courseParser(const std::string in) {
+
+    //Parse the string
+    std::string a,b,k; int c;
+    std::stringstream str(in);
+    str >> a >> b >> k >> c;
+
+    //Return the pair requested efficiently
+    return std::move(make_pair(a+std::string("-")+b, c));
+}
+
+//Returns the courses taken
+const std::map<const std::string, const int> *
+CourseSelector::getCoursesTaken() const {
+
+    //Return map
+    auto ret = new std::map<const std::string, const int>();
+
+    //Add each course taken
+    for(auto i : classesTaken)
+        ret->insert(courseParser(i.first.toLatin1().constData()));
+
+    //Add course tentatively taken
+    ret->insert(courseParser(theCourse->toLatin1().constData()));
+
+    //Return the map without need for dynamic allocation
+    return ret;
 }
 
 

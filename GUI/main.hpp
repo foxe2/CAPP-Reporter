@@ -1,11 +1,15 @@
 #ifndef MAIN_HPP
 #define MAIN_HPP
 
+#include <string>
+#include <map>
+
 //The name of the program
 #define APPLICATION_NAME "CAPP Reporter"
 
-//Helpful typedef
+//Helpful typedefs
 typedef unsigned int uint;
+typedef std::map<std::string, std::string> algoMap;
 
 //Prints Msg to stderr and exits
 void Err(const char * Msg);

@@ -1,7 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 #include "CourseSelector.hpp"
-
+#include "../Algorithm.cpp"
 
 //Size of the scene
 const uint MainWindow::Width = 800;
@@ -9,7 +9,6 @@ const uint MainWindow::Height = 600;
 
 //Default number of GUIs
 uint MainWindow::GUICount = 0;
-
 
 //--------------------------Constructor/Destructor-----------------------
 
@@ -182,8 +181,43 @@ void MainWindow::reset() { courses->reset(); }
 //-------------------------Altering GUI's output------------------------
 
 
-//Update the GUI's classes take list, and update the rest subsequently
+//The function is taken when the GUI's display needs to be
+//updated. It is triggered by a signal emitted from CourseSelector
 void MainWindow::updateAll() {
 
-	//TODO: implement
+
+    //#include "Algo..."
+
+    //Algorithm input
+    std::string fileName;
+
+    ui->primaryMajor->currentText().toLatin1().constData();
+
+    //Create the file name
+    fileName = ui->primaryMajor->currentText().toLatin1().constData() + std::string("-");
+    fileName += ui->secondaryMajor->currentText().toLatin1().constData();
+
+    auto * inputMap = courses->getCoursesTaken();
+
+    //Output text
+    QString hassTxt = tr(""), mainTxt = tr("");
+
+    //Run the algorithm and record the output
+    const std::pair<algoMap*,algoMap*> algoOutput = runAlgo(fileName, *inputMap);
+
+    //Make HASS string
+    for(auto i : *(algoOutput.second)) {
+        hassTxt.append(tr(i.second.c_str()) + tr("\n"));
+        hassTxt.append(tr(i.first.c_str()) + tr("\n\n"));
+    }
+
+    //Make Main string
+    for(auto i : *(algoOutput.first)) {
+        mainTxt.append(tr(i.second.c_str()) + tr("\n"));
+        mainTxt.append(tr(i.first.c_str()) + tr("\n\n"));
+    }
+
+    //Update the GUI
+    ui->hassText->setPlainText(hassTxt);
+    ui->mainText->setPlainText(mainTxt);
 }
