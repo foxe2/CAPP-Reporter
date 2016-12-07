@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->graphicsView->setScene(new QGraphicsScene(ui->graphicsView));
     ui->graphicsView->scene()->setSceneRect(0,0,MainWindow::Width,MainWindow::Height);
 
-    //Disable scrolling
+    //Disable window scrolling
     ui->graphicsView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     ui->graphicsView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
 
@@ -40,14 +40,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 								 ui->currentCourses, ui->readFromFile);
 
     //Draw and position the GUI's items
-    drawOutlines();
+    drawOutlines();   
 
     //Conect everything up
     connectDefaults();
 
-    //Draw the GUI
+    //Final setup
 	reset(); ui->graphicsView->lower();
     setMaximumSize(this->size());
+    loadCourseIntoComboBoxes();
     displayStartupWarning();
 }
 
@@ -190,8 +191,31 @@ void MainWindow::connectDefaults() {
     courses->tentativeToggle(true);
 }
 
-//Reset the application 
+
+//----------------------------GUI final setup---------------------------
+
+
+//Reset the application
 void MainWindow::reset() { courses->reset(); }
+
+//Load courses into major ComboBoxes
+//This allows the auto-complete to work
+void MainWindow::loadCourseIntoComboBoxes() {
+
+    //Make the list
+    QStringList tmp = QStringList() << "ARCH" << "ARTS" << "ASTR" << "BCBP"
+                                    << "BIOL" << "BMED" << "CHEM" << "CHME"
+                                    << "CIVL" << "COGS" << "COMM" << "CSCI"
+                                    << "ECON" << "ECSE" << "ENVE" << "ERTH"
+                                    << "IHSS" << "ISYE" << "ITWS" << "LANG"
+                                    << "LITR" << "MANE" << "MATH" << "MATP"
+                                    << "MGMT" << "MTLE" << "PHIL" << "PHYS"
+                                    << "PSYC" << "STSH" << "STSS" << "WRIT";
+
+    //Load the list
+    ui->courseMajor->addItems(tmp);
+    ui->secondaryMajor->addItems(tmp);
+}
 
 
 //-------------------------Altering GUI's output------------------------
@@ -200,13 +224,14 @@ void MainWindow::reset() { courses->reset(); }
 //Display a warning to the user on startup
 void MainWindow::displayStartupWarning() {
 
+    //Make the warning
     QString txt = tr("CAUTION: Read the READ.ME before using this program. ");
     txt += tr("It contains extremely vital information about the current state ");
     txt += tr("of the program and it's known weaknesses and shortcomings.");
 
     //Warn the user
     QMessageBox::warning(NULL, QObject::tr(APPLICATION_NAME),
-                                    txt, QMessageBox::Ok, QMessageBox::Ok);
+                            txt, QMessageBox::Ok, QMessageBox::Ok);
 }
 
 #include <QDebug>
@@ -226,8 +251,7 @@ void MainWindow::updateAll() {
     fileName.append(".txt");
 
     //Output text
-    QString hassTxt = tr("HASS Requirements remaining:\n");
-    QString mainTxt = tr("Major Requirements remaining:\n");
+    QString mainTxt = tr(""), hassTxt = tr("");
 
     //Run the algorithm and record the output
     auto * inputMap = courses->getCoursesTaken();
@@ -248,6 +272,15 @@ void MainWindow::updateAll() {
     for(auto i : *(algoOutput.first)) {
         mainTxt.append(tr(i.second.c_str()) + tr("\n"));
         mainTxt.append(tr(i.first.c_str()) + tr("\n\n"));
+    }
+
+    //Finalize output
+    if (mainTxt == tr("") && hassTxt == tr(""))
+        mainTxt = tr("Error: Major combination doesn't exist or ")
+                + tr("has yet to be implemented in this application");
+    else {
+        hassTxt.prepend(tr("HASS Requirements remaining:\n"));
+        mainTxt.prepend(tr("Major Requirements remaining:\n"));
     }
 
     //Update the GUI
