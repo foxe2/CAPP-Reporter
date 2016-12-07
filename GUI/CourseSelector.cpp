@@ -18,7 +18,7 @@ uint CourseSelector::staticCount = 0;
 //Constructor
 CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QComboBox *c,
     QTextEdit *d, QPushButton *e) : currentCourses(d), readFromFileBtn(e),
-    courseMajor(a), courseNumber(b), numCredits(c) {
+    courseMajor(a), numCredits(c), courseNumber(b) {
 
 		//Make sure only one CourseSelector exists
 		Assert(!CourseSelector::staticCount, "only 1 CourseSelector can exist");
@@ -181,10 +181,11 @@ void CourseSelector::removeClass() {
 	if (tmp != classesTaken.end()) {
 		delete tmp->second;
 		classesTaken.erase(tmp);
-
-		//Update the GUI
-		updateClassesTaken(Qt::black);
 	}
+
+    //Clear the number box
+    //This updates the GUI also
+    courseNumber->clearEditText();
 }
 
 //Add a class
@@ -197,12 +198,13 @@ void CourseSelector::addClass() {
 		return;
 	}
 
-	//If there is nothing to do, return
+    //If there is nothing to do, return, otherwise add the class
 	if (classesTaken.find(*theCourse) != classesTaken.end()) return;
+    else classesTaken[*theCourse] = new QString(*theCourse);
 
-	//Add the class and update the GUI
-	classesTaken[*theCourse] = new QString(*theCourse);
-	updateClassesTaken(Qt::black);
+    //Clear the number box
+    //This updates the GUI also
+    courseNumber->clearEditText();
 }
 
 //Clear the map passed in, preventing memory leaks
@@ -329,14 +331,20 @@ const std::map<std::string, int> * CourseSelector::getCoursesTaken() {
 
     //Local variables
     auto ret = new std::map<std::string, int>();
-    bool skipAdd = false, validCourse = updateCourse();
+    bool validCourse = updateCourse();
+    bool skipAdd = !tentativeToggled;
 
+static int qqq = 0;
+if (qqq++ > 8)
+{
+    int a = 7;
+}
     //For each course taken
     for(auto i : classesTaken) {
 
         //Ignore the course if it has been tentatively removed
         //Note that the course was removed, and don't add it
-        if (tentativeToggled) if(theCourse == i.first) {
+        if (!skipAdd) if(theCourse == i.first) {
             skipAdd = true;
             continue;
         }

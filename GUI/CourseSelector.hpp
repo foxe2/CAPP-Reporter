@@ -79,8 +79,8 @@ private:
     QTextEdit * currentCourses;
     QPushButton * readFromFileBtn;
     const QComboBox * courseMajor;
-    const QComboBox * courseNumber;
     const QComboBox * numCredits;
+    QComboBox * courseNumber;
 
 	//Ensure there is only one CourseSelector
     static uint staticCount;

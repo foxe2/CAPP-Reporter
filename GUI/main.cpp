@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
 
     //Make the main window
     MainWindow w;
+    fclose(stdout);
 
     //Run the program
     w.show();

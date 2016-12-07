@@ -147,18 +147,15 @@ bool specialCompare(const string& req, courseMap& classes, const set<string>& un
 	for(courseMap::iterator itr = classes.begin(); 
 			itr != classes.end(); ++itr){
 
- cout << "MADE IT TO LINE:  " << __LINE__ << itr->first.c_str();
         int courseNum = stoi(itr->first.substr(5,4));
 		int reqLvl = stoi(req.substr(5,4));
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
         //If the course subjects match (ex CSCI) and the course number
 		//is greater than the required level and it is not unacceptable
 		if(itr->first.substr(0,4).compare(req.substr(0,4)) == 0 && 
 				unacceptable.find(itr->first) == unacceptable.end() &&
 				courseNum >= reqLvl) {
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
             //Erases the class if it cannot be double counted
 			if(noRepeat) classes.erase(itr);
 
@@ -364,17 +361,14 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
             else if((int)element.find("(") != -1)
 				element = element.substr(1).substr(0,element.length()-2);
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
             while(true){
 
 				satisfied = false;
 				index = element.find("&&");
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
                 if(index == -1) temp = element;
 
 				else{
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
 
 					temp = element.substr(0,index);
 					element = element.substr(index+2);
@@ -383,7 +377,6 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 				//Range(CSCI-4000+)
 				if(temp.substr(0,1).compare("@") == 0) {
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
                     if(concentrationCompare(temp.substr(1), classes) == -1)
 						satisfied = true;
 				}
@@ -393,22 +386,19 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 
 				//Regular courses
 				else if(classes.find(temp) != classes.end()){
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
 
 					satisfied = true;
 					classes.erase(reqs[i][j]);
 				}
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
+
                 if(!satisfied || index == -1) break;
 
 
 			}
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
             if(satisfied) break;
 		}
 
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
         if(!satisfied) needed.push_back(i);
 	}
 }
@@ -492,13 +482,11 @@ pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses)
     //If the requirements file doesn't exist, then do nothing, simply return
     if (!parseReqs(req_file, majorReqs, majorComments, hassReqs, hassComments))
         return make_pair(major,hass);
- cout << "MADE IT TO LINE:  " << __LINE__ << endl;
 
 	//Compares the necessary requirements for hass with the user's
 	//completed classes and fills the missing requirements in hassNeeded
 	compareCourses(hassReqs, courses, hassNeeded);
 
- cout << "MADE IT TO LINE: " << __LINE__ << endl;
     //Assigns each missing req with its comment in the hass map
     for(int i = 0; i < (int)hassNeeded.size(); ++i){
 
@@ -511,11 +499,9 @@ pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses)
 
 	}
 
- cout << "MADE IT TO LINE: " << __LINE__ << endl;
     //Compares the requirements for major
 	compareCourses(majorReqs, courses, majorNeeded);
 
- cout << "MADE IT TO LINE: " << __LINE__ << endl;
     //Generates major map
     for(int i = 0; i < (int)majorNeeded.size(); ++i){
 

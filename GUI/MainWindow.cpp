@@ -242,6 +242,7 @@ void MainWindow::displayStartupWarning() {
 //It exists because some signals require the dummy argument it has
 void MainWindow::updateAll(const QString&) { updateAll(); }
 
+#include<QDebug>
 //The function is taken when the GUI's display needs to be
 //updated. It is triggered by a signal emitted from CourseSelector
 void MainWindow::updateAll() {
@@ -259,6 +260,10 @@ void MainWindow::updateAll() {
     //Run the algorithm and record the output
     auto tmpMap = courses->getCoursesTaken();
     auto inputMap = *tmpMap;
+    qDebug() << "\nIn:";
+    for(auto i : inputMap) qDebug() << '\t' << i.first.c_str();
+    static int qqqqq = 0;
+    qDebug() << "-----" << qqqqq++ << "------\nIn:";
     const std::pair<algoMap*,algoMap*> algoOutput = Algo::runAlgo(fileName, inputMap);
 
     //Make HASS string
