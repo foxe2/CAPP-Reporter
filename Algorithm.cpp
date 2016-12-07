@@ -4,6 +4,9 @@
 //For ease of reading
 using namespace std;
 
+//Namespace
+namespace Algo {
+
 //Takes in a data structure which it will add
 //classes to. This function returns false should it fail
 bool parse_reqs(const string &fName, reqsVector& majorReqs,
@@ -512,6 +515,8 @@ pair<outputMap*, outputMap*> runAlgo(const string &req_file, courseMap courses){
 
 	//Returns the pair of maps.
 	return make_pair(major,hass);
+
+}
 }
 
 #if 0
@@ -530,9 +535,9 @@ int main(int argc, const char* args[]){
 	  string classes_fname = args[2];
 	  string OUTPUT_FILE_NAME = "Test_Files/algorithm_output.txt";
 	  map<string, int> classes;
-	  read_classes(classes, classes_fname);
-	  pair<map<string, string>*, map<string, string>* > pairMH = runAlgo(input_file_name, classes);
+      Algo::read_classes(classes, classes_fname);
+      pair<map<string, string>*, map<string, string>* > pairMH = Algo::runAlgo(input_file_name, classes);
 
-	  file_output(OUTPUT_FILE_NAME, pairMH);*/
+      Algo::file_output(OUTPUT_FILE_NAME, pairMH);*/
 }
 #endif

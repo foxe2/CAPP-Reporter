@@ -202,7 +202,7 @@ void MainWindow::updateAll() {
         qDebug() << "|" << i.first.c_str() << "|" << i.second << "|";
     }
     qDebug() << '\n';
-    const std::pair<algoMap*,algoMap*> algoOutput = runAlgo(fileName, *inputMap);
+    const std::pair<algoMap*,algoMap*> algoOutput = Algo::runAlgo(fileName, *inputMap);
 
 
     //Make HASS string
