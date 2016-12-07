@@ -317,11 +317,10 @@ courseParser(const std::string in) {
 }
 
 //Returns the courses taken
-const std::map<const std::string, const int> *
-CourseSelector::getCoursesTaken() const {
+const std::map<std::string, int> * CourseSelector::getCoursesTaken() const {
 
     //Return map
-    auto ret = new std::map<const std::string, const int>();
+    auto ret = new std::map<std::string, int>();
 
     //Add each course taken
     for(auto i : classesTaken)

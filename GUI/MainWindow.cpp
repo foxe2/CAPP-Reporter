@@ -180,26 +180,25 @@ void MainWindow::reset() { courses->reset(); }
 
 //-------------------------Altering GUI's output------------------------
 
-
+#include <QDebug>
 //The function is taken when the GUI's display needs to be
 //updated. It is triggered by a signal emitted from CourseSelector
 void MainWindow::updateAll() {
 
-    //Algorithm input
-    std::string fileName;
-
-    ui->primaryMajor->currentText().toLatin1().constData();
-
     //Create the file name
-    fileName = ui->primaryMajor->currentText().toLatin1().constData() + std::string("-");
+    std::string fileName = "Database/Majors/";
+    ui->primaryMajor->currentText().toLatin1().constData();
+    fileName += ui->primaryMajor->currentText().toLatin1().constData() + std::string("-");
     fileName += ui->secondaryMajor->currentText().toLatin1().constData();
+    fileName.append(".txt");
 
     //Output text
     QString hassTxt = tr(""), mainTxt = tr("");
 
     //Run the algorithm and record the output
     auto * inputMap = courses->getCoursesTaken();
-    const std::pair<algoMap*,algoMap*> algoOutput;// = runAlgo(fileName, *inputMap);
+    const std::pair<algoMap*,algoMap*> algoOutput = runAlgo(fileName, *inputMap);
+qDebug() << "SUCCESS";
 
     //Make HASS string
     for(auto i : *(algoOutput.second)) {
@@ -216,4 +215,8 @@ void MainWindow::updateAll() {
     //Update the GUI
     ui->hassText->setPlainText(hassTxt);
     ui->mainText->setPlainText(mainTxt);
+
+    //Prevent leaks
+    delete algoOutput.first;
+    delete algoOutput.second;
 }
