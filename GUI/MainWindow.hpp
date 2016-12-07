@@ -47,7 +47,8 @@ private:
     void connectDefaults();
     void drawOutlines();
 
-    //Inform the user of needed information
+    //Run only on startup
+    void loadCourseIntoComboBoxes();
     void displayStartupWarning();
 
 	//Used to select courses
