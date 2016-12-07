@@ -9,7 +9,7 @@ namespace Algo {
 
 //Takes in a data structure which it will add
 //classes to. This function returns false should it fail
-bool parse_reqs(const string &fName, reqsVector& majorReqs,
+bool parseReqs(const string& fName, reqsVector& majorReqs,
 		commentVector& majorComments, reqsVector& hassReqs, 
 		commentVector& hassComments){
 
@@ -19,46 +19,51 @@ bool parse_reqs(const string &fName, reqsVector& majorReqs,
 	//If there was no error
 	if (inFile.is_open()){
 
-		//Initalize variables                                                        //TODO: TEMP SEEMS IMPORTANT HERE! CHANGE THE NAME !!!    
+		//Initalize variables   
 		bool inHass = false;
-		string temp, lastComment = "";
+		string line, lastComment = "";
 
 		//For each line in the requirements file
-		while(getline(inFile,temp)){
+		while(getline(inFile,line)){
+
+			//vector of strings any of which satisfy the requirement a || b || c -> [a,b,c]
+			vector<string> options;
 
 			//If we finished parsing the main requirements, switch sections
-            if((int)temp.find("// HASS Requirement") != -1){
+            if((int)line.find("// HASS Requirement") != -1){
 				inHass = true;
 				continue;
 			}
 
 			//If the line is a comment then update
-			int tmp = temp.find("//");
-            if(tmp != -1){
-				lastComment = temp.substr(tmp+2);
+			int commentIndex = line.find("//");
+            if(commentIndex != -1){
+				lastComment = line.substr(commentIndex+2);
 				continue;
 			}
 
-            //																TODO:  What does this one do!!!? Comment it!
-			vector<string> options;
-
 			//Loop through and parse
-			for(int a = temp.find("||"); a != -1; a = temp.find("||")) {
+			for(int a = line.find("||"); a != -1; a = line.find("||")) {
 
 				//Takes the next course 
-				string course = temp.substr(0,a);
+				string course = line.substr(0,a);
 
 				//If it cant be taken to satisfy req
+				//Insert it to the front of the vector so it can be processed first later
 				if(course.substr(0,1).compare("!") == 0)
 					options.insert(options.begin(), course);
-				else options.push_back(course);
+				else
+					options.push_back(course);
 
-				temp=temp.substr(a+2);
+				line=line.substr(a+2);
 			}
-			if(temp.substr(0,1).compare("!") == 0)
-				options.insert(options.begin(),temp);
+			//Parse last string section
+			if(line.substr(0,1).compare("!") == 0)
+				options.insert(options.begin(),line);
 			else
-				options.push_back(temp);
+				options.push_back(line);
+			//If it is in the HASS section add it to hass unless it is a free elective
+			//They are proccessed under major
             if(inHass && (int)options[0].find("$") == -1){
 				hassReqs.push_back(options);
 				hassComments.push_back(lastComment);
@@ -80,7 +85,9 @@ bool parse_reqs(const string &fName, reqsVector& majorReqs,
 }
 
 //Takes in a datastructure which it will add classes to
-void parse_reqs(reqsVector& reqs, const string &fName){
+//Used specifically for parsing the concentration files
+//Very similar to parseReqs()
+void parseConcentrationReqs(reqsVector& reqs, const string& fName){
 
 	//Open the file
 	ifstream inFile(fName);
@@ -88,37 +95,38 @@ void parse_reqs(reqsVector& reqs, const string &fName){
 	//If the file opened successfully
 	if (inFile.is_open()){
 
-		//Initalize variables                                                    <TODO:  TEMP SEEMS IMPORTANT HERE. RENAME IT !
-		string temp, mostRecentComment = "";
+		//Initalize variables
+		string line, mostRecentComment = "";
 
 		//For each line in the file
-		while(getline(inFile,temp)){
+		while(getline(inFile,line)){
 
-			//If it is a comment then update field                                                <TODO:  THIS COMMENT SEEMS FALSE !
-            if( (int)temp.find("//") != -1) continue;
-
-            //																TODO:  What does this one do!!!? Comment it!
+			//vector of strings any of which satisfy the requirement a || b || c -> [a,b,c]
             vector<string> options;
 
+			//If it is a comment then ignore it 
+            if( (int)line.find("//") != -1) continue;
+
 			//Loop through and parse
-			for(int a = temp.find("||"); a != -1; a = temp.find("||")) {
+			for(int a = line.find("||"); a != -1; a = line.find("||")) {
 
 				//Read the course
-				string course = temp.substr(0,a);
+				string course = line.substr(0,a);
 
 				//If it cant be taken to satisfy req
 				if(course.substr(0,1).compare("!") == 0)
 					options.insert(options.begin(), course);
+				else 
+					options.push_back(course);
 
-				else options.push_back(course);
-
-				temp=temp.substr(a+2);
+				line=line.substr(a+2);
 			}
 
-			if(temp.substr(0,1).compare("!") == 0)
-				options.insert(options.begin(),temp);
+			//If it cannot be taken to satisy a req then add to the beginning
+			if(line.substr(0,1).compare("!") == 0)
+				options.insert(options.begin(),line);
 
-			else options.push_back(temp);
+			else options.push_back(line);
 
 			reqs.push_back(options);
 		}
@@ -133,22 +141,22 @@ void parse_reqs(reqsVector& reqs, const string &fName){
 
 //Takes a class range such as CSCI-4000+ and checks to see if any class satisfies that requirement
 //Accounts for any classes that do not count in unacceptable
-bool specialCompare(const string &req, courseMap& classes, const set<string>& unacceptable, bool noRepeat){
+bool specialCompare(const string& req, courseMap& classes, const set<string>& unacceptable, bool noRepeat){
 
     //Iterate through set checking for a match
-	for(map<string, int>::iterator itr = classes.begin(); 
+	for(courseMap::iterator itr = classes.begin(); 
 			itr != classes.end(); ++itr){
 
  cout << "MADE IT TO LINE:  " << __LINE__ << itr->first.c_str();
         int courseNum = stoi(itr->first.substr(5,4));
-		int reqNum = stoi(req.substr(5,4));
+		int reqLvl = stoi(req.substr(5,4));
 
  cout << "MADE IT TO LINE:  " << __LINE__ << endl;
         //If the course subjects match (ex CSCI) and the course number
 		//is greater than the required level and it is not unacceptable
 		if(itr->first.substr(0,4).compare(req.substr(0,4)) == 0 && 
 				unacceptable.find(itr->first) == unacceptable.end() &&
-				courseNum >= reqNum) {
+				courseNum >= reqLvl) {
 
  cout << "MADE IT TO LINE:  " << __LINE__ << endl;
             //Erases the class if it cannot be double counted
@@ -161,12 +169,11 @@ bool specialCompare(const string &req, courseMap& classes, const set<string>& un
 	return false;
 }
 
-int free_electives(map<string, int> &classes, const string &credits){
+int freeElectives(courseMap& classes, const string& credits){
 
 	int currentCreds = 0, numCreds = stoi(credits);
 
-	for(map<string, int>::iterator itr = classes.begin();
-			itr != classes.end(); ++itr){
+	for(courseMap::iterator itr = classes.begin(); itr != classes.end(); ++itr){
 
 		currentCreds += itr->second;
 
@@ -176,15 +183,15 @@ int free_electives(map<string, int> &classes, const string &credits){
 	return numCreds - currentCreds;
 }
 
-int concentration_compare(const string &initConcentration, map<string, int> &classes_credits) {
+int concentrationCompare(const string& initConcentration, courseMap& classes_credits) {
 
 	//Local variables
-	string concentration, cName;
+	string concentration, cFileName;
 	bool noRepeat = true;
 	int numCourses;
 
-	//                   <-----------------------------------------------------------------EXPLAIN WHAT THESE ARE
-	vector<vector<string> > conc_reqs;
+	//A requirement data structure of all the requirements for a certain concentration file
+	reqsVector conc_reqs;
 	vector<int> notTaken;
 
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)    
@@ -194,18 +201,20 @@ int concentration_compare(const string &initConcentration, map<string, int> &cla
 		noRepeat = false;
 	}
 
-	cout << concentration << endl;                                        //THIS
+	cout << concentration << endl;
 
+	//The number of classes to be taken in a concentration
 	numCourses = stoi(concentration.substr(0,1));
 
-	cout << numCourses <<endl;                                           //SHOULD BE HERE AS cout << concentration << '\n' << numCourses << endl;
+	cout << numCourses <<endl;
 
-	cName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
+	cFileName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
 
-	parse_reqs(conc_reqs, cName);
+	//Parse the concentration file for requirements
+	parseConcentrationReqs(conc_reqs, cFileName);
 
-	// IMPLEMENT COURSE COUNTING                                                            CHANGE COMMENT
-	compare_courses(conc_reqs, classes_credits, notTaken, noRepeat, numCourses);
+	//Compare the classes to the concetration requirements
+	compareCourses(conc_reqs, classes_credits, notTaken, noRepeat, numCourses);
 
     for(int i = 0; i < (int)conc_reqs.size(); ++i){
         for(int j = 0; j < (int)conc_reqs[i].size(); ++j)
@@ -214,47 +223,51 @@ int concentration_compare(const string &initConcentration, map<string, int> &cla
 	}
 
 	cout<< "NEEDED: " << endl;
-
-    for(int i = 0; i < (int)notTaken.size(); ++i) cout<< notTaken[i];
-
+    for(int i = 0; i < (int)notTaken.size(); ++i)
+    	cout<< notTaken[i];
 	cout << endl<<"done"<<endl;
 
+	//If the difference between the reqs and the amount notTaken is
+	//greater than numCourses, then they took enough courses 
     if((int)(conc_reqs.size()-notTaken.size()) >= numCourses) return -1;
 
 	cout << "res: " << conc_reqs.size()-notTaken.size()<<endl;
 
+	//Return the amount they must still take
 	return conc_reqs.size()-notTaken.size();
 }
 
-void compare_courses(reqsVector& reqs, courseMap &classes,
-		vector<int> &needed, bool noRepeat, int numCourses) {
+//Compares courses for the concentration requirements and
+//determines which ones are satisfied
+void compareCourses(reqsVector& reqs, courseMap& classes,
+		vector<int>& needed, bool noRepeat, int numCourses) {
 
 	cout << "reqs size:  " << reqs.size()<<endl;
 
-	//For each requierment
+	//For each requirement
     for(int i = 0; i < (int)reqs.size(); ++i){
 
 		int before = 0;
 		bool satisfied = false;
 		set<string> unacceptable;
 
-		//Find unacceptable course        
+		//Find unacceptable course and increment before    
 		while(reqs[i][before].substr(0,1).compare("!") == 0){
 			unacceptable.insert(reqs[i][before].substr(1));
 			before++;
 		}
 
-
+		//Starting from the first option (skips the !'s)
         for(int j = before; j < (int)reqs[i].size(); ++j){
 
-			int index; 
+        	//
 			string temp;
 			string element = reqs[i][j];
 
 			if(element.find("$") == 0){
 
 				string credits = element.substr(1);
-				int dif = free_electives(classes, credits);
+				int dif = freeElectives(classes, credits);
 
 				if(dif > 0){
 					vector<string> creds;
@@ -268,6 +281,7 @@ void compare_courses(reqsVector& reqs, courseMap &classes,
             else if((int)element.find("(") != -1)
 				element = element.substr(1,element.length()-2);
 
+			int index;
 			while(true){
 
 				satisfied = false;
@@ -282,7 +296,7 @@ void compare_courses(reqsVector& reqs, courseMap &classes,
 
 				//Range(CSCI-4000+)
 				if(temp.substr(0,1).compare("@") == 0) {
-					if(concentration_compare(temp.substr(1), classes) == -1) 
+					if(concentrationCompare(temp.substr(1), classes) == -1) 
 						satisfied = true;
 
 				}
@@ -314,7 +328,7 @@ void compare_courses(reqsVector& reqs, courseMap &classes,
 }
 
 
-void compare_courses(reqsVector &reqs, courseMap &classes, vector<int> &needed) {
+void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 
     for(int i = 0; i < (int)reqs.size(); ++i){
 
@@ -336,7 +350,7 @@ void compare_courses(reqsVector &reqs, courseMap &classes, vector<int> &needed) 
 			if(element.find("$") == 0){
 
 				string credits = element.substr(1);
-				int dif = free_electives(classes, credits);
+				int dif = freeElectives(classes, credits);
 
 				if(dif > 0){
 					vector<string> creds;
@@ -370,7 +384,7 @@ void compare_courses(reqsVector &reqs, courseMap &classes, vector<int> &needed) 
 				if(temp.substr(0,1).compare("@") == 0) {
 
  cout << "MADE IT TO LINE:  " << __LINE__ << endl;
-                    if(concentration_compare(temp.substr(1), classes) == -1)
+                    if(concentrationCompare(temp.substr(1), classes) == -1)
 						satisfied = true;
 				}
 
@@ -402,7 +416,7 @@ void compare_courses(reqsVector &reqs, courseMap &classes, vector<int> &needed) 
 //Read classes is only used in main() for modular testing
 //Reads in a text file with one course per line
 //Users enter classes in the GUI and this is not present in a deployment
-void read_classes(map<string, int> &classes, string fname){
+void readClasses(courseMap& classes, string& fname){
 
 	//Local variables
 	string temp;
@@ -431,7 +445,7 @@ void read_classes(map<string, int> &classes, string fname){
 
 //Only used for modular testing and is called solely in main()
 //Outputs the data to a file 
-void file_output(string fName, pair<outputMap*, outputMap* > pairMH){
+void fileOutput(string& fName, pair<outputMap*, outputMap* > pairMH){
 
 	ofstream outFile(fName);
 
@@ -459,7 +473,7 @@ void file_output(string fName, pair<outputMap*, outputMap* > pairMH){
 //Returns a pair of maps where each map contains key-value pairs of an
 //unsatisfied requirement and a comment about the requirement. The first element 
 //in the pair is a map with Major requirements in it, while the second is for HASS
-pair<outputMap*, outputMap*> runAlgo(const string &req_file, courseMap courses){
+pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses){
 
 	//Initializes all hass data structures
 	outputMap* hass = new map<string, string>();
@@ -482,7 +496,7 @@ pair<outputMap*, outputMap*> runAlgo(const string &req_file, courseMap courses){
 
 	//Compares the necessary requirements for hass with the user's
 	//completed classes and fills the missing requirements in hassNeeded
-	compare_courses(hassReqs, courses, hassNeeded);
+	compareCourses(hassReqs, courses, hassNeeded);
 
  cout << "MADE IT TO LINE: " << __LINE__ << endl;
     //Assigns each missing req with its comment in the hass map
@@ -499,7 +513,7 @@ pair<outputMap*, outputMap*> runAlgo(const string &req_file, courseMap courses){
 
  cout << "MADE IT TO LINE: " << __LINE__ << endl;
     //Compares the requirements for major
-	compare_courses(majorReqs, courses, majorNeeded);
+	compareCourses(majorReqs, courses, majorNeeded);
 
  cout << "MADE IT TO LINE: " << __LINE__ << endl;
     //Generates major map
@@ -515,8 +529,6 @@ pair<outputMap*, outputMap*> runAlgo(const string &req_file, courseMap courses){
 
 	//Returns the pair of maps.
 	return make_pair(major,hass);
-
-}
 }
 
 #if 0
@@ -534,7 +546,7 @@ int main(int argc, const char* args[]){
 	  string input_file_name= args[1];
 	  string classes_fname = args[2];
 	  string OUTPUT_FILE_NAME = "Test_Files/algorithm_output.txt";
-	  map<string, int> classes;
+	  courseMap classes;
       Algo::read_classes(classes, classes_fname);
       pair<map<string, string>*, map<string, string>* > pairMH = Algo::runAlgo(input_file_name, classes);
 
