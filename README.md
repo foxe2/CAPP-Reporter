@@ -14,7 +14,7 @@ This application only handles general cases. Many 'corner cases' may occur, many
 
 ##Requirements
 
-This application requires the use of the graphics library QT. It requires qmake 5.7 to build.
+This application requires the use of the graphics library QT. It requires qmake 5.7 and C++ 11 to build.
 
 ##Installation Instructions:
 
@@ -30,12 +30,12 @@ Create your build directory as follows
 mkdir CAPP-Reporter/build && cd CAPP-Reporter/build/
 ```
 
-Finally run qmake and make with the command below
+After that run qmake and make with the command below
 ```bash
 qmake ../GUI/CAPP_Reporter.pro && make
 ```
 
-With that, you should have a functional CAPP_Reporter application!
+Finally relocate the 'Database' to the location of the created __binary__. With that, you should have a functional CAPP_Reporter application!
 
 ##Usage
 This application takes no arguments. Just open it like you would any application.
