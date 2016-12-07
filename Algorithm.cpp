@@ -5,7 +5,6 @@
 	- User Friendly output
 */
 
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -19,7 +18,7 @@ void parse_reqs(const string &fName, vector<vector<string> > &majorReqs, vector<
 void parse_reqs(vector<vector<string> > &reqs, const string &fName);
 bool special_compare(const string &req, map<string, int> &classes, const set<string> &unacceptable, bool noRepeat);
 int free_electives(map<string, int> &classes, const string &credits);
-int concentration_compare(const string &initConcentration, map<string, int> &classes_credits);
+int concentration_compare(const string &initConcentration, map<string, int> &classesCredits);
 void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, vector<int> &needed, bool noRepeat, int numCourses);
 void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, vector<int> &needed);
 pair<map<string, string>*, map<string, string>* > runAlgo(const string &req_file, map<string, int> courses);
@@ -141,7 +140,7 @@ int free_electives(map<string, int> &classes, const string &credits){
 	return numCreds - currentCreds;
 }
 
-int concentration_compare(const string &initConcentration, map<string, int> &classes_credits){
+int concentration_compare(const string &initConcentration, map<string, int> &classesCredits){
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)
 	string concentration = initConcentration;
 	bool noRepeat = true;
@@ -153,24 +152,24 @@ int concentration_compare(const string &initConcentration, map<string, int> &cla
 	int numCourses = stoi(concentration.substr(0,1));
 	cout << numCourses <<endl;
 	string cName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
-	vector<vector<string> > conc_reqs;
+	vector<vector<string> > concReqs;
 	vector<int> notTaken;
-	parse_reqs(conc_reqs, cName);
+	parse_reqs(concReqs, cName);
 	// IMPLEMENT COURSE COUNTING
-	compare_courses(conc_reqs, classes_credits, notTaken, noRepeat, numCourses);
-	for(int i = 0; i < conc_reqs.size(); ++i){
-		for(int j = 0; j < conc_reqs[i].size(); ++j)
-			cout << conc_reqs[i][j] << " ";
+	compare_courses(concReqs, classesCredits, notTaken, noRepeat, numCourses);
+	for(int i = 0; i < concReqs.size(); ++i){
+		for(int j = 0; j < concReqs[i].size(); ++j)
+			cout << concReqs[i][j] << " ";
 		cout << endl;
 	}
 	cout<< "NEEDED: " << endl;
 	for(int i = 0; i < notTaken.size(); ++i)
 		cout<< notTaken[i];
 	cout << endl<<"done"<<endl;
-	if(conc_reqs.size()-notTaken.size() >= numCourses)
+	if(concReqs.size()-notTaken.size() >= numCourses)
 		return -1;
-	cout << "res: " << conc_reqs.size()-notTaken.size()<<endl;
-	return conc_reqs.size()-notTaken.size();
+	cout << "res: " << concReqs.size()-notTaken.size()<<endl;
+	return concReqs.size()-notTaken.size();
 }
 
 void compare_courses(vector<vector<string> > &reqs, map<string, int> &classes, vector<int> &needed, bool noRepeat, int numCourses){
