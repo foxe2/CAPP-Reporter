@@ -1,7 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 #include "CourseSelector.hpp"
-#include "../Algorithm.cpp"
+#include "../Algorithm.hpp"
 
 //Size of the scene
 const uint MainWindow::Width = 800;
@@ -185,9 +185,6 @@ void MainWindow::reset() { courses->reset(); }
 //updated. It is triggered by a signal emitted from CourseSelector
 void MainWindow::updateAll() {
 
-
-    //#include "Algo..."
-
     //Algorithm input
     std::string fileName;
 
@@ -197,13 +194,12 @@ void MainWindow::updateAll() {
     fileName = ui->primaryMajor->currentText().toLatin1().constData() + std::string("-");
     fileName += ui->secondaryMajor->currentText().toLatin1().constData();
 
-    auto * inputMap = courses->getCoursesTaken();
-
     //Output text
     QString hassTxt = tr(""), mainTxt = tr("");
 
     //Run the algorithm and record the output
-    const std::pair<algoMap*,algoMap*> algoOutput = runAlgo(fileName, *inputMap);
+    auto * inputMap = courses->getCoursesTaken();
+    const std::pair<algoMap*,algoMap*> algoOutput;// = runAlgo(fileName, *inputMap);
 
     //Make HASS string
     for(auto i : *(algoOutput.second)) {

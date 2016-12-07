@@ -15,7 +15,8 @@ TEMPLATE = app
 SOURCES += main.cpp\
         MainWindow.cpp \
     ColorText.cpp \
-    CourseSelector.cpp
+    CourseSelector.cpp \
+    ../Algorithm.cpp
 
 HEADERS  += MainWindow.hpp \
     main.hpp \

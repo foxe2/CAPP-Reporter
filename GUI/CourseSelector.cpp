@@ -240,12 +240,12 @@ void CourseSelector::readFromFile() {
 	//If the file failed to open
 	if (inFile.fail()) {
 
-		//Make error message
-		QByteArray tmp = inFileName.toLatin1();
+		//Make an error message
 		QString txt = tr("The file \"");
+		QByteArray tmp = inFileName.toLatin1();
 		txt += tr(basename(tmp.data())) + tr("\" failed to open");
 
-		//Error then exit the function
+		//Error, possibly retry, then exit the function
 		if (errorPrompt(txt)) readFromFile();
 		return;
 	}
@@ -350,7 +350,7 @@ void CourseSelector::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 	//For each class taken
 	for(auto i : classesTaken) {
 
-		//If have yet to add theCourse
+		//If highlighting was requested 
 		if (!printedTentative) {
 
 			//If we should add theCourse
@@ -368,7 +368,7 @@ void CourseSelector::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 			}
 		}
 
-		//Add i to the string
+		//Add the next class to the string
 		toPrint->append(i.first); *toPrint += '\n';
 	}
 
@@ -376,12 +376,11 @@ void CourseSelector::updateClassesTaken(const Qt::GlobalColor highlightColor) {
 	if (!printedTentative) *toPrint += QString(tr("+ ")) + *theCourse + QString(tr("\n"));
 
 	//Highlight what was requested
-	auto tmp = *theCourse;
-	highlighter->setHighlightInfo(tmp, highlightColor);
+	highlighter->setHighlightInfo(*theCourse, highlightColor);
 
 	//Print the string
 	currentCourses->setPlainText(*toPrint);
 
-	//Alert what is needed that the courses were changed
+	//Alert the application the courses were changed 
 	emit coursesChanged();
 }
