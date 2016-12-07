@@ -21,6 +21,7 @@ SOURCES += main.cpp\
 HEADERS  += MainWindow.hpp \
     main.hpp \
     ColorText.hpp \
-    CourseSelector.hpp
+    CourseSelector.hpp \
+    ../Algorithm.hpp
 
 FORMS    += mainwindow.ui

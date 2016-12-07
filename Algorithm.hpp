@@ -1,8 +1,12 @@
+#ifndef ALGORITHM_HPP
+#define ALGORITHM_HPP
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 
 //For ease of reading
 typedef std::map<std::string, int> courseMap;
@@ -21,5 +25,6 @@ int concentration_compare(const std::string &initConcentration, courseMap& class
 void compare_courses(reqsVector& reqs, courseMap& classes, 
                         std::vector<int> &needed, bool noRepeat, int numCourses);
 void compare_courses(reqsVector& reqs, courseMap& classes, std::vector<int> &needed);
-pair<outputMap*, outputMap* > runAlgo(const std::string &req_file, courseMap courses);
+std::pair<outputMap*, outputMap* > runAlgo(const std::string &req_file, courseMap courses);
 
+#endif
