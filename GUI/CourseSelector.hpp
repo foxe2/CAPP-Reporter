@@ -49,7 +49,7 @@ public slots:
     void readFromFile();
 
     //Get the courses taken for the algo
-    const std::map<std::string, int> * getCoursesTaken() const;
+    const std::map<std::string, int> * getCoursesTaken();
 
 signals:
 

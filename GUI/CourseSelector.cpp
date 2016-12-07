@@ -5,6 +5,7 @@
 #include <sstream>
 #include <libgen.h>
 
+#include <QRegExp>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QStandardPaths>
@@ -46,6 +47,8 @@ CourseSelector::~CourseSelector() {
 
 //Returns true if the course is legal, false otherwise
 inline bool verifyCourse(const QString m, const QString n) {
+    QRegExp re("\\d*");
+    if (!re.exactMatch((n))) return false;
 	return m.size() == 4 && n.size() == 4;
 }
 
@@ -147,12 +150,13 @@ bool CourseSelector::updateCourse() {
 //Called if the tentative class selection changed
 void CourseSelector::tentativelyAlterClasses(const QString&) {
 
-	//Update theCourse
-	updateCourse();
+    //Update theCourse. Set color to green if the
+    //course if valid. Otherwise set color to yellow
+    auto color = updateCourse() ? Qt::green : Qt::darkYellow;
 
 	//If the class is new, tentatively add it, update the GUI
 	if (classesTaken.find(*theCourse) == classesTaken.end())
-		updateClassesTaken(Qt::green);
+        updateClassesTaken(color);
 
 	//Otherwise, tentatively remove it, update the GUI
 	else updateClassesTaken(Qt::red);
@@ -317,7 +321,7 @@ courseParser(const std::string in) {
 }
 
 //Returns the courses taken
-const std::map<std::string, int> * CourseSelector::getCoursesTaken() const {
+const std::map<std::string, int> * CourseSelector::getCoursesTaken() {
 
     //Return map
     auto ret = new std::map<std::string, int>();
@@ -327,7 +331,8 @@ const std::map<std::string, int> * CourseSelector::getCoursesTaken() const {
         ret->insert(courseParser(i.first.toLatin1().constData()));
 
     //Add course tentatively taken
-    ret->insert(courseParser(theCourse->toLatin1().constData()));
+    if (updateCourse())
+		ret->insert(courseParser(theCourse->toLatin1().constData()));
 
     //Return the map without need for dynamic allocation
     return ret;

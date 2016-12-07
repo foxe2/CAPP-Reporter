@@ -197,8 +197,13 @@ void MainWindow::updateAll() {
 
     //Run the algorithm and record the output
     auto * inputMap = courses->getCoursesTaken();
+    qDebug() << "Input:";
+    for(auto i : *inputMap) {
+        qDebug() << "|" << i.first.c_str() << "|" << i.second << "|";
+    }
+    qDebug() << '\n';
     const std::pair<algoMap*,algoMap*> algoOutput = runAlgo(fileName, *inputMap);
-qDebug() << "SUCCESS";
+
 
     //Make HASS string
     for(auto i : *(algoOutput.second)) {
