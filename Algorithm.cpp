@@ -129,11 +129,15 @@ bool special_compare(const string &req, map<string, int> &classes, const set<str
 	return false;
 }
 
+// Returns the number of credits remaining aka free elective credits
 int free_electives(map<string, int> &classes, const string &credits){
 	int numCreds = stoi(credits);
 	int currentCreds = 0;
+	// Iterate through the classes map
 	for(map<string, int>::iterator itr = classes.begin(); itr != classes.end(); ++itr){
 		currentCreds += itr->second;
+		// For the case that the credits you have taken exceed the required
+		// Thus, you need 0 more (not negative)
 		if(currentCreds >= numCreds)
 			return 0;
 	}
