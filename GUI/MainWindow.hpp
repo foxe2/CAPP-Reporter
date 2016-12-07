@@ -37,6 +37,7 @@ private slots:
 
     //Update the GUI
     void updateAll();
+    void updateAll(const QString&);
 
 private:
 
@@ -45,6 +46,9 @@ private:
     void positionObjects(int,int,int);
     void connectDefaults();
     void drawOutlines();
+
+    //Inform the user of needed information
+    void displayStartupWarning();
 
 	//Used to select courses
     CourseSelector * courses;

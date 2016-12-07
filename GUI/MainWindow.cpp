@@ -3,12 +3,15 @@
 #include "CourseSelector.hpp"
 #include "../Algorithm.hpp"
 
+#include <QMessageBox>
+
 //Size of the scene
 const uint MainWindow::Width = 800;
 const uint MainWindow::Height = 600;
 
 //Default number of GUIs
 uint MainWindow::GUICount = 0;
+
 
 //--------------------------Constructor/Destructor-----------------------
 
@@ -45,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     //Draw the GUI
 	reset(); ui->graphicsView->lower();
     setMaximumSize(this->size());
+    displayStartupWarning();
 }
 
 //Destructor
@@ -170,6 +174,18 @@ void MainWindow::connectDefaults() {
     QObject::connect(courses, SIGNAL(coursesChanged()),
                      this, SLOT(updateAll()));
 
+    //Connect primaryMajor box
+    QObject::connect(ui->primaryMajor, SIGNAL(editTextChanged(QString)),
+            this, SLOT(updateAll(const QString&)));
+    QObject::connect(ui->primaryMajor, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(updateAll(const QString&)));
+
+    //Connect secondaryMajor box
+    QObject::connect(ui->secondaryMajor, SIGNAL(editTextChanged(QString)),
+            this, SLOT(updateAll(const QString&)));
+    QObject::connect(ui->secondaryMajor, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(updateAll(const QString&)));
+
     //Set the defaults
     courses->tentativeToggle(true);
 }
@@ -180,7 +196,24 @@ void MainWindow::reset() { courses->reset(); }
 
 //-------------------------Altering GUI's output------------------------
 
+
+//Display a warning to the user on startup
+void MainWindow::displayStartupWarning() {
+
+    QString txt = tr("CAUTION: Read the READ.ME before using this program. ");
+    txt += tr("It contains extremely vital information about the current state ");
+    txt += tr("of the program and it's known weaknesses and shortcomings.");
+
+    //Warn the user
+    QMessageBox::warning(NULL, QObject::tr(APPLICATION_NAME),
+                                    txt, QMessageBox::Ok, QMessageBox::Ok);
+}
+
 #include <QDebug>
+//This function is a slot that simply calls the function below
+//It exists because some signals require the dummy argument it has
+void MainWindow::updateAll(const QString&) { updateAll(); }
+
 //The function is taken when the GUI's display needs to be
 //updated. It is triggered by a signal emitted from CourseSelector
 void MainWindow::updateAll() {
@@ -193,7 +226,8 @@ void MainWindow::updateAll() {
     fileName.append(".txt");
 
     //Output text
-    QString hassTxt = tr(""), mainTxt = tr("");
+    QString hassTxt = tr("HASS Requirements remaining:\n");
+    QString mainTxt = tr("Major Requirements remaining:\n");
 
     //Run the algorithm and record the output
     auto * inputMap = courses->getCoursesTaken();
@@ -203,7 +237,6 @@ void MainWindow::updateAll() {
     }
     qDebug() << '\n';
     const std::pair<algoMap*,algoMap*> algoOutput = Algo::runAlgo(fileName, *inputMap);
-
 
     //Make HASS string
     for(auto i : *(algoOutput.second)) {
