@@ -16,7 +16,7 @@ typedef std::vector<std::vector<std::string> > reqsVector;
                                            
 //Create a namespace
 namespace Algo {
-
+#if 1
     //Forward declarations
     bool parseReqs(const std::string &fName, reqsVector& majorReqs, commentVector&
             majorComments, reqsVector& hassReqs, commentVector& hassComments);
@@ -28,7 +28,8 @@ namespace Algo {
     void compareCourses(reqsVector& reqs, courseMap& classes,
                 std::vector<int> &needed, bool noRepeat, int numCourses);
     void compareCourses(reqsVector& reqs, courseMap& classes, std::vector<int> &needed);
-    std::pair<outputMap*, outputMap* > runAlgo(const std::string &req_file, courseMap courses);
+#endif
+    std::pair<outputMap*, outputMap* > runAlgo(const std::string &req_file, courseMap& courses);
 
 }
 

@@ -257,8 +257,9 @@ void MainWindow::updateAll() {
     QString mainTxt = tr(""), hassTxt = tr("");
 
     //Run the algorithm and record the output
-    auto * inputMap = courses->getCoursesTaken();
-    const std::pair<algoMap*,algoMap*> algoOutput = Algo::runAlgo(fileName, *inputMap);
+    auto tmpMap = courses->getCoursesTaken();
+    auto inputMap = *tmpMap;
+    const std::pair<algoMap*,algoMap*> algoOutput = Algo::runAlgo(fileName, inputMap);
 
     //Make HASS string
     for(auto i : *(algoOutput.second)) {
@@ -286,6 +287,7 @@ void MainWindow::updateAll() {
     ui->mainText->setPlainText(mainTxt);
 
     //Prevent leaks
-    delete algoOutput.first;
     delete algoOutput.second;
+    delete algoOutput.first;
+    delete tmpMap;
 }

@@ -490,7 +490,7 @@ pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses)
 	//Parses the requirements file and puts the
 	//requirements and comments in their corresponding data structures
     //If the requirements file doesn't exist, then do nothing, simply return
-    if (!parse_reqs(req_file, majorReqs, majorComments, hassReqs, hassComments))
+    if (!parseReqs(req_file, majorReqs, majorComments, hassReqs, hassComments))
         return make_pair(major,hass);
  cout << "MADE IT TO LINE:  " << __LINE__ << endl;
 
@@ -553,3 +553,5 @@ int main(int argc, const char* args[]){
       Algo::file_output(OUTPUT_FILE_NAME, pairMH);*/
 }
 #endif
+
+}
