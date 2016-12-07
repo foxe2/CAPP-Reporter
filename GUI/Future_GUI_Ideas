@@ -4,6 +4,8 @@ TODO for GUI 2.0:
 	• Place everything based on relative coordinates to allow for re-sizing.
 
 GUI 2.0 ideas:
+	• Use QCursor on the text edits
+	• User can edit the box dirrectly
 	• Click to remove course from already taken
 	• verifyCourse should work by checking if the course is valid against some database. Consult YACS perhaps?
 	• Enable hover over for 'tool tip' for course info

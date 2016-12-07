@@ -27,9 +27,10 @@ CourseSelector::CourseSelector(QComboBox *a, QComboBox *b, QComboBox *c,
 		//Create a custom syntax highlighter
 		highlighter = new ColorText(currentCourses);
 
-		//Initalize theCourse
+        //Initalize variables
 		theCourse = new QString(tr(""));
-	}
+        tentativeToggled = true;
+}
 
 //Destructor
 CourseSelector::~CourseSelector() {
@@ -72,6 +73,9 @@ inline bool errorPrompt(const QString& txt, bool retry = true) {
 //Called to enable or disable
 //tentative class adding/removing
 void CourseSelector::tentativeToggle(bool checked) {
+
+    //Record the result
+    tentativeToggled = checked;
 
 	//Enable auto update
 	if (checked) {
@@ -323,16 +327,27 @@ courseParser(const std::string in) {
 //Returns the courses taken
 const std::map<std::string, int> * CourseSelector::getCoursesTaken() {
 
-    //Return map
+    //Local variables
     auto ret = new std::map<std::string, int>();
+    bool skipAdd = false, validCourse = updateCourse();
 
-    //Add each course taken
-    for(auto i : classesTaken)
+    //For each course taken
+    for(auto i : classesTaken) {
+
+        //Ignore the course if it has been tentatively removed
+        //Note that the course was removed, and don't add it
+        if (tentativeToggled) if(theCourse == i.first) {
+            skipAdd = true;
+            continue;
+        }
+
+        //Add the course
         ret->insert(courseParser(i.first.toLatin1().constData()));
+    }
 
-    //Add course tentatively taken
-    if (updateCourse())
-		ret->insert(courseParser(theCourse->toLatin1().constData()));
+    //Add course tentatively taken, if there is one
+    if (validCourse && !skipAdd)
+        ret->insert(courseParser(theCourse->toLatin1().constData()));
 
     //Return the map without need for dynamic allocation
     return ret;

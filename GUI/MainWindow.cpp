@@ -4,6 +4,7 @@
 #include "../Algorithm.hpp"
 
 #include <QMessageBox>
+#include <QStringList>
 
 //Size of the scene
 const uint MainWindow::Width = 800;
@@ -45,8 +46,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     //Conect everything up
     connectDefaults();
 
+    //Set default numCredits to 4
+    ui->numCredits->setCurrentIndex(4-1);
+
     //Final setup
-	reset(); ui->graphicsView->lower();
+    reset(); ui->graphicsView->lower();
     setMaximumSize(this->size());
     loadCourseIntoComboBoxes();
     displayStartupWarning();
@@ -234,7 +238,6 @@ void MainWindow::displayStartupWarning() {
                             txt, QMessageBox::Ok, QMessageBox::Ok);
 }
 
-#include <QDebug>
 //This function is a slot that simply calls the function below
 //It exists because some signals require the dummy argument it has
 void MainWindow::updateAll(const QString&) { updateAll(); }
@@ -255,22 +258,17 @@ void MainWindow::updateAll() {
 
     //Run the algorithm and record the output
     auto * inputMap = courses->getCoursesTaken();
-    qDebug() << "Input:";
-    for(auto i : *inputMap) {
-        qDebug() << "|" << i.first.c_str() << "|" << i.second << "|";
-    }
-    qDebug() << '\n';
     const std::pair<algoMap*,algoMap*> algoOutput = Algo::runAlgo(fileName, *inputMap);
 
     //Make HASS string
     for(auto i : *(algoOutput.second)) {
-        hassTxt.append(tr(i.second.c_str()) + tr("\n"));
+        hassTxt.append(tr("•") + tr(i.second.c_str()) + tr("\n"));
         hassTxt.append(tr(i.first.c_str()) + tr("\n\n"));
     }
 
     //Make Main string
     for(auto i : *(algoOutput.first)) {
-        mainTxt.append(tr(i.second.c_str()) + tr("\n"));
+        mainTxt.append(tr("•") + tr(i.second.c_str()) + tr("\n"));
         mainTxt.append(tr(i.first.c_str()) + tr("\n\n"));
     }
 
@@ -279,8 +277,8 @@ void MainWindow::updateAll() {
         mainTxt = tr("Error: Major combination doesn't exist or ")
                 + tr("has yet to be implemented in this application");
     else {
-        hassTxt.prepend(tr("HASS Requirements remaining:\n"));
-        mainTxt.prepend(tr("Major Requirements remaining:\n"));
+        hassTxt.prepend(tr("HASS Requirements remaining:\n\n"));
+        mainTxt.prepend(tr("Major Requirements remaining:\n\n"));
     }
 
     //Update the GUI

@@ -67,6 +67,9 @@ private:
 	//will highlight theCourse the color passed as the argument
     void updateClassesTaken(const Qt::GlobalColor);
 
+    //Representation
+    bool tentativeToggled;
+
     //Used for current courses
     ColorText * highlighter;
     courses classesTaken;
