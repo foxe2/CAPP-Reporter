@@ -18,16 +18,16 @@ typedef std::vector<std::vector<std::string> > reqsVector;
 namespace Algo {
 
     //Forward declarations
-    bool parse_reqs(const std::string &fName, reqsVector& majorReqs, commentVector&
+    bool parseReqs(const std::string &fName, reqsVector& majorReqs, commentVector&
             majorComments, reqsVector& hassReqs, commentVector& hassComments);
-    void parse_reqs(reqsVector& reqs, const std::string &fName);
+    void parseConcentrationReqs(reqsVector& reqs, const std::string &fName);
     bool specialCompare(const std::string &req, courseMap& classes,
                 const std::set<std::string> &unacceptable, bool noRepeat);
-    int free_electives(courseMap& classes, const std::string &credits);
-    int concentration_compare(const std::string &initConcentration, courseMap& classes_credits);
-    void compare_courses(reqsVector& reqs, courseMap& classes,
+    int freeElectives(courseMap& classes, const std::string &credits);
+    int concentrationCompare(const std::string &initConcentration, courseMap& classes_credits);
+    void compareCourses(reqsVector& reqs, courseMap& classes,
                 std::vector<int> &needed, bool noRepeat, int numCourses);
-    void compare_courses(reqsVector& reqs, courseMap& classes, std::vector<int> &needed);
+    void compareCourses(reqsVector& reqs, courseMap& classes, std::vector<int> &needed);
     std::pair<outputMap*, outputMap* > runAlgo(const std::string &req_file, courseMap courses);
 
 }
