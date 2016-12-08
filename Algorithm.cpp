@@ -52,16 +52,16 @@ bool parseReqs(const string& fName, reqsVector& majorReqs,
 				//Insert it to the front of the vector so it can be processed first later
 				if(course.substr(0,1).compare("!") == 0)
 					options.insert(options.begin(), course);
-				else
-					options.push_back(course);
+
+				else options.push_back(course);
 
 				line=line.substr(a+2);
 			}
 			//Parse last string section
 			if(line.substr(0,1).compare("!") == 0)
 				options.insert(options.begin(),line);
-			else
-				options.push_back(line);
+
+			else options.push_back(line);
 			//If it is in the HASS section add it to hass unless it is a free elective
 			//They are proccessed under major
             if(inHass && (int)options[0].find("$") == -1){
@@ -116,8 +116,8 @@ void parseConcentrationReqs(reqsVector& reqs, const string& fName){
 				//If it cant be taken to satisfy req
 				if(course.substr(0,1).compare("!") == 0)
 					options.insert(options.begin(), course);
-				else 
-					options.push_back(course);
+
+				else options.push_back(course);
 
 				line=line.substr(a+2);
 			}
@@ -198,11 +198,13 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 		noRepeat = false;
 	}
 
+	//For debugging ONLY
 	cout << concentration << endl;
 
 	//The number of classes to be taken in a concentration
 	numCourses = stoi(concentration.substr(0,1));
 
+	//For debugging ONLY
 	cout << numCourses <<endl;
 
 	cFileName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
@@ -219,15 +221,16 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 		cout << endl;
 	}
 
+	//For debugging ONLY
 	cout<< "NEEDED: " << endl;
-    for(int i = 0; i < (int)notTaken.size(); ++i)
-    	cout<< notTaken[i];
+    for(int i = 0; i < (int)notTaken.size(); ++i) cout<< notTaken[i];
 	cout << endl<<"done"<<endl;
 
 	//If the difference between the reqs and the amount notTaken is
 	//greater than numCourses, then they took enough courses 
     if((int)(conc_reqs.size()-notTaken.size()) >= numCourses) return -1;
 
+	//For debugging ONLY
 	cout << "res: " << conc_reqs.size()-notTaken.size()<<endl;
 
 	//Return the amount they must still take
@@ -239,6 +242,7 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 void compareCourses(reqsVector& reqs, courseMap& classes,
 		vector<int>& needed, bool noRepeat, int numCourses) {
 
+	//For debugging ONLY
 	cout << "reqs size:  " << reqs.size()<<endl;
 
 	//For each requirement
@@ -257,7 +261,10 @@ void compareCourses(reqsVector& reqs, courseMap& classes,
 		//Starting from the first option (skips the !'s)
         for(int j = before; j < (int)reqs[i].size(); ++j){
 
-        	//
+        	
+
+
+
 			string temp;
 			string element = reqs[i][j];
 
