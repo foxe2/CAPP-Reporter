@@ -1,4 +1,4 @@
-#CAPP Reporter
+#CAPP-Reporter
 
 Are you an RPI **dual** major? Have you ever noticed that if you try to view your CAPP report on SIS you only get the CAPP report for your *primary* major? We have, and that is why we are creating CAPP Reporter!
 
@@ -35,7 +35,7 @@ After that run qmake and make with the command below
 qmake ../GUI/CAPP_Reporter.pro && make
 ```
 
-Finally relocate the 'Database' to the location of the created __binary__. With that, you should have a functional CAPP_Reporter application!
+Finally relocate the 'Database' to the location of the created __binary__. With that, you should have a functional CAPP-Reporter application!
 
 ##Usage
 This application takes no arguments. Just open it like you would any application.
