@@ -334,11 +334,6 @@ const std::map<std::string, int> * CourseSelector::getCoursesTaken() {
     bool validCourse = updateCourse();
     bool skipAdd = !tentativeToggled;
 
-static int qqq = 0;
-if (qqq++ > 8)
-{
-    int a = 7;
-}
     //For each course taken
     for(auto i : classesTaken) {
 
