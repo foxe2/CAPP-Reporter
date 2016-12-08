@@ -1,6 +1,5 @@
-// Comm-Intensive Option - 1 from CSCI and 1 from HASS
+// Math Comm-Intensive Requirement
 @#1:MATH
-@#1:HASS
 // Core Requirements
 MATH-1010
 MATH-1020
@@ -21,6 +20,8 @@ MATH-4950
 // Science Options
 @2:Math_science
 // HASS Requirement
+// HASS Comm-Intensive Requirement
+@#1:HASS
 // Depth Requirement
 @#2:HASS_ART||@#2:HASS_COMM||@#2:HASS_LANG||@#2:HASS_LITR||@#2:HASS_PHIL||@#2:HASS_STSH||@#2:HASS_WRIT||@#2:HASS_IHSS||@#2:HASS_COGS||@#2:HASS_ECON||@#2:HASS_PSYC||@#2:HASS_STSS
 // 2 classes within Humanities
