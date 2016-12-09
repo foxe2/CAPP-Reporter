@@ -1,4 +1,5 @@
 testInput
+*.dSYM/*
 build/*
 *.swp
 algo
