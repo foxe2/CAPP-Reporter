@@ -88,7 +88,7 @@ bool parseReqs(const string& fName, reqsVector& majorReqs,
 //Used specifically for parsing the concentration files
 //Very similar to parseReqs()
 void parseConcentrationReqs(vector<string>& reqs, const string& fName){
-	cerr << fName << endl;
+	
 	//Open the file
 	ifstream inFile(fName);
 
@@ -100,9 +100,7 @@ void parseConcentrationReqs(vector<string>& reqs, const string& fName){
 
 		//For each line in the file
 		while(getline(inFile,line)){
-			//vector of strings any of which satisfy the requirement a || b || c -> [a,b,c]
             
-
 			//If it is a comment then ignore it 
             if( (int)line.find("//") != -1) continue;
 
@@ -148,32 +146,40 @@ bool specialCompare(const string& req, courseMap& classes, const set<string>& un
 	return false;
 }
 
+//Calculates the amunt of free elective credits taken and how many credits are left to satisfy the requirements
 int freeElectives(courseMap& classes, const string& credits){
 
+	//Local variables
 	int currentCreds = 0, numCreds = stoi(credits);
+
 	if(numCreds==0) return 0;
+	
+	//Iterate through the courses left and add each credit value to currentCreds
 	for(courseMap::iterator itr = classes.begin(); itr != classes.end(); ++itr){
 
 		currentCreds += itr->second;
 
+		//If they have satisfied the credit requirement then break
 		if(currentCreds >= numCreds) return 0;
 	}
 
+	//Return difference
 	return numCreds - currentCreds;
 }
 
+//Beginning function for comparing evaluating concentration requirements
 bool concentrationCompare(const string& initConcentration, courseMap& classes) {
 
 	//Local variables
 	string concentration, cFileName;
 	bool noRepeat = true;
 	int numCourses;
+	concentration = initConcentration;
 
 	//A requirement data structure of all the requirements for a certain concentration file
 	vector<string> concReqs;
 
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)    
-	concentration = initConcentration;
 	if(concentration.substr(0,1).compare("#") == 0){
 		concentration = concentration.substr(1);
 		noRepeat = false;
@@ -181,12 +187,10 @@ bool concentrationCompare(const string& initConcentration, courseMap& classes) {
 
 	//The number of classes to be taken in a concentrationCompare
 	numCourses = stoi(concentration.substr(0,1));
-	cerr << concentration <<endl;
 	cFileName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
 
 	//Parse the concentration file for requirements
 	parseConcentrationReqs(concReqs, cFileName);
-	cerr<< "CONC" << endl;
 
 	//Compare the classes to the concetration requirements
 	return compareConcCourses(concReqs, classes, noRepeat, numCourses);
@@ -196,8 +200,9 @@ bool concentrationCompare(const string& initConcentration, courseMap& classes) {
 //determines which ones are satisfied
 bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat, int numCourses) {
 
-	//Determines the first index without an exclusion (ex. !CSCI-4020)
+	//Determines the first index without an exclusion(ex. !CSCI-4020)
 	int before = 0;
+
 
 	//Excluded courses
 	set<string> unacceptable;
@@ -227,29 +232,35 @@ bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat,
 		if((int)element.find("(") != -1)
 			element = element.substr(1,element.length()-2);
 
+		//Parses for a series of && statements
 		int index;
 		while(true){
 			
+			//Finds next occurence of &&
 			index = element.find("&&");
 
+			//If && not found, assign temp as the element 
 			if(index == -1) temp = element;
 
+			//Else, use the next subelement and remove it from elemenet
 			else{
 				temp = element.substr(0,index);
 				element = element.substr(index+2);
 			}
 
-			//Range(CSCI-4000+)
-			if(temp.substr(0,1).compare("@") == 0) {
-				if(concentrationCompare(temp.substr(1), classes)) 
-					satisfied = true;
-			}
+			//If it's a concentration then call concentrationCompare()
+			//This would start the concentration cycle over again(it's recursive, if necessary)
+			if(temp.substr(0,1).compare("@") == 0)
+				satisfied = concentrationCompare(temp.substr(1), classes);
 
+			//If it's a range of classes (ex. CSCI-4000+)
 			else if(temp.find("+") != -1)
                 satisfied = specialCompare(temp, classes, unacceptable, noRepeat);
 
 			//Regular courses
 			else{
+				//Checks that the class hasnt been in 'removed' yet
+				//And that it is in the course set
 				courseMap::iterator itr = classes.find(temp);
 				if( itr != classes.end() && taken.find(itr->first) == taken.end()){
 					satisfied = true;
@@ -257,50 +268,69 @@ bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat,
 				}
 			}
 
+			//If a subelement of && statements is false 
+			//or it is the end of the line then break
 			if(!satisfied || index == -1) break;
 		}
 
+		//Reset the parsing location to allow for multiple reqs in the same range
+		//Also tracks numCourses
 		if(satisfied){
 			--numCourses;
 			--i;
 		}
 
+		//If it numCourses == 0, then enough reqs have been satisfied,
+		//Erase the classes used                                       
 		if (numCourses == 0){
 			for(set<string>::iterator itr = taken.begin(); itr != taken.end(); ++itr)
 				classes.erase(*itr);
 			break;
 		}
 	}
-	return numCourses == 0;
+	//Return true or false
+	return numCourses <= 0;
 }
 
-
+//Compares requirements to taken classes
 void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 
+	//For each element in reqs (big requirements)
     for(int i = 0; i < (int)reqs.size(); ++i){
-    	cerr << reqs[i].size() << endl;
+
+    	//Local variables
 		set<string> unacceptable;
 		bool satisfied = false;
+
+		//Before marks where the algorithm should start checking for matches
 		int before = 0;
 
-        //Find unacceptable course
+        //Find unacceptable courses which will not count for this particular req
 		while(reqs[i][before].substr(0,1).compare("!") == 0){
 			unacceptable.insert(reqs[i][before].substr(1));
 			before++;
 		}
 
+		//Loop through the rest of reqs[i] to work with the OR statements
         for(int j = before; j < (int)reqs[i].size(); ++j){
-        	cerr << reqs[i][j] << endl;
+
+        	//Local variables
 			int index; 
 			string temp, element = reqs[i][j];
 
+			//If element is a free elective requirement than handle it
 			if(element.find("$") == 0){
 
+				//Number of credits in free electives required to graduate
 				string credits = element.substr(1);
+
+				//Determine the number of missing credits
 				int dif = freeElectives(classes, credits);
 
+				//If dif is negative 
 				if(dif > 0){
 					vector<string> creds;
+					//More user friendly version than requirement notation ($num)
 					creds.push_back("You need " + to_string(dif) + " more free elective credits.");
 					reqs[i] = creds;
 				}
@@ -308,45 +338,55 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 				else satisfied = true;
 			}
 
+			//If credits is satisfied dont continue
+			if(satisfied) break;
+
+			//If there are encapsulating parenthesis get rid of them
             else if((int)element.find("(") != -1)
 				element = element.substr(1).substr(0,element.length()-2);
 
+			//While parsing && statements continues
             while(true){
 
 				satisfied = false;
 				index = element.find("&&");
 
+				//If last subelement then assign it to temp
                 if(index == -1) temp = element;
 
+                //Otherwise isolate and remove next subelement
 				else{
-
 					temp = element.substr(0,index);
 					element = element.substr(index+2);
 				}
 
-				//Range(CSCI-4000+)
-				if(temp.substr(0,1).compare("@") == 0) {
+				//If it is a concentration requirement then handle it
+				if(temp.substr(0,1).compare("@") == 0)
+                    satisfied = concentrationCompare(temp.substr(1), classes);
 
-                    if(concentrationCompare(temp.substr(1), classes))
-						satisfied = true;
-				}
-
+                //If it is a range (ex CSCI-4000+)
 				else if(temp.find("+") != -1)
                     satisfied = specialCompare(temp, classes, unacceptable, true);
 
-				//Regular courses
+				//Regular(required) courses
+				//If the class is in classes
 				else if(classes.find(temp) != classes.end()){
-
+					//Remove the required course from classes
 					satisfied = true;
 					classes.erase(reqs[i][j]);
 				}
 
+				//If a subelement of && statements is false
+				//Or it is the end of the line, break
                 if(!satisfied || index == -1) break;
 			}
-			cerr << "here" << endl;
+
+			//If the requirement was satisfied skip the rest of the loop
             if(satisfied) break;
 		}
 
+		//If the req isn't satisfied push_back the needed vector
+		//Contains the index of the req in reqs
         if(!satisfied) needed.push_back(i);
 	}
 }
@@ -379,29 +419,38 @@ pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses)
 	//completed classes and fills the missing requirements in hassNeeded
 	compareCourses(hassReqs, courses, hassNeeded);
 
-    //Assigns each missing req with its comment in the hass map
+    //Iterates through unsatisfied requirements and adds it to return vector
     for(int i = 0; i < (int)hassNeeded.size(); ++i){
 
+    	//temp is the string equivalent of the components vector
 		string temp = "";
+		//Equivalent to hassReqs[i], OR components of 1 requirement
 		vector<string> components = hassReqs[hassNeeded[i]];
 
+		//Appends each component to the string
         for(int j = 0; j < (int)components.size(); ++j) temp = temp + components[j] + " ";
 
+        //Adds the string to the dictionary as a key with its comment as the value
 		(*hass)[temp.substr(0,temp.length()-1)]= hassComments[hassNeeded[i]];
 
 	}
 
-    //Compares the requirements for major
+    //Compares the necessary requirements for their major with the user's
+	//completed classes and fills the missing requirements in majorNeeded
 	compareCourses(majorReqs, courses, majorNeeded);
 
-    //Generates major map
+    //Iterates through unsatisfied requirements and adds it to return vector
     for(int i = 0; i < (int)majorNeeded.size(); ++i){
 
+		//temp is the string equivalent of the components vector
 		string temp = "";
+		//Equivalent to hassReqs[i], OR components of 1 requirement
 		vector<string> components = majorReqs[majorNeeded[i]];
 
+		//Appends each component to the string
         for(int j = 0; j < (int)components.size(); ++j) temp = temp + components[j] + " ";
 
+        //Adds the string to the dictionary as a key with its comment as the value
 		(*major)[temp.substr(0,temp.length()-1)] = majorComments[majorNeeded[i]];
 	}
 
