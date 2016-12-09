@@ -1,31 +1,27 @@
-read_reqs_input(Vector<Vector<string>> reqs, string filename){
-	Parse file and add elements to reqs
-}
-
-read_reqs_input(Dictionary<string> completed, string filename){
-	Parse file and add elements to completed
-}
-
-compare_classes(Vector<Vector<string>> reqs, Set<string> completed, Vector<int> needed){
-	The 'needed' DS is a list of indexes of requirements not satisfied
-
-	Iterate through the requirements, finding classes that satisfy each 
-}
-
-main(){
-	1) Take arguments
-	2) Create DSs
-	3) Call the parse_input function for each major
-	3) Call the parse_classes taken function
-	4) Compare reqs to classes taken
-	5) Output missing requirements
-}
+Main flow:
+	1) Parse the requirements file for the major and distribute them between the major and hass requirement vector<vector>'s
+	2) Call the compareCourses() function for hass and then major
+	3) Iterates through each requirement checking if it is satisfied
+	4) Calls corresponding functions to handle non-singular requirements such as free electives, ranges(ex CSCI-4000+), and concentration requirements.
+	5) Adds unsatisfied requirements to a "needed" vector.
+	6) Once both hass and major finish, add the missing requirements to the output pair of maps.
 
 Data structure for Classes Required: Vector<Vector<string>>
-	-Each element in the set will be a requirement vector
-	-Each requirement vector will contain a list of OR classes
+	-Each element in the vector will be a requirement vector
+	-Each requirement vector will contain a list of OR sub requirements
 	-This means that if there is a required class the size of that element vector will be 1
-	-Since it is a string, something such as CSCI-* will be stored as such and any required class will satisfy it
+	-Something such as CSCI-4000+ will be stored as such and any 4000 level CSCI course will satisfy it
 
-Data structure for Class Taken: Dictionary<string>
-	- Easy, fast look up
+Data structure for Courses Taken: Map<string><int>
+	- Each key is a course name (ex CSCI-4020)
+	- Each value is the number of credits the course is
+	- As requirements are satisfied, the courses are removed from this data structure
+
+Data structure for Comments: vector<string>
+	- Contains the most recent comment for each requirement
+	- Is attached to the return maps and displayed to the user for easier readability
+
+Data structure for Return value: pair<map<string, string>, map<string, string> >
+	- Pair of maps, one for hass and one for major
+	- Each contains keys of unsatisfied requirements
+	- Each contains values of a comment for that requirement
