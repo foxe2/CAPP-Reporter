@@ -20,9 +20,9 @@ CSCI-4210
 CSCI-4430
 CSCI-1100||CSCI-2000+
 // CS Capstone
-CSCI-4940||CSCI-4440||@#3:Theory_Alg||@#3:Sys_Soft||@#3:AI_Data||@#3:VGRG
+#CSCI-4940||#CSCI-4440||@#3:Theory_Alg||@#3:Sys_Soft||@#3:AI_Data||@#3:VGRG
 // CS Option
-@(3:Option_1&&(CSCI-4940||CSCI-4440))||@3:Theory_Alg||@3:Sys_Soft||@3:AI_Data||@3:VGRG
+@3:Option_1
 // Math/Logic Option
 @2:Math_Logic
 // HASS Requirement

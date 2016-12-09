@@ -88,7 +88,7 @@ bool parseReqs(const string& fName, reqsVector& majorReqs,
 //Used specifically for parsing the concentration files
 //Very similar to parseReqs()
 void parseConcentrationReqs(reqsVector& reqs, const string& fName){
-
+	cerr << fName << endl;
 	//Open the file
 	ifstream inFile(fName);
 
@@ -96,41 +96,34 @@ void parseConcentrationReqs(reqsVector& reqs, const string& fName){
 	if (inFile.is_open()){
 
 		//Initalize variables
-		string line, mostRecentComment = "";
+		string line = "";
+
+		vector<string> options;
 
 		//For each line in the file
 		while(getline(inFile,line)){
-
 			//vector of strings any of which satisfy the requirement a || b || c -> [a,b,c]
-            vector<string> options;
+            
 
 			//If it is a comment then ignore it 
             if( (int)line.find("//") != -1) continue;
-
-			//Loop through and parse
-			for(int a = line.find("||"); a != -1; a = line.find("||")) {
-
-				//Read the course
-				string course = line.substr(0,a);
-
-				//If it cant be taken to satisfy req
-				if(course.substr(0,1).compare("!") == 0)
-					options.insert(options.begin(), course);
-
-				else options.push_back(course);
-
-				line=line.substr(a+2);
-			}
 
 			//If it cannot be taken to satisy a req then add to the beginning
 			if(line.substr(0,1).compare("!") == 0)
 				options.insert(options.begin(),line);
 
 			else options.push_back(line);
-
-			reqs.push_back(options);
 		}
 
+		reqs.push_back(options);
+		cerr<<"Size of reqs: " << reqs.size()<<endl;
+		for(int i = 0; i < reqs.size(); ++i){
+			cerr << "Reqs[i]: "<<endl;
+			for(int j = 0; j < reqs[i].size(); ++j){
+				cerr<< reqs[i][j] <<",";
+			}
+			cerr<<endl;
+		}
 		//Close the file
 		inFile.close();
 	}
@@ -169,7 +162,7 @@ bool specialCompare(const string& req, courseMap& classes, const set<string>& un
 int freeElectives(courseMap& classes, const string& credits){
 
 	int currentCreds = 0, numCreds = stoi(credits);
-
+	if(numCreds==0) return 0;
 	for(courseMap::iterator itr = classes.begin(); itr != classes.end(); ++itr){
 
 		currentCreds += itr->second;
@@ -198,40 +191,28 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 		noRepeat = false;
 	}
 
-	//For debugging ONLY
-	cout << concentration << endl;
-
-	//The number of classes to be taken in a concentration
+	cerr<<"1" <<endl;
+	//The number of classes to be taken in a concentrationCompare
 	numCourses = stoi(concentration.substr(0,1));
-
-	//For debugging ONLY
-	cout << numCourses <<endl;
-
+	cerr << concentration <<endl;
 	cFileName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
 
 	//Parse the concentration file for requirements
 	parseConcentrationReqs(conc_reqs, cFileName);
-
+	cerr<< "CONC" << endl;
+	for(int i = 0; i < conc_reqs.size(); ++i){
+		for (int j = 0; j < conc_reqs[i].size(); ++j)
+		{
+			cerr << conc_reqs[i][j] << ", ";
+		}
+		cerr << endl;
+	}
 	//Compare the classes to the concetration requirements
 	compareCourses(conc_reqs, classes_credits, notTaken, noRepeat, numCourses);
-
-    for(int i = 0; i < (int)conc_reqs.size(); ++i){
-        for(int j = 0; j < (int)conc_reqs[i].size(); ++j)
-			cout << conc_reqs[i][j] << " ";
-		cout << endl;
-	}
-
-	//For debugging ONLY
-	cout<< "NEEDED: " << endl;
-    for(int i = 0; i < (int)notTaken.size(); ++i) cout<< notTaken[i];
-	cout << endl<<"done"<<endl;
-
+	cerr << "321" << endl;
 	//If the difference between the reqs and the amount notTaken is
 	//greater than numCourses, then they took enough courses 
     if((int)(conc_reqs.size()-notTaken.size()) >= numCourses) return -1;
-
-	//For debugging ONLY
-	cout << "res: " << conc_reqs.size()-notTaken.size()<<endl;
 
 	//Return the amount they must still take
 	return conc_reqs.size()-notTaken.size();
@@ -241,13 +222,10 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 //determines which ones are satisfied
 void compareCourses(reqsVector& reqs, courseMap& classes,
 		vector<int>& needed, bool noRepeat, int numCourses) {
-
-	//For debugging ONLY
-	cout << "reqs size:  " << reqs.size()<<endl;
-
+	cerr<<endl<<"IN" << endl;
 	//For each requirement
     for(int i = 0; i < (int)reqs.size(); ++i){
-
+    	//cout << i << endl;
 		int before = 0;
 		bool satisfied = false;
 		set<string> unacceptable;
@@ -260,11 +238,7 @@ void compareCourses(reqsVector& reqs, courseMap& classes,
 
 		//Starting from the first option (skips the !'s)
         for(int j = before; j < (int)reqs[i].size(); ++j){
-
-        	
-
-
-
+        	//cerr << j << endl;
 			string temp;
 			string element = reqs[i][j];
 
@@ -278,8 +252,10 @@ void compareCourses(reqsVector& reqs, courseMap& classes,
 					creds.push_back("You need " + to_string(dif) + " more free elective credits.");
 					reqs[i] = creds;
 				}
-
-				else satisfied = true;
+				else {
+					satisfied = true; 
+					break;
+				}
 			}
 
             else if((int)element.find("(") != -1)
@@ -322,12 +298,6 @@ void compareCourses(reqsVector& reqs, courseMap& classes,
 		}
 
 		if(!satisfied) needed.push_back(i);
-
-        if(i-(int)needed.size()+1 >= numCourses){
-			cout<< needed.size()<< endl;
-			cout << numCourses<<"i: "<<i<<endl;
-			break;
-		}
 	}
 }
 
@@ -335,7 +305,7 @@ void compareCourses(reqsVector& reqs, courseMap& classes,
 void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 
     for(int i = 0; i < (int)reqs.size(); ++i){
-
+    	cerr << reqs[i].size() << endl;
 		set<string> unacceptable;
 		bool satisfied = false;
 		int before = 0;
@@ -347,7 +317,7 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 		}
 
         for(int j = before; j < (int)reqs[i].size(); ++j){
-
+        	cerr << reqs[i][j] << endl;
 			int index; 
 			string temp, element = reqs[i][j];
 
@@ -399,10 +369,8 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 				}
 
                 if(!satisfied || index == -1) break;
-
-
 			}
-
+			cerr << "here" << endl;
             if(satisfied) break;
 		}
 

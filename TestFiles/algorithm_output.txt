@@ -2,17 +2,19 @@ CAUTION: Read the READ.ME before using this program.
 It contains extremely vital information about the current state of the program and it's known weaknesses/shortcomings.
 
 Major requirements to complete: 
-Math/Logic
-@2:Math_Logic
-Core Classes
-CSCI-1200
-Core Classes
-CSCI-2200
-Core Classes
-CSCI-4210
-Core Classes
-CSCI-4430
-Free Electives
-You need 16 more free elective credits.
+ CS Capstone
+#CSCI-4940 #CSCI-4440 @#3:Theory_Alg @#3:Sys_Soft @#3:AI_Data @#3:VGRG
+ Free Electives
+$0
+ Science Options
+@2:Math_science
+ CS Option
+@3:Option_1
+ Curriculum Requirements
+@6:MATH_OPT
+ Culminating Experience Requirement
+MATH-4950
 
 HASS requirements to complete: 
+ Depth Requirement
+@#2:HASS_ART @#2:HASS_COMM @#2:HASS_LANG @#2:HASS_LITR @#2:HASS_PHIL @#2:HASS_STSH @#2:HASS_WRIT @#2:HASS_IHSS @#2:HASS_COGS @#2:HASS_ECON @#2:HASS_PSYC @#2:HASS_STSS
