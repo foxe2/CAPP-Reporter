@@ -87,7 +87,7 @@ bool parseReqs(const string& fName, reqsVector& majorReqs,
 //Takes in a datastructure which it will add classes to
 //Used specifically for parsing the concentration files
 //Very similar to parseReqs()
-void parseConcentrationReqs(reqsVector& reqs, const string& fName){
+void parseConcentrationReqs(vector<string>& reqs, const string& fName){
 	cerr << fName << endl;
 	//Open the file
 	ifstream inFile(fName);
@@ -97,8 +97,6 @@ void parseConcentrationReqs(reqsVector& reqs, const string& fName){
 
 		//Initalize variables
 		string line = "";
-
-		vector<string> options;
 
 		//For each line in the file
 		while(getline(inFile,line)){
@@ -110,20 +108,11 @@ void parseConcentrationReqs(reqsVector& reqs, const string& fName){
 
 			//If it cannot be taken to satisy a req then add to the beginning
 			if(line.substr(0,1).compare("!") == 0)
-				options.insert(options.begin(),line);
+				reqs.insert(reqs.begin(),line);
 
-			else options.push_back(line);
+			else reqs.push_back(line);
 		}
 
-		reqs.push_back(options);
-		cerr<<"Size of reqs: " << reqs.size()<<endl;
-		for(int i = 0; i < reqs.size(); ++i){
-			cerr << "Reqs[i]: "<<endl;
-			for(int j = 0; j < reqs[i].size(); ++j){
-				cerr<< reqs[i][j] <<",";
-			}
-			cerr<<endl;
-		}
 		//Close the file
 		inFile.close();
 	}
@@ -173,7 +162,7 @@ int freeElectives(courseMap& classes, const string& credits){
 	return numCreds - currentCreds;
 }
 
-int concentrationCompare(const string& initConcentration, courseMap& classes_credits) {
+bool concentrationCompare(const string& initConcentration, courseMap& classes_credits) {
 
 	//Local variables
 	string concentration, cFileName;
@@ -181,8 +170,7 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 	int numCourses;
 
 	//A requirement data structure of all the requirements for a certain concentration file
-	reqsVector conc_reqs;
-	vector<int> notTaken;
+	vector<string> conc_reqs;
 
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)    
 	concentration = initConcentration;
@@ -200,105 +188,76 @@ int concentrationCompare(const string& initConcentration, courseMap& classes_cre
 	//Parse the concentration file for requirements
 	parseConcentrationReqs(conc_reqs, cFileName);
 	cerr<< "CONC" << endl;
-	for(int i = 0; i < conc_reqs.size(); ++i){
-		for (int j = 0; j < conc_reqs[i].size(); ++j)
-		{
-			cerr << conc_reqs[i][j] << ", ";
-		}
-		cerr << endl;
-	}
-	//Compare the classes to the concetration requirements
-	compareCourses(conc_reqs, classes_credits, notTaken, noRepeat, numCourses);
-	cerr << "321" << endl;
-	//If the difference between the reqs and the amount notTaken is
-	//greater than numCourses, then they took enough courses 
-    if((int)(conc_reqs.size()-notTaken.size()) >= numCourses) return -1;
 
-	//Return the amount they must still take
-	return conc_reqs.size()-notTaken.size();
+	//Compare the classes to the concetration requirements
+	return compareConcCourses(conc_reqs, classes_credits, noRepeat, numCourses);
 }
 
 //Compares courses for the concentration requirements and
 //determines which ones are satisfied
-void compareCourses(reqsVector& reqs, courseMap& classes,
-		vector<int>& needed, bool noRepeat, int numCourses) {
-	cerr<<endl<<"IN" << endl;
-	//For each requirement
-    for(int i = 0; i < (int)reqs.size(); ++i){
-    	//cout << i << endl;
-		int before = 0;
-		bool satisfied = false;
-		set<string> unacceptable;
+bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat, int numCourses) {
 
-		//Find unacceptable course and increment before    
-		while(reqs[i][before].substr(0,1).compare("!") == 0){
-			unacceptable.insert(reqs[i][before].substr(1));
-			before++;
-		}
+	int before = 0;
+	set<string> unacceptable;
+	set<string> taken;
 
-		//Starting from the first option (skips the !'s)
-        for(int j = before; j < (int)reqs[i].size(); ++j){
-        	//cerr << j << endl;
-			string temp;
-			string element = reqs[i][j];
-
-			if(element.find("$") == 0){
-
-				string credits = element.substr(1);
-				int dif = freeElectives(classes, credits);
-
-				if(dif > 0){
-					vector<string> creds;
-					creds.push_back("You need " + to_string(dif) + " more free elective credits.");
-					reqs[i] = creds;
-				}
-				else {
-					satisfied = true; 
-					break;
-				}
-			}
-
-            else if((int)element.find("(") != -1)
-				element = element.substr(1,element.length()-2);
-
-			int index;
-			while(true){
-
-				satisfied = false;
-				index = element.find("&&");
-
-				if(index == -1) temp = element;
-
-				else{
-					temp = element.substr(0,index);
-					element = element.substr(index+2);
-				}
-
-				//Range(CSCI-4000+)
-				if(temp.substr(0,1).compare("@") == 0) {
-					if(concentrationCompare(temp.substr(1), classes) == -1) 
-						satisfied = true;
-
-				}
-
-				else if(temp.find("+") != -1)
-                    satisfied = specialCompare(temp, classes, unacceptable, noRepeat);
-
-				//Regular courses
-				else if(classes.find(temp) != classes.end()){
-
-					satisfied = true;
-					if(noRepeat) classes.erase(reqs[i][j]);
-				}
-
-				if(!satisfied || index == -1) break;
-			}
-
-			if(satisfied) break;
-		}
-
-		if(!satisfied) needed.push_back(i);
+	//Find unacceptable course and increment before   
+	while(reqs[before].substr(0,1).compare("!") == 0){
+		unacceptable.insert(reqs[before].substr(1));
+		before++;
 	}
+
+    for(int i = before; i < (int)reqs.size(); ++i){
+
+    	bool satisfied = false;
+		string temp;
+		string element = reqs[i];
+
+		if((int)element.find("(") != -1)
+			element = element.substr(1,element.length()-2);
+
+		int index;
+		while(true){
+			
+			index = element.find("&&");
+
+			if(index == -1) temp = element;
+
+			else{
+				temp = element.substr(0,index);
+				element = element.substr(index+2);
+			}
+
+			//Range(CSCI-4000+)
+			if(temp.substr(0,1).compare("@") == 0) {
+				if(concentrationCompare(temp.substr(1), classes)) 
+					satisfied = true;
+			}
+
+			else if(temp.find("+") != -1)
+                satisfied = specialCompare(temp, classes, unacceptable, noRepeat);
+
+			//Regular courses
+			else{
+				courseMap::iterator itr = classes.find(temp);
+				if( itr != classes.end() && taken.find(itr->first) == taken.end()){
+					satisfied = true;
+					taken.insert(itr->first);
+				}
+			}
+
+			if(!satisfied || index == -1) break;
+		}
+
+		if(satisfied) --numCourses;
+
+		if (numCourses == 0){
+			for(set<string>::iterator itr = taken.begin(); itr != taken.end(); ++itr)
+				classes.erase(*itr);
+			break;
+		}
+	}
+	return numCourses == 0;
 }
 
 
@@ -354,7 +313,7 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 				//Range(CSCI-4000+)
 				if(temp.substr(0,1).compare("@") == 0) {
 
-                    if(concentrationCompare(temp.substr(1), classes) == -1)
+                    if(concentrationCompare(temp.substr(1), classes))
 						satisfied = true;
 				}
 

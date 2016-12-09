@@ -24,9 +24,8 @@ namespace Algo {
     bool specialCompare(const std::string &req, courseMap& classes,
                 const std::set<std::string> &unacceptable, bool noRepeat);
     int freeElectives(courseMap& classes, const std::string &credits);
-    int concentrationCompare(const std::string &initConcentration, courseMap& classes_credits);
-    void compareCourses(reqsVector& reqs, courseMap& classes,
-                std::vector<int> &needed, bool noRepeat, int numCourses);
+    bool concentrationCompare(const std::string &initConcentration, courseMap& classes_credits);
+    bool compareConcCourses(std::vector<std::string>& reqs, courseMap& classes, bool noRepeat, int numCourses);
     void compareCourses(reqsVector& reqs, courseMap& classes, std::vector<int> &needed);
 #endif
     std::pair<outputMap*, outputMap* > runAlgo(const std::string &req_file, courseMap& courses);
