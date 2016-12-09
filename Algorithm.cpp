@@ -162,7 +162,7 @@ int freeElectives(courseMap& classes, const string& credits){
 	return numCreds - currentCreds;
 }
 
-bool concentrationCompare(const string& initConcentration, courseMap& classes_credits) {
+bool concentrationCompare(const string& initConcentration, courseMap& classes) {
 
 	//Local variables
 	string concentration, cFileName;
@@ -170,7 +170,7 @@ bool concentrationCompare(const string& initConcentration, courseMap& classes_cr
 	int numCourses;
 
 	//A requirement data structure of all the requirements for a certain concentration file
-	vector<string> conc_reqs;
+	vector<string> concReqs;
 
 	//Checks if repition in multiple requirements is allowed (ex Comm intensive)    
 	concentration = initConcentration;
@@ -179,26 +179,30 @@ bool concentrationCompare(const string& initConcentration, courseMap& classes_cr
 		noRepeat = false;
 	}
 
-	cerr<<"1" <<endl;
 	//The number of classes to be taken in a concentrationCompare
 	numCourses = stoi(concentration.substr(0,1));
 	cerr << concentration <<endl;
 	cFileName = "Database/Concentrations/" + concentration.substr(2) + ".txt";
 
 	//Parse the concentration file for requirements
-	parseConcentrationReqs(conc_reqs, cFileName);
+	parseConcentrationReqs(concReqs, cFileName);
 	cerr<< "CONC" << endl;
 
 	//Compare the classes to the concetration requirements
-	return compareConcCourses(conc_reqs, classes_credits, noRepeat, numCourses);
+	return compareConcCourses(concReqs, classes, noRepeat, numCourses);
 }
 
 //Compares courses for the concentration requirements and
 //determines which ones are satisfied
 bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat, int numCourses) {
 
+	//Determines the first index without an exclusion (ex. !CSCI-4020)
 	int before = 0;
+
+	//Excluded courses
 	set<string> unacceptable;
+	
+	//Courses to be erased if the user has numCourses in the concentration
 	set<string> taken;
 
 	//Find unacceptable course and increment before   
@@ -207,12 +211,19 @@ bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat,
 		before++;
 	}
 
+	//Iterates through the rest of the list for valid classes
     for(int i = before; i < (int)reqs.size(); ++i){
 
+    	//If a specific req was satisfied (not the entire concentration)
     	bool satisfied = false;
+
+    	//Current course being evaluated
 		string temp;
+
+		//The requirement being evaluated
 		string element = reqs[i];
 
+		//Removes parenthesis in the case of (a&&b) 
 		if((int)element.find("(") != -1)
 			element = element.substr(1,element.length()-2);
 
@@ -249,7 +260,10 @@ bool compareConcCourses(vector<string>& reqs, courseMap& classes, bool noRepeat,
 			if(!satisfied || index == -1) break;
 		}
 
-		if(satisfied) --numCourses;
+		if(satisfied){
+			--numCourses;
+			--i;
+		}
 
 		if (numCourses == 0){
 			for(set<string>::iterator itr = taken.begin(); itr != taken.end(); ++itr)
