@@ -409,7 +409,7 @@ pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses)
 	return make_pair(major,hass);
 }
 
-#if 0
+#ifdef NO_GUI
 //Read classes is only used in main() for modular testing
 //Reads in a text file with one course per line
 //Users enter classes in the GUI and this is not present in a deployment
