@@ -10,7 +10,7 @@ Currently this application is being made only CS, MATH, and CS/MATH dual majors 
 
 ##Disclaimer
 
-This application only handles general cases. Many 'corner cases' may occur, many of which are not listed RPI's websites. Please be aware, because of this, the results may not be 100% accurate. However, we are making this application pessimistic, so it will likely not tell you that you have satisfied a requirement which you have not. Regardless, as this application is still in it's infancy, we *strongly* recommend you double check your results by hand. One important, still un-implemented, feature of this is recognizing cross listed classes. If you enter a cross listed class, it will only consider it for the major you entered it as.
+This application only handles general cases. Many 'corner cases' may occur, many of which are not listed RPI's websites. Please be aware, because of this, the results may not be 100% accurate. However, we are making this application pessimistic, so it will likely not tell you that you have satisfied a requirement which you have not. Regardless, as this application is still in it's infancy, we *strongly* recommend you double check your results by hand. One important, still un-implemented, feature of this is recognizing cross listed classes. If you enter a cross listed class, it will only consider it for the major you entered it as. For more info, please visit [the Issues](https://github.com/zwimer/CAPP-Reporter/wiki/Issues) page on the [Wiki](https://github.com/zwimer/CAPP-Reporter/wiki).
 
 ##Requirements
 
