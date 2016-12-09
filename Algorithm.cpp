@@ -502,7 +502,7 @@ void fileOutput(string& fName, pair<outputMap*, outputMap* > pairMH){
 	outFile << "of the program and it's known weaknesses/shortcomings.\n" << endl;
 	outFile << "Major requirements to complete: " << endl;
 
-	//Iterate through in needed and output each unsatisfied major req
+    //Iterate through i n needed and output each unsatisfied major req
 	for(map<string,string>::iterator itr = pairMH.first->begin(); itr != pairMH.first->end(); ++itr)
 		outFile << itr->second << endl << itr->first << endl;
 
