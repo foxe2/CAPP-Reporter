@@ -28,8 +28,8 @@ CSCI-2600
 CSCI-4210
 CSCI-4430
 CSCI-1100||CSCI-2000+
-// CS Option
-// Option 1 - No Concentration, Option 2 - Concentration
+// CS Capstone
+CSCI-4940||CSCI-4440||@#3:Theory_Alg||@#3:Sys_Soft||@#3:AI_Data||@#3:VGRG
 // CS Option
 @(3:Option_1&&(CSCI-4940||CSCI-4440))||@3:Theory_Alg||@3:Sys_Soft||@3:AI_Data||@3:VGRG
 // HASS Requirement
@@ -45,7 +45,7 @@ COGS-2000+||ECON-2000+||PSYC-2000+||STSS-2000+||IHSS-2000+
 COGS-1000+||ECON-1000+||PSYC-1000+||STSS-1000+||IHSS-1000+
 // Must take another class in either school (Requirement is 24 credits total)
 @1:HASS_ART||@1:HASS_COMM||@1:HASS_LANG||@1:HASS_LITR||@1:HASS_PHIL||@1:HASS_STSH||@1:HASS_WRIT||@1:HASS_IHSS||@1:HASS_COGS||@1:HASS_ECON||@1:HASS_PSYC||@1:HASS_STSS
-// One course must be 4000-level or above
+// One HASS course must be 4000-level or above
 @1:HASS_4000
-// FREE ELECTIVES
+// Free Electives
 $0
