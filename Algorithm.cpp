@@ -337,62 +337,6 @@ void compareCourses(reqsVector& reqs, courseMap& classes, vector<int>& needed) {
 	}
 }
 
-//Read classes is only used in main() for modular testing
-//Reads in a text file with one course per line
-//Users enter classes in the GUI and this is not present in a deployment
-void readClasses(courseMap& classes, string& fname){
-
-	//Local variables
-	string temp;
-	int index;
-
-	ifstream inFile(fname);
-
-	if (inFile.is_open()){
-
-		while(getline(inFile,temp)){
-
-			//If comment then skip
-            if((int)temp.find("//") != -1) continue;
-
-			//Adds each class with the course name as
-			//the key and number of credits as the value
-			index = temp.find(":");
-			classes[temp.substr(0, index)] = stoi(temp.substr(index+1));
-		}
-
-		inFile.close();
-	}
-
-	else cout << "error";
-}
-
-//Only used for modular testing and is called solely in main()
-//Outputs the data to a file 
-void fileOutput(string& fName, pair<outputMap*, outputMap* > pairMH){
-
-	ofstream outFile(fName);
-
-	if (!outFile.is_open()) cout << "Error writing to output file";
-
-	outFile << "CAUTION: Read the READ.ME before using this program." << endl;
-	outFile << "It contains extremely vital information about the current state ";
-	outFile << "of the program and it's known weaknesses/shortcomings.\n" << endl;
-	outFile << "Major requirements to complete: " << endl;
-
-	//Iterate through in needed and output each unsatisfied major req
-	for(map<string,string>::iterator itr = pairMH.first->begin(); itr != pairMH.first->end(); ++itr)
-		outFile << itr->second << endl << itr->first << endl;
-
-	//HASS
-	outFile << endl << "HASS requirements to complete: "  << endl;
-
-	for(map<string,string>::iterator itr = pairMH.second->begin(); itr != pairMH.second->end(); ++itr)
-		outFile << itr->second << endl << itr->first << endl;
-
-	outFile.close();
-}
-
 //This is called by the GUI.
 //Returns a pair of maps where each map contains key-value pairs of an
 //unsatisfied requirement and a comment about the requirement. The first element 
@@ -452,6 +396,62 @@ pair<outputMap*, outputMap*> runAlgo(const string& req_file, courseMap& courses)
 }
 
 #if 0
+//Read classes is only used in main() for modular testing
+//Reads in a text file with one course per line
+//Users enter classes in the GUI and this is not present in a deployment
+void readClasses(courseMap& classes, string& fname){
+
+	//Local variables
+	string temp;
+	int index;
+
+	ifstream inFile(fname);
+
+	if (inFile.is_open()){
+
+		while(getline(inFile,temp)){
+
+			//If comment then skip
+            if((int)temp.find("//") != -1) continue;
+
+			//Adds each class with the course name as
+			//the key and number of credits as the value
+			index = temp.find(":");
+			classes[temp.substr(0, index)] = stoi(temp.substr(index+1));
+		}
+
+		inFile.close();
+	}
+
+	else cout << "error";
+}
+
+//Only used for modular testing and is called solely in main()
+//Outputs the data to a file 
+void fileOutput(string& fName, pair<outputMap*, outputMap* > pairMH){
+
+	ofstream outFile(fName);
+
+	if (!outFile.is_open()) cout << "Error writing to output file";
+
+	outFile << "CAUTION: Read the READ.ME before using this program." << endl;
+	outFile << "It contains extremely vital information about the current state ";
+	outFile << "of the program and it's known weaknesses/shortcomings.\n" << endl;
+	outFile << "Major requirements to complete: " << endl;
+
+	//Iterate through in needed and output each unsatisfied major req
+	for(map<string,string>::iterator itr = pairMH.first->begin(); itr != pairMH.first->end(); ++itr)
+		outFile << itr->second << endl << itr->first << endl;
+
+	//HASS
+	outFile << endl << "HASS requirements to complete: "  << endl;
+
+	for(map<string,string>::iterator itr = pairMH.second->begin(); itr != pairMH.second->end(); ++itr)
+		outFile << itr->second << endl << itr->first << endl;
+
+	outFile.close();
+}
+
 //int main is used for modular testing of the algorithm itself
 //Will not be present in any deployments
 //It calls the runAlgo function like the gui does and takes command line arguments and outputs to a file
