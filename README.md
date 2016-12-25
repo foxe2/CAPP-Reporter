@@ -22,7 +22,7 @@ First, cd into the directory you would like to install this application in
 
 Then git clone this repository
 ```bash
-git clone https://github.com/foxe2/CAPP-Reporter
+git clone https://github.com/zwimer/CAPP-Reporter
 ```
 
 Create your build directory as follows
