@@ -38,4 +38,4 @@ qmake ../GUI/CAPP_Reporter.pro && make
 Finally relocate the 'Database' to the location of the created __binary__. With that, you should have a functional CAPP-Reporter application!
 
 ## Usage
-This application takes no arguments. Just open it like you would any application.
+This application takes no arguments, but must be opened by the binary.
