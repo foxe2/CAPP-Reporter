@@ -16,7 +16,7 @@ This application only handles general cases. Many 'corner cases' may occur, many
 
 This application requires the use of the graphics library QT. It requires qmake 5.7 and C++ 11 to build.
 
-## Installation Instructions:
+## Installation Instructions
 
 First, cd into the directory you would like to install this application in
 
