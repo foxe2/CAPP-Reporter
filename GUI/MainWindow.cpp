@@ -248,7 +248,6 @@ void MainWindow::updateAll() {
 
     //Create the file name
     std::string fileName = "Database/Majors/";
-    ui->primaryMajor->currentText().toLatin1().constData();
     fileName += ui->primaryMajor->currentText().toLatin1().constData() + std::string("-");
     fileName += ui->secondaryMajor->currentText().toLatin1().constData();
     fileName.append(".txt");
